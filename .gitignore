@@ -1,0 +1,13 @@
+# Obsidian app settings (personal, not project)
+.obsidian/
+
+# Obsidian trash
+.trash/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
