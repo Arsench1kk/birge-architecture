@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-02
 phase: 1
 ---
 
@@ -97,7 +97,7 @@ Almaty's urban topology causes frequent connectivity drops — tunnels on major 
         │
         ▼
 6. Background GRDB DatabaseQueue executes bulk INSERT
-   (100–200 cached records → Go backend in one batch)
+   (100–200 cached records → Vapor backend in one batch)
         │
         ▼
 7. WebSocket connection re-established
@@ -163,4 +163,4 @@ case .stopLocationTracking:
 ## Related Files
 - [[WebSocket_Hub_Architecture.md]] — backend WebSocket hub and Redis Pub/Sub
 - [[Ride_State_Machine.md]] — FSM states mirrored on iOS via TCA reducers
-- [[Backend_Architecture.md]] — Go monolith that iOS communicates with
+- [[Backend_Architecture.md]] — Vapor monolith that iOS communicates with

@@ -87,7 +87,7 @@ See [[Open_Questions.md]] OQ-002 for idempotency key format decision.
 
 ### Real-Time (on ride completion)
 1. [[Ride State Machine]] transitions ride to `completed`
-2. Go backend calculates driver payout immediately
+2. Backend calculates driver payout immediately
 3. Event broadcast via [[WebSocket Hub Architecture]] to iOS app
 4. Driver sees updated session earnings — no additional HTTP fetch required
 
@@ -110,7 +110,7 @@ For outer Almaty districts where cash remains common on on-demand fallback rides
 2. iOS app prompts driver to confirm exact cash amount received
         │
         ▼
-3. Go backend records as `pending_reconciliation`
+3. Backend records as `pending_reconciliation`
         │
         ▼
 4. Weekly automated job:

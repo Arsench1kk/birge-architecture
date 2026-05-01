@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-02
 phase: 1
 ---
 
@@ -9,7 +9,7 @@ phase: 1
 
 ## 1. The Multi-Instance Scaling Problem
 
-Real-time communication is fundamental — constant bidirectional GPS and status updates between drivers and passengers. When the [[Go Modular Monolith]] scales horizontally, a standard in-memory WebSocket hub breaks:
+Real-time communication is fundamental — constant bidirectional GPS and status updates between drivers and passengers. When the [[Swift Vapor Modular Monolith]] scales horizontally, a standard in-memory WebSocket hub breaks:
 
 ```
 Instance A: Driver connected
@@ -38,7 +38,7 @@ Instance A publishes to Redis channel "ride:{ride_id}"
         └──► Instance C: checks local hub → nobody → skip
 ```
 
-Every Go server instance:
+Every backend server instance:
 1. Maintains its own **local WebSocket hub** (in-memory map of connected clients)
 2. **Subscribes to Redis Pub/Sub channels** for all ride events
 3. On receiving a broadcast: checks local clients, forwards if found
@@ -125,7 +125,7 @@ If WebSocket drops (tunnel, elevator), [[iOS_Architecture|GRDB]] accumulates GPS
 ---
 
 ## Related Files
-- [[Backend_Architecture.md]] — Redis Pub/Sub setup in Go monolith
+- [[Backend_Architecture.md]] — Redis Pub/Sub setup in Vapor monolith
 - [[Ride_State_Machine.md]] — events that flow through the hub
 - [[iOS_Architecture.md]] — TCA WebSocketClient dependency
 - [[Infrastructure_and_Deployment.md]] — Redis 7, horizontal pod scaling

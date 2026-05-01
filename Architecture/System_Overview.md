@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-02
 phase: 1
 ---
 
@@ -63,19 +63,18 @@ A passenger completing 5+ on-demand rides on a similar route automatically recei
 │           Nginx  (TLS 1.3 termination, JWT validation, rate limiting)    │
 └───────────────────┬──────────────────────┬───────────────────────────────┘
                     │                      │
-      ┌─────────────▼──────────┐  ┌────────▼───────────────┐
-      │   Go API Monolith      │  │  Geo-Matching + WS Hub  │
-      │   (Gin + pgx)          │  │  (Go + goroutines)      │
-      │                        │  │                         │
-      │  auth, users, rides,   │  │  Redis GEO, OSRM,       │
-      │  payments, corridors,  │  │  Redis Pub/Sub,          │
-      │  subscriptions         │  │  WebSocket rooms         │
-      └─────────┬──────────────┘  └──────────┬──────────────┘
-                │                            │
-      ┌─────────▼─────────────────────────────▼──────────────┐
-      │                  DATA LAYER                           │
-      │   PostgreSQL 16 (primary) │ Redis 7 │ OSRM local      │
-      └─────────┬─────────────────────────────────────────────┘
+      ┌─────────────▼─────────────────────────────────────────────────────┐
+      │         Swift Vapor Modular Monolith                              │
+      │         (Fluent + SQLKit + async/await)                           │
+      │                                                                   │
+      │  auth, users, rides, payments, corridors, subscriptions,          │
+      │  WebSocket routes, Redis Pub/Sub integration, background jobs     │
+      └─────────┬─────────────────────────────────────────────────────────┘
+                │
+      ┌─────────▼─────────────────────────────────────────────────────────┐
+      │                  DATA LAYER                                       │
+      │   PostgreSQL 16 (primary) │ Redis 7 │ OSRM local                  │
+      └─────────┬─────────────────────────────────────────────────────────┘
                 │
       ┌─────────▼──────────────┐
       │   ML Service (Python)  │
@@ -90,30 +89,30 @@ A passenger completing 5+ on-demand rides on a similar route automatically recei
 
 | Component | Technology | Rationale |
 |---|---|---|
-| API Monolith | Go (Gin) | Maturity, performance, DevOps simplicity |
-| Geo-Matching + WebSocket | Go + goroutines | 2KB stack vs 8KB threads — 50k WS connections at ~300MB RAM |
+| API Monolith | Swift Vapor 4 | Same-language backend/client stack, async/await ergonomics, modular monolith simplicity |
+| Geo-Matching + WebSocket | Swift Vapor + Redis Pub/Sub | Real-time ride updates stay in-process with Redis fan-out across instances |
 | iOS App | Swift + SwiftUI + [[The Composable Architecture]] | Native performance, Apple ecosystem |
 | Local Offline Cache | [[GRDB]] | Thread-safe WAL mode — critical for tunnel/elevator drops in Almaty |
 | AI/ML Service | Python + FastAPI | scikit-learn, XGBoost, ML engineer availability |
 | Primary DB | [[PostgreSQL Database]] 16 + PostGIS + H3-PG | Spatial queries, LISTEN/NOTIFY, proven at scale |
 | Cache & Real-Time | [[Redis Infrastructure]] 7 | GEOSEARCH, Pub/Sub for WebSocket scaling, rate limiting |
-| Connection Pooling | PgBouncer (transaction mode) | 5,000 goroutines → 50 DB connections |
+| Connection Pooling | PgBouncer (transaction mode) | Protects PostgreSQL as Vapor instances scale horizontally |
 | Routing | OSRM (self-hosted) | <20ms batch ETA, no external API cost |
 | Geo Index | H3 (Uber) | Equidistant hexagons, eliminates S2 diagonal distortion |
-| Migrations | golang-migrate | Sequential SQL files, Kubernetes Job in CI/CD |
-| Contracts | OpenAPI 3.1 | Language-agnostic source of truth for iOS ↔ Go |
-| Observability | Prometheus + OpenTelemetry + Jaeger + zerolog | Full metrics, tracing, structured logs |
+| Migrations | Fluent + SQL migrations | App-owned schema evolution in the Swift backend |
+| Contracts | OpenAPI 3.1 | Language-agnostic source of truth for iOS ↔ Vapor |
+| Observability | Prometheus + OpenTelemetry + structured logs | Full metrics, tracing, structured logs |
 | Infra | K3s + ArgoCD + GitHub Actions | GitOps, Kazakhstan-hosted (data localisation law) |
 
 ---
 
 ## Late-Mover Advantage
 
-Uber rewrote its system 3 times (Python → Node.js → Go). BIRGE uses the final stack from day one.
+Uber rewrote its system 3 times (Python → Node.js → Go). BIRGE keeps the same "boring tech first" principle while using a modern Swift-first stack for the transactional core.
 
 | Layer | Uber (2017) | BIRGE Phase 1 |
 |---|---|---|
-| API | Node.js Ringpop | Go monolith (Gin) |
+| API | Node.js Ringpop | Swift Vapor modular monolith |
 | Storage | MySQL → Docstore | PostgreSQL + PostGIS |
 | Geo | S2 → H3 | H3 from day 1 |
 | Events | Kafka | PostgreSQL LISTEN/NOTIFY (Kafka at 150k rides/day) |
@@ -123,7 +122,7 @@ Uber rewrote its system 3 times (Python → Node.js → Go). BIRGE uses the fina
 ---
 
 ## Related Files
-- [[Backend_Architecture.md]] — Go monolith internals
+- [[Backend_Architecture.md]] — Vapor modular monolith internals
 - [[Ride_State_Machine.md]] — FSM lifecycle
 - [[Geo_Matching_and_AI.md]] — matching engine and ML pipeline
 - [[iOS_Architecture.md]] — TCA and GRDB details

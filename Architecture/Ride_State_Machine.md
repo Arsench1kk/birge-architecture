@@ -164,7 +164,7 @@ SwiftUI view re-renders automatically — no "ViewModel Hell" across screens
 ---
 
 ## Related Files
-- [[Backend_Architecture.md]] — Go monolith, Outbox, Pub/Sub
+- [[Backend_Architecture.md]] — Vapor monolith, Outbox, Pub/Sub
 - [[WebSocket_Hub_Architecture.md]] — real-time state broadcasting
 - [[Geo_Matching_and_AI.md]] — matching engine that drives REQUESTED → MATCHED
 - [[iOS_Architecture.md]] — TCA reducer handling FSM events

@@ -12,7 +12,7 @@ last_updated: 2026-04-21
 ## 🔴 High Priority (blocks Phase 1)
 
 ### OQ-001 — Push Notifications for Matched Driver Offer
-- **Question:** APNs directly from Go backend, or via a managed service (Firebase FCM as delivery layer)?
+- **Question:** APNs directly from the backend, or via a managed service (Firebase FCM as delivery layer)?
 - **Context:** APNs requires certificate/key management; FCM adds a dependency but simplifies iOS delivery and supports Android if needed later.
 - **Impact:** `internal/notifications/apns.go` or `internal/notifications/fcm.go` path
 - **Owner:** —

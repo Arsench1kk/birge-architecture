@@ -5,11 +5,11 @@ sprint: 1
 
 # Current Focus — BIRGE
 
-## ▶ Цель: UI-демо для препода (ЭТАП 1)
+## ▶ Цель: Sprint 1 stabilization for demo + auth loop
 
 ### Стратегия
-Строим полный UI на mock-данных. Бэкенд не нужен.
-TCA Reducers используют .previewValue зависимости.
+UI пассажира и водителя уже собран.
+По умолчанию тесты опираются на mock/test зависимости, а live OTP E2E включается только явно.
 
 ### Порядок экранов
 1. OTP Auth экран (телефон → код → войти)
@@ -17,7 +17,7 @@ TCA Reducers используют .previewValue зависимости.
 3. Экран поиска водителя (анимация поиска)
 4. Экран активной поездки (водитель едет, ETA)
 5. Экран завершения (рейтинг)
-6. Driver Dashboard (отдельный target)
+6. Driver Dashboard (`BIRGEDrive` target)
 
 ### Last session (2026-04-27)
 - Task: Full MVP complete — Passenger + Driver apps
@@ -26,15 +26,28 @@ TCA Reducers используют .previewValue зависимости.
 - Build: ✅ Clean (both targets)
 - Notes: All 5+ MVP features complete. Ready for demo.
 
-### Session summary (2026-05-02)
+### Session summary (2026-05-02, backend)
 - Task: Backend Vapor build recovery for Swift 6.3.1 / Vapor 4.x
 - Result: `birge-vapor` now builds cleanly with `swift build`
 - Verified: WebSocket route handler, Redis async/Future compatibility, JWT middleware path, and async entrypoint lifecycle
 - Runtime: `swift run` reaches startup, then stops on local PostgreSQL authentication for user `birge`
 
+### Session summary (2026-05-02, iOS tests)
+- Task: restore `BIRGEPassengerTests` linking and verify OTP test flow
+- Result: `xcodebuild test -scheme BIRGEPassenger` now succeeds
+- Verified:
+  - `BIRGEPassengerTests` links Point-Free products correctly (`ComposableArchitecture`, `Dependencies`, `CasePathsCore`, `ConcurrencyExtras`)
+  - `BIRGEPassengerTests/OTPFeatureTests` pass
+  - `OTPFlowE2ETests.testOTPFlowSuccess` is now opt-in via `RUN_LIVE_OTP_E2E=1`
+- Live E2E prerequisites:
+  - local Vapor on `http://localhost:8080`
+  - PostgreSQL + Redis
+  - Vapor writes `/tmp/birge-otp.log`
+
 ### Next session
-- Task: Verify local PostgreSQL credentials/env, then continue to BE-V002 Auth hardening
-- Blocked by: local DB auth for Vapor startup
+- Task: decide whether to run live OTP E2E against local backend or keep it opt-in only
+- Secondary task: continue `BE-V002` auth hardening after local PostgreSQL credentials are fixed
+- Blocked by: local DB auth for Vapor startup and missing `/tmp/birge-otp.log` when backend is not running
 - Model: Claude Sonnet 4.6 (Thinking)
 
 

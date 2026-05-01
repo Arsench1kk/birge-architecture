@@ -17,7 +17,7 @@ Authentication is strictly phone-number based, aligned with Kazakhstan market no
 1. User submits phone number
         │
         ▼
-2. Go backend generates 6-digit OTP (crypto/rand)
+2. Backend generates 6-digit OTP (crypto/rand)
    Stored in Redis with 5-minute TTL
         │
         ▼

@@ -1,11 +1,11 @@
 ---
-last_updated: 2026-04-22
+last_updated: 2026-05-02
 status: draft
 ---
 
 # OpenAPI Contracts — BIRGE
 
-> Source of truth для iOS ↔ Go интеграции.
+> Source of truth для iOS ↔ backend интеграции.
 > Полный spec в `birge/api/openapi.yaml`
 
 ## Auth Endpoints

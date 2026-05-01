@@ -4,7 +4,7 @@ last_updated: 2026-05-02
 
 # Backend Agent Context — BIRGE
 
-> Читай этот файл перед любой Go/Backend задачей.
+> Читай этот файл перед любой Backend / Vapor задачей.
 
 ## Stack
 | Component | Technology |
@@ -37,19 +37,22 @@ birge-vapor/
 └── docker-compose.yml
 ```
 
-## Go Conventions
-- Errors: `fmt.Errorf("rides.service.StartRide: %w", err)`
-- Logging: `log.Info().Str("ride_id", id).Msg("ride started")` — zerolog
-- No ORM — only raw `pgx` queries
-- All handlers return: `c.JSON(status, gin.H{"data": ..., "error": nil})`
-- Idempotency: all POST endpoints accept `X-Idempotency-Key` header
+## Vapor Conventions
+- Modules live under `Sources/App/Modules/`
+- DTOs live next to their module (`AuthDTO`, `RidesDTO`)
+- Routing is registered in `routes.swift`
+- Structured logging uses Vapor `Logger`
+- Database access goes through Fluent models + migrations
+- Auth middleware lives in `Sources/App/Middleware/JWTMiddleware.swift`
+- Local E2E-only OTP logging currently exists in `Modules/Auth/AuthService.swift` and writes `/tmp/birge-otp.log`
+- Idempotency is still a business rule for payment operations even where HTTP headers are not implemented yet
 
 ## Auth Flow
 ```
 POST /auth/otp/request → Redis SET otp:<phone> <6digit> EX 300
 POST /auth/otp/verify  → Redis GET, validate → issue JWT (60min) + Refresh (30d)
 JWT claims: { user_id, role: "passenger"|"driver", exp }
-Nginx validates JWT before requests reach Go — 401 never hits app code
+`GET /auth/me` reads the Bearer token and returns the current user
 ```
 
 ## Ride FSM States
@@ -60,7 +63,7 @@ Full spec: [[Architecture/Ride_State_Machine]]
 ## WebSocket Hub
 ```
 Redis Pub/Sub channel: ride:<ride_id>
-All Go instances subscribe → fan out to connected clients
+All Vapor instances subscribe → fan out to connected clients
 Ping from iOS: every 5s → backend responds with pong
 GPS update interval: 10s (driver_arriving), 5s (in_progress)
 ```
@@ -73,7 +76,7 @@ Full spec: [[Architecture/WebSocket_Hub_Architecture]]
 - Never mutate payment records — only insert
 
 ## Files for deep dive
-- [[Architecture/Backend_Architecture]] — Go монолит детально
+- [[Architecture/Backend_Architecture]] — Vapor modular monolith detail
 - [[Architecture/Database_Schema_and_Migrations]] — schema, партиционирование
 - [[Architecture/Payment_and_Financial_Architecture]] — Kaspi, ledger
 - [[Architecture/Infrastructure_and_Deployment]] — K3s, ArgoCD

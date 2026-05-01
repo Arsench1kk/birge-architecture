@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-02
 phase: 1
 ---
 
@@ -28,54 +28,44 @@ Vapor and iOS — no OpenAPI codegen needed.
 
 ---
 
-## 2. [[Go Modular Monolith]] Structure
+## 2. [[Swift Vapor Modular Monolith]] Structure
 
 ```
-birge/
-├── cmd/server/main.go              # Entry point, DI container
-│
-├── internal/                       # Never imported externally
-│   ├── auth/
-│   │   ├── handler.go              # HTTP handlers (Gin)
-│   │   ├── service.go              # Business logic
-│   │   ├── repository.go           # DB layer (pgx)
-│   │   └── middleware.go           # JWT validation middleware
-│   │
-│   ├── rides/
-│   │   ├── handler.go
-│   │   ├── service.go
-│   │   ├── repository.go
-│   │   ├── model.go
-│   │   └── statemachine.go         # Ride lifecycle FSM → [[Ride_State_Machine]]
-│   │
-│   ├── matching/
-│   │   ├── engine.go               # Matching algorithm → [[Geo_Matching_and_AI]]
-│   │   ├── geo.go                  # Redis GEO operations
-│   │   └── scoring.go              # Candidate scoring
-│   │
-│   └── websocket/
-│       ├── hub.go                  # Connection manager
-│       ├── room.go                 # Room abstraction
-│       └── pubsub.go               # Redis Pub/Sub bridge ← KEY v5.0 component
-│
-├── pkg/
-│   ├── database/postgres.go        # pgxpool connection
-│   ├── cache/redis.go
-│   ├── geo/
-│   │   ├── h3.go                   # H3 geospatial indexing
-│   │   └── osrm.go                 # OSRM client
-│   └── telemetry/
-│       ├── metrics.go              # Prometheus
-│       ├── tracing.go              # OpenTelemetry
-│       └── logging.go              # zerolog structured JSON
-│
-└── migrations/                     # golang-migrate SQL files
-    ├── 001_users.up.sql
-    ├── 001_users.down.sql
-    └── ...
+birge-vapor/
+├── Package.swift
+├── Sources/App/
+│   ├── entrypoint.swift            # App bootstrap
+│   ├── configure.swift             # Services, DB, Redis, middleware
+│   ├── routes.swift                # Route registration
+│   ├── Models/                     # Fluent models
+│   │   ├── User.swift
+│   │   ├── Driver.swift
+│   │   └── Ride.swift
+│   ├── Modules/
+│   │   ├── Auth/
+│   │   │   ├── AuthController.swift
+│   │   │   ├── AuthService.swift
+│   │   │   └── AuthDTO.swift
+│   │   ├── Rides/
+│   │   │   ├── RidesController.swift
+│   │   │   ├── RidesService.swift
+│   │   │   └── RidesDTO.swift
+│   │   └── WebSocket/
+│   │       ├── WSController.swift
+│   │       └── WSHub.swift
+│   ├── Middleware/
+│   │   ├── JWTMiddleware.swift
+│   │   └── RateLimitMiddleware.swift
+│   ├── Migrations/
+│   │   ├── CreateUsers.swift
+│   │   ├── CreateDriverProfiles.swift
+│   │   └── CreateRides.swift
+│   └── Support/
+│       └── AuthContext.swift
+└── docker-compose.yml
 ```
 
-Go's compiler strictly prevents external imports of `internal/` packages — this creates hard architectural boundaries without microservice operational overhead.
+The current implementation uses module folders under `Sources/App/Modules/` instead of Go `internal/` packages. Architectural boundaries are maintained through Vapor route/controller/service separation plus Fluent models and middleware composition.
 
 ---
 
@@ -83,7 +73,7 @@ Go's compiler strictly prevents external imports of `internal/` packages — thi
 
 ### The Multi-Instance Problem (v5.0 solution)
 
-When the [[Go Modular Monolith]] scales horizontally, in-memory WebSocket hubs create isolated silos. A driver on Instance A and a passenger on Instance B cannot communicate directly.
+When the [[Swift Vapor Modular Monolith]] scales horizontally, in-memory WebSocket hubs create isolated silos. A driver on Instance A and a passenger on Instance B cannot communicate directly.
 
 **Solution:** [[Redis Infrastructure]] Pub/Sub as a global broadcast bus.
 
@@ -91,16 +81,16 @@ When the [[Go Modular Monolith]] scales horizontally, in-memory WebSocket hubs c
 Driver (Instance A) sends GPS update
         │
         ▼
-Go Server A publishes to Redis channel "ride:{ride_id}"
+Vapor Instance A publishes to Redis channel "ride:{ride_id}"
         │
         ▼
-Redis broadcasts to ALL subscribed Go instances
+Redis broadcasts to ALL subscribed Vapor instances
         │
         ▼
-Go Server B checks local memory → finds passenger WebSocket → forwards payload
+Vapor Instance B checks local memory → finds passenger WebSocket → forwards payload
 ```
 
-Every Go instance:
+Every Vapor instance:
 1. Maintains its own local WebSocket hub for connected clients
 2. Subscribes to global Redis Pub/Sub channels
 3. On receiving a broadcast, checks local clients and forwards
@@ -129,7 +119,7 @@ Primary transactional store: [[PostgreSQL Database]] v16.
 2. outbox_events INSERT (same tx)     ┘ single atomic transaction
         │
         ▼
-3. Go poller reads outbox_events
+3. Vapor worker/poller reads outbox_events
 4. PostgreSQL LISTEN/NOTIFY broadcasts
         │
         ▼
@@ -144,51 +134,38 @@ All critical paths instrumented before production:
 
 | Signal | Tool | Key Metrics |
 |---|---|---|
-| Metrics | Prometheus (`prometheus/client_golang`) | `birge_matching_duration_seconds` (p95 < 500ms budget), `birge_active_drivers`, `birge_corridor_occupancy` |
-| Tracing | OpenTelemetry → Jaeger | Full request trace: Nginx → Go monolith → PostgreSQL → Redis |
-| Logging | zerolog (structured JSON) | `ride_id` and `user_id` attached to every log entry |
+| Metrics | Prometheus / OpenTelemetry metrics | `birge_matching_duration_seconds` (p95 < 500ms budget), `birge_active_drivers`, `birge_corridor_occupancy` |
+| Tracing | OpenTelemetry → Jaeger | Full request trace: Nginx → Vapor → PostgreSQL → Redis |
+| Logging | Vapor Logger (structured) | `ride_id` and `user_id` attached to every log entry |
 
 ---
 
-## 6. Dependency Injection — `main.go` Pattern
+## 6. Application Bootstrap — `entrypoint.swift` + `configure.swift`
 
-```go
-func main() {
-    cfg, _ := config.Load()
+```swift
+@main
+enum Entrypoint {
+    static func main() async throws {
+        var env = try Environment.detect()
+        try LoggingSystem.bootstrap(from: &env)
 
-    db, _  := database.NewPool(cfg)
-    defer db.Close()
+        let app = try await Application.make(env)
+        defer { app.shutdown() }
 
-    rdb := cache.NewClient(cfg)
-    defer rdb.Close()
-
-    osrm := geo.NewOSRMClient(cfg.OSRMBaseURL)
-
-    // Repositories
-    userRepo     := users.NewRepository(db)
-    rideRepo     := rides.NewRepository(db)
-    corridorRepo := corridors.NewRepository(db)
-
-    // Services — clean DI, no global variables
-    authSvc     := auth.NewService(userRepo, rdb, cfg)
-    pricingSvc  := pricing.NewService(corridorRepo)
-    matchingEng := matching.NewEngine(rdb, osrm, pricingSvc)
-    rideSvc     := rides.NewService(rideRepo, matchingEng, pricingSvc)
-
-    // WebSocket Hub with Redis Pub/Sub bridge
-    wsHub := websocket.NewHub(rdb)
-    go wsHub.Run()
-
-    router := setupRouter(cfg, authSvc, rideSvc, wsHub)
-
-    // Graceful shutdown on SIGINT/SIGTERM
-    srv := &http.Server{
-        Addr: fmt.Sprintf(":%d", cfg.Port),
-        Handler: router,
-        ReadTimeout: 10 * time.Second,
-        WriteTimeout: 30 * time.Second,
+        try await configure(app)
+        try await app.execute()
     }
-    // ...
+}
+
+public func configure(_ app: Application) async throws {
+    app.databases.use(.postgres(...), as: .psql)
+    app.redis.configuration = try .init(hostname: "127.0.0.1", port: 6379)
+
+    app.migrations.add(CreateUsers())
+    app.migrations.add(CreateDriverProfiles())
+    app.migrations.add(CreateRides())
+
+    try routes(app)
 }
 ```
 

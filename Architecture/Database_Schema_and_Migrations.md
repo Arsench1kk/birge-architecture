@@ -129,7 +129,7 @@ Compared to `SELECT ... FOR UPDATE`:
 
 ## 4. Migration Strategy
 
-Schema evolution managed as code via `golang-migrate`:
+Schema evolution is managed as code via versioned SQL/Swift backend migrations:
 
 ```
 migrations/
@@ -144,7 +144,7 @@ migrations/
 
 **CI/CD execution:**
 1. GitHub Actions builds image
-2. **Kubernetes Job** runs `golang-migrate up` against production DB
+2. **Kubernetes Job** runs the production migration step against the DB
 3. If migration fails → deployment halts, DB left in pre-migration state
 4. Main API pods deploy only after successful migration
 
@@ -176,5 +176,5 @@ CREATE INDEX idx_rides_origin_geo ON rides
 ## Related Files
 - [[Backend_Architecture.md]] — PgBouncer, Transactional Outbox
 - [[Ride_State_Machine.md]] — Advisory Locks in state transitions
-- [[Infrastructure_and_Deployment.md]] — golang-migrate in CI/CD
+- [[Infrastructure_and_Deployment.md]] — migration flow in CI/CD
 - [[Payment_and_Financial_Architecture.md]] — payment_records idempotency

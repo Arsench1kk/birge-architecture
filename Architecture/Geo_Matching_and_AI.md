@@ -26,7 +26,7 @@ The [[Geo_Matching_and_AI|Matching Engine]] lives inside the [[Go Modular Monoli
 Redis `GEOSEARCH` finds all active drivers within a 3km radius in sub-millisecond time. Drivers update their location every 5 seconds — data is always fresh.
 
 ### Batch ETA Computation
-Instead of slow, costly external mapping APIs, the Go backend uses lightweight goroutines to make parallel requests to a **self-hosted OSRM** (Open Source Routing Machine). Matrix ETA (one source → many destinations) completes in <20ms.
+Instead of slow, costly external mapping APIs, the backend uses concurrent async requests to a **self-hosted OSRM** (Open Source Routing Machine). Matrix ETA (one source → many destinations) completes in <20ms.
 
 ### Composite Scoring
 Candidates are not ranked purely by proximity. The scoring algorithm weighs:
@@ -59,7 +59,7 @@ BIRGE uses Uber's open-source **H3** hierarchical hexagonal grid instead of raw 
 
 ## 3. AI Route System — Python Pipeline
 
-ML workload is strictly isolated from the Go backend. CPU-bound training workloads must not compete with request-serving goroutines.
+ML workload is strictly isolated from the transactional backend. CPU-bound training workloads must not compete with request-serving API workers.
 
 ### Corridor Detection — DBSCAN
 
@@ -116,7 +116,7 @@ Nightly Airflow DAG:
 ---
 
 ## Related Files
-- [[Backend_Architecture.md]] — Go monolith that calls the Python FastAPI service
+- [[Backend_Architecture.md]] — Vapor monolith that calls the Python FastAPI service
 - [[Ride_State_Machine.md]] — REQUESTED → MATCHED transition driven by this engine
 - [[Data_Pipeline_and_Analytics.md]] — ClickHouse feed for ML features (Phase 2)
 - [[Database_Schema_and_Migrations.md]] — PostGIS + H3-PG extensions

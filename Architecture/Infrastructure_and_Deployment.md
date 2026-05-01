@@ -1,40 +1,35 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-02
 phase: 1
 ---
 
 # [[Infrastructure and Deployment]]
 
-## 1. Containerisation — Distroless Docker
+## 1. Containerisation — Swift Vapor Runtime Image
 
-The [[Go Modular Monolith]] is compiled into a **distroless static image** via multi-stage Docker build.
+The [[Swift Vapor Modular Monolith]] is built with Swift Package Manager and shipped as a lean Linux runtime image.
 
 ```dockerfile
 # Stage 1: Build
-FROM golang:1.22-alpine AS builder
+FROM swift:6.3-jammy AS builder
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags="-w -s" -o birge-api ./cmd/server
+RUN swift build -c release
 
-# Stage 2: Runtime (~12MB final image)
-FROM gcr.io/distroless/static-debian12
+# Stage 2: Runtime
+FROM ubuntu:22.04
 WORKDIR /app
-COPY --from=builder /app/birge-api .
-COPY --from=builder /app/migrations ./migrations
-USER nonroot:nonroot
+COPY --from=builder /app/.build/release/birge-vapor .
 EXPOSE 8080
-ENTRYPOINT ["./birge-api"]
+ENTRYPOINT ["./birge-vapor"]
 ```
 
-**Why distroless:**
-- ~12MB image vs ~200MB Alpine — faster cold starts
-- No shell, no package manager → minimal attack surface
-- Only the Go binary and migrations — nothing else
+**Why this shape:**
+- Matches the current Swift backend toolchain and package layout
+- Keeps build/runtime concerns separate for predictable CI images
+- Leaves room for Swift runtime dependencies without inventing a stale distroless setup
 
 ---
 
@@ -68,7 +63,7 @@ No manual `kubectl apply` ever runs in production.
 
 ## 3. API Gateway — Nginx + Lua
 
-All external traffic routes through Nginx. The Go backend never wastes compute cycles on invalid requests.
+All external traffic routes through Nginx. The Vapor backend should not waste compute cycles on invalid requests.
 
 | Concern | Mechanism |
 |---|---|
@@ -114,7 +109,7 @@ spec:
         averageValue: "50"
 ```
 
-**PgBouncer protection:** As Go pods scale out, goroutines could exhaust PostgreSQL's connection limit. PgBouncer in transaction mode allows 5,000 goroutines to share 50 DB connections safely.
+**PgBouncer protection:** As Vapor pods scale out, async request concurrency can still exhaust PostgreSQL's connection limit. PgBouncer in transaction mode lets many concurrent requests share a small stable DB pool safely.
 
 ---
 
@@ -164,15 +159,15 @@ services:
 | Signal | Tool | Key Dashboards |
 |---|---|---|
 | Metrics | Prometheus + Grafana | `birge_matching_duration_seconds` p95 SLA, active drivers by H3 zone, corridor occupancy |
-| Tracing | OpenTelemetry → Jaeger | Full trace: Nginx → Go handler → PostgreSQL → Redis → OSRM |
-| Logging | zerolog (structured JSON) | `ride_id` + `user_id` in every log entry — aggregation without parsing |
+| Tracing | OpenTelemetry → Jaeger | Full trace: Nginx → Vapor route → PostgreSQL → Redis → OSRM |
+| Logging | Structured backend logs | `ride_id` + `user_id` in every log entry — aggregation without parsing |
 
-A complete ride request generates a trace with spans across: Nginx gateway → Go monolith → PostgreSQL queries → Redis GEO search → OSRM ETA calls.
+A complete ride request generates a trace with spans across: Nginx gateway → Vapor monolith → PostgreSQL queries → Redis GEO search → OSRM ETA calls.
 
 ---
 
 ## Related Files
-- [[Backend_Architecture.md]] — Go monolith, PgBouncer, Pub/Sub
-- [[Database_Schema_and_Migrations.md]] — golang-migrate Kubernetes Job
+- [[Backend_Architecture.md]] — Vapor monolith, PgBouncer, Pub/Sub
+- [[Database_Schema_and_Migrations.md]] — schema lifecycle and deployment concerns
 - [[Security_and_Authentication.md]] — Nginx JWT validation, rate limiting
 - [[Scaling_Roadmap.md]] — HPA thresholds by MAU phase

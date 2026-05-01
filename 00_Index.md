@@ -1,6 +1,6 @@
 ---
 version: v5.1
-last_updated: 2026-04-22
+last_updated: 2026-05-02
 ---
 
 # BIRGE Vault — Index
@@ -25,7 +25,7 @@ last_updated: 2026-04-22
 |---|---|---|
 | [[CLAUDE]] | Agent instructions & rules | ✅ Active |
 | [[Architecture/System_Overview]] | Bird's-eye view, service tiers, stack | ✅ Active |
-| [[Architecture/Backend_Architecture]] | Go monolith, Redis Pub/Sub, Outbox | ✅ Active |
+| [[Architecture/Backend_Architecture]] | Swift Vapor modular monolith, Redis Pub/Sub, Outbox | ✅ Active |
 | [[Architecture/Ride_State_Machine]] | FSM states, Advisory Locks, Outbox | ✅ Active |
 | [[Architecture/WebSocket_Hub_Architecture]] | Multi-instance scaling, Redis Pub/Sub | ✅ Active |
 | [[Architecture/Geo_Matching_and_AI]] | Matching engine, H3, OSRM, XGBoost | ✅ Active |
@@ -75,7 +75,7 @@ last_updated: 2026-04-22
 
 | Phase | Scope | Status |
 |---|---|---|
-| Phase 1 (Months 1–6) | Go monolith, PostgreSQL, Redis, iOS, OTP/JWT, manual corridors, OSRM, observability, K3s | 🏗️ Build |
+| Phase 1 (Months 1–6) | Swift Vapor monolith, PostgreSQL, Redis, iOS, OTP/JWT, manual corridors, OSRM, observability, K3s | 🏗️ Build |
 | Phase 2 (Months 7–18) | Matching Service extraction, Kafka, ClickHouse, XGBoost forecasting, DBSCAN, dynamic pricing | 📋 Planned |
 | Phase 3 (Month 18+) | Multi-city sharding, Event Sourcing, RL pricing, GNN routing, corporate partnerships | 🔮 Future |
 

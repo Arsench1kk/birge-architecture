@@ -63,7 +63,7 @@ Complex aggregate queries (driver earnings summaries, historical corridor occupa
 
 ## 3. MLOps Pipeline
 
-The AI workload is isolated in a Python ecosystem to protect the Go monolith from CPU-bound training.
+The AI workload is isolated in a Python ecosystem to protect the Vapor monolith from CPU-bound training.
 
 ### Nightly Airflow DAG
 

@@ -62,7 +62,7 @@ last_updated: 2026-04-21
 
 | Layer | Uber (2017) | Grab (2019) | BIRGE Phase 1 |
 |---|---|---|---|
-| API | Node.js Ringpop | Go microservices | Go monolith (Gin) |
+| API | Node.js Ringpop | Go microservices | Swift Vapor modular monolith |
 | Matching | ROMAD global optimisation | Greedy + local search | Greedy scoring |
 | Storage | MySQL → Docstore | MySQL → PostgreSQL | PostgreSQL + PostGIS |
 | Geo | S2 → H3 | S2 | H3 from day 1 |
