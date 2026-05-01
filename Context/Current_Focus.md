@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-04-27
+last_updated: 2026-05-02
 sprint: 1
 ---
 
@@ -26,12 +26,16 @@ TCA Reducers используют .previewValue зависимости.
 - Build: ✅ Clean (both targets)
 - Notes: All 5+ MVP features complete. Ready for demo.
 
+### Session summary (2026-05-02)
+- Task: Backend Vapor build recovery for Swift 6.3.1 / Vapor 4.x
+- Result: `birge-vapor` now builds cleanly with `swift build`
+- Verified: WebSocket route handler, Redis async/Future compatibility, JWT middleware path, and async entrypoint lifecycle
+- Runtime: `swift run` reaches startup, then stops on local PostgreSQL authentication for user `birge`
+
 ### Next session
-- Task: BE-vapor-001 — verify docker compose up locally,
-  then connect iOS AuthClient to real Vapor endpoints
-- Starting prompt: "Read RULES.md and Context/Backend_Agent_Context.md.
-  Task: Connect iOS app to Vapor backend..."
-- Blocked by: swift build needs GitHub access (run locally on Mac)
+- Task: Verify local PostgreSQL credentials/env, then continue to BE-V002 Auth hardening
+- Blocked by: local DB auth for Vapor startup
+- Model: Claude Sonnet 4.6 (Thinking)
 
 
 - Vault настроен (v5.1)

@@ -1,7 +1,16 @@
 # BIRGE — Agent Instructions v5.1
 
+## Backend: Swift Vapor 4 (decided 2026-04-27)
+Backend is Swift Vapor 4 + Fluent + PostgreSQL + Redis.
+Go/Gin decision is superseded.
+
+## ⚡ DECISION UPDATE (2026-05-02)
+Swift Vapor remains the chosen backend stack for BIRGE.
+`birge-vapor` on Swift 6.3.1 / Vapor 4.x has a verified green `swift build` after async/API compatibility fixes.
+Local `swift run` now reaches application startup and DB initialization; full boot still depends on valid PostgreSQL credentials in the environment.
+
 ## Role
-You are the Principal Systems Architect for the **BIRGE Mobility Platform** (ride-hailing, Almaty, Kazakhstan). You operate within v5.0 architecture. You assist in building, documenting, and evolving BIRGE across backend (Go) and mobile (iOS).
+You are the Principal Systems Architect for the **BIRGE Mobility Platform** (ride-hailing, Almaty, Kazakhstan). You operate within v5.0 architecture. You assist in building, documenting, and evolving BIRGE across backend and mobile (iOS).
 
 ## Before Every Task
 1. Read [[Context/Current_Focus]] — check what sprint is active and what is blocked
@@ -12,7 +21,7 @@ You are the Principal Systems Architect for the **BIRGE Mobility Platform** (rid
 ## Absolute Rules
 
 ### Stack (non-negotiable)
-- **Backend:** Go (Golang) modular monolith, Gin framework
+- **Backend:** Swift Vapor 4, Fluent
 - **Database:** PostgreSQL 16 + PostGIS + H3-PG + PgBouncer
 - **Cache / Real-Time:** Redis 7 — GEOSEARCH, Pub/Sub, rate limiting
 - **Mobile:** Native iOS — Swift, SwiftUI, TCA (The Composable Architecture), GRDB
@@ -42,11 +51,11 @@ You are the Principal Systems Architect for the **BIRGE Mobility Platform** (rid
 - JWT stored in iOS Keychain (hardware-protected) — never UserDefaults
 - Background GPS via `BGProcessingTask` + `CLLocationManager`
 
-## Go Conventions
-- Modules under `internal/` — never exported
-- Errors wrapped with context: `fmt.Errorf("rides.service: %w", err)`
-- Structured logging via zerolog — no `log.Println`
-- All DB queries via `pgx` — no ORM
+## Backend Conventions
+- Modules under `Sources/App/Modules/`
+- Errors wrapped with context
+- Structured logging via Vapor Logger
+- All DB queries via Fluent ORM
 - Idempotency keys on all payment operations
 
 ## Output Format

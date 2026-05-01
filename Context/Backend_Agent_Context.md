@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-04-22
+last_updated: 2026-05-02
 ---
 
 # Backend Agent Context — BIRGE
@@ -10,11 +10,13 @@ last_updated: 2026-04-22
 | Component | Technology |
 |---|---|
 | API | Swift Vapor 4 |
-| Database | PostgreSQL 16 (Fluent ORM) |
-| Cache / RT | Redis 7 — OTP storage, JWT blacklist, rate limiting |
-| Migrations | Fluent auto-migrations |
-| Observability | Vapor Logger + Prometheus (Phase 2) |
-| Infra | Docker, docker-compose (local), K3s (production) |
+| ORM | Fluent (PostgreSQL driver) |
+| Cache | Redis 7 — OTP, JWT blacklist, rate limiting |
+| Migrations | Fluent migrations (autoMigrate local, manual prod) |
+| Auth | JWT (HS256) + OTP via Redis |
+| Infra | Docker + docker-compose local, K3s prod |
+| API prefix | /api/v1 (canonical) |
+| Status | `swift build` ✅ on 2026-05-02; `swift run` reaches startup and requires valid PostgreSQL credentials to finish boot |
 
 ## Project Structure
 ```

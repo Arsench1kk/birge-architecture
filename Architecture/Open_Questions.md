@@ -79,4 +79,4 @@ last_updated: 2026-04-21
 | OQ-R02 | SwiftData vs GRDB for iOS local cache | GRDB — thread-safe WAL mode, background bulk inserts without `@MainActor` blocking | v5.0 |
 | OQ-R03 | WebSocket horizontal scaling mechanism | Redis Pub/Sub global broadcast bus | v5.0 |
 | OQ-R04 | Message broker at launch | PostgreSQL LISTEN/NOTIFY + Transactional Outbox — Kafka deferred to 150k rides/day | v5.0 |
-| OQ-R05 | Go vs Swift Vapor for backend | Swift Vapor — single language stack with iOS | 2026-04-27 |
+| OQ-R05 | Go vs Vapor | Swift Vapor chosen — single language stack | 2026-04-27 |
