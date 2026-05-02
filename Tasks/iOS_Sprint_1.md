@@ -13,23 +13,24 @@ last_updated: 2026-05-02
 
 ## 🔴 In Progress
 
-### [IOS-016] RideFeature State Machine
-- `RideFeature` Reducer с 7 состояниями из [[Architecture/Ride_State_Machine]]
-- WebSocket события → Actions → State transitions
-- `RideMapView` — отображение карты (MapKit)
-- ETA обновление каждые 10 секунд
-
-**Architecture ref:** [[Architecture/Ride_State_Machine]], [[Architecture/iOS_Architecture]] Section 2
-
----
-
-## 🟡 Ready to Start
-
 ### [IOS-017] API Client + Token Refresh
 - `APIClient` TCA dependency: authenticated URLSession wrapper
 - `TokenRefreshClient` — автоматический refresh за 60 секунд до expiry
 - Wire `POST /locations/bulk` to `LocationSyncService`
 - Wire WebSocket `Authorization: Bearer` header
+- Replace stub `APIClient.liveValue` with real URLSession implementation
+- First unblocker: fix current `swift-navigation` / `CasePathsCore` linker failure so focused iOS tests can compile again
+
+**Architecture ref:** [[Architecture/iOS_Architecture]] Section 4, [[Context/iOS_Agent_Context]] JWT Strategy
+
+---
+
+## 🟡 Ready to Start
+
+### [IOS-018] Driver App RideFeature
+- `DriverRideFeature` Reducer for BIRGEDrive target
+- Driver-side FSM: accept/decline, navigation, pickup confirmation
+- Background GPS tracking via `LocationClient` + `BGProcessingTask`
 
 ---
 
@@ -50,6 +51,7 @@ last_updated: 2026-05-02
 - [x] IOS-013: OTP XCTest coverage — `BIRGEPassengerTests`, `BIRGEPassenger.xctestplan`, mocked reducer tests, live OTP E2E gated by `RUN_LIVE_OTP_E2E` (2026-05-02)
 - [x] IOS-014: WebSocketClient TCA Dependency — `WebSocketClient` struct, `LiveWebSocketActor`, `DependencyValues` extension, `WebSocketClientTests` (2026-05-02)
 - [x] IOS-015: LocationClient TCA Dependency — `LocationClient` struct, `LiveLocationActor`, `LocationSyncService`, `LocationClientTests` (2026-05-02)
+- [x] IOS-016: RideFeature State Machine — `RideFeature` 7-state Reducer, `RideMapView`, `Coordinate` wrapper, `RideEvent` models, stub `APIClient`, `RideFeatureTests` with 7 reducer scenarios (2026-05-02)
 
 ---
 
@@ -60,3 +62,5 @@ last_updated: 2026-05-02
 - IOS-007 зависит от IOS-005
 - Live OTP E2E ожидает local Vapor + PostgreSQL + Redis + `/tmp/birge-otp.log`
 - Обычный `xcodebuild test -scheme BIRGEPassenger` должен проходить без live backend; live success test теперь skipped by default
+- IOS-016 verification attempted on installed `iPhone 17 Pro` simulator because `iPhone 16 Pro` is not available locally
+- Current test/build blocker: `SwiftNavigation.framework` fails to link due to missing `CasePathsCore.CasePathable` / `CasePathsCore.AnyCasePath` symbols before `BIRGEPassengerTests/RideFeatureTests` can run

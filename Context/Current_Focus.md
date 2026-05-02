@@ -65,13 +65,30 @@ UI пассажира и водителя уже собран.
   - `LocationClientTests.swift` — 5 unit tests (stream, stop, sync marks synced, batch groups of 200, idempotent)
 - Note: `POST /locations/bulk` endpoint not yet defined — upload closure is a no-op placeholder
 
-### Next session
+### Session summary (2026-05-02, iOS RideFeature)
 - Task: IOS-016 — RideFeature State Machine
-- `RideFeature` Reducer с 7 состояниями
-- WebSocket события → Actions → State transitions
-- Wire `LocationClient` + `WebSocketClient` into ride lifecycle
-- Blocked by: nothing (IOS-015 complete)
-- Model: Claude Opus 4.6 (Thinking)
+- Result: `RideFeature` implemented for passenger production ride flow
+- Delivered:
+  - `Coordinate` wrapper in BIRGECore for `CLLocationCoordinate2D` interoperability
+  - `RideEvent` WebSocket payload models for `ride.status_changed`, `ride.location_update`, `ride.eta_updated`
+  - Stub `APIClient` dependency with `fetchRide` and `cancelRide`
+  - `RideFeature` 7-state TCA reducer: `requested → matched → driverAccepted → driverArriving → passengerWait → inProgress → completed`
+  - `RideMapView` with live MapKit driver annotation, pickup pin, status pill, and bottom sheet
+  - `PassengerAppFeature` navigation updated: `Searching → Ride → RideComplete`
+  - `RideFeatureTests` added with 7 reducer tests, including WebSocket JSON decoding, cancel, reconnect, and disconnect recovery
+- Verification:
+  - Attempted: `xcodebuild test -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:BIRGEPassengerTests/RideFeatureTests`
+  - Blocked before app/test compilation by third-party package linker failure in `swift-navigation`
+  - Error: undefined `CasePathsCore.CasePathable` / `CasePathsCore.AnyCasePath` symbols while linking `SwiftNavigation.framework`
+  - Note: `iPhone 16 Pro` simulator is not installed locally; used installed `iPhone 17 Pro`
+
+### Next session
+- Task: IOS-017 — API Client + Token Refresh
+- Replace stub `APIClient.liveValue` with authenticated URLSession implementation
+- Add token refresh dependency / refresh-before-expiry behavior
+- Wire `GET /rides/:id`, cancel endpoint, `POST /locations/bulk`, and WebSocket auth header
+- First blocker to resolve: `SwiftNavigation` / `CasePathsCore` linker failure before focused RideFeature tests can run
+- Model: GPT 5.4/5.5 High for Xcode package/linker triage, then Claude Opus 4.6 for API architecture review
 
 
 - Vault настроен (v5.1)
