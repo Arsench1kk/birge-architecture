@@ -44,11 +44,24 @@ UI пассажира и водителя уже собран.
   - PostgreSQL + Redis
   - Vapor writes `/tmp/birge-otp.log`
 
+### Session summary (2026-05-02, iOS WebSocket)
+- Task: IOS-014 — WebSocketClient TCA Dependency
+- Result: production-grade `WebSocketClient` implemented in BIRGECore
+- Delivered:
+  - `WebSocketClient.swift` — interface struct, `WebSocketEvent`/`WebSocketMessage`/`WebSocketError` enums, `DependencyKey` with `liveValue`/`testValue`
+  - `LiveWebSocketClient.swift` — actor-isolated `URLSessionWebSocketTask` with 5s ping, exponential backoff (1→2→4→8→16→30s), cancellation safety
+  - `WebSocketClient+DependencyValues.swift` — TCA dependency registration
+  - `WebSocketClientTests.swift` — 5 unit tests using controllable mock
+- BIRGECore linked to all targets (BIRGEPassenger, BIRGEDrive, BIRGEPassengerTests)
+
 ### Next session
-- Task: decide whether to run live OTP E2E against local backend or keep it opt-in only
-- Secondary task: continue `BE-V002` auth hardening after local PostgreSQL credentials are fixed
-- Blocked by: local DB auth for Vapor startup and missing `/tmp/birge-otp.log` when backend is not running
-- Model: Claude Sonnet 4.6 (Thinking)
+- Task: IOS-015 — LocationService TCA Dependency
+- `LocationClient` dependency: `locationStream() -> AsyncStream<CLLocation>`
+- `Effect.run` обёртка над `CLLocationManager`
+- При потере сети → пишет в GRDB через `LocationRepository`
+- При восстановлении → bulk sync
+- Blocked by: nothing (IOS-014 complete)
+- Model: Claude Opus 4.6 (Thinking)
 
 
 - Vault настроен (v5.1)

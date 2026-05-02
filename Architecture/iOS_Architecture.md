@@ -112,10 +112,10 @@ The iOS client maintains a persistent connection via `URLSessionWebSocketTask`.
 
 ```swift
 // Registered as TCA Dependency — injectable and mockable
-struct WebSocketClient {
-    var connect: (URL) -> AsyncStream<WebSocketEvent>
-    var send: (WebSocketMessage) async throws -> Void
-    var disconnect: () -> Void
+struct WebSocketClient: Sendable {
+    var connect: @Sendable (URL) async -> AsyncStream<WebSocketEvent>
+    var send: @Sendable (WebSocketMessage) async throws -> Void
+    var disconnect: @Sendable () async -> Void
 }
 ```
 

@@ -13,24 +13,6 @@ last_updated: 2026-05-02
 
 ## 🔴 In Progress
 
-*(пусто — все текущие задачи завершены)*
-
----
-
-## 🟡 Ready to Start
-
-### [IOS-014] WebSocketClient TCA Dependency
-- `WebSocketClient` struct: `connect(URL) -> AsyncStream<WebSocketEvent>`, `send(_:)`, `disconnect()`
-- Live реализация через `URLSessionWebSocketTask`
-- Ping каждые 5 секунд
-- Exponential backoff reconnect: 1→2→4→8→16→30s
-- Mock реализация для тестов и Previews
-- Unit тест: `WebSocketClientTests`
-
-**Architecture ref:** [[Architecture/iOS_Architecture]] Section 4, [[Architecture/WebSocket_Hub_Architecture]]
-
----
-
 ### [IOS-015] LocationService TCA Dependency
 - `LocationClient` dependency: `locationStream() -> AsyncStream<CLLocation>`
 - `Effect.run` обёртка над `CLLocationManager`
@@ -41,6 +23,8 @@ last_updated: 2026-05-02
 **Architecture ref:** [[Architecture/iOS_Architecture]] Section 5
 
 ---
+
+## 🟡 Ready to Start
 
 ### [IOS-016] RideFeature State Machine
 - `RideFeature` Reducer с 7 состояниями из [[Architecture/Ride_State_Machine]]
@@ -65,6 +49,7 @@ last_updated: 2026-05-02
 - [x] IOS-011: OTP Auth + AppFeature root navigator (2026-04-27)
 - [x] IOS-012: User Profile screen + logout (2026-04-27)
 - [x] IOS-013: OTP XCTest coverage — `BIRGEPassengerTests`, `BIRGEPassenger.xctestplan`, mocked reducer tests, live OTP E2E gated by `RUN_LIVE_OTP_E2E` (2026-05-02)
+- [x] IOS-014: WebSocketClient TCA Dependency — `WebSocketClient` struct, `LiveWebSocketActor`, `DependencyValues` extension, `WebSocketClientTests` (2026-05-02)
 
 ---
 

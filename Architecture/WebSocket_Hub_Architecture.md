@@ -95,10 +95,10 @@ Events flowing through the hub:
 ```swift
 // WebSocketClient registered as TCA Dependency
 // Backed by URLSessionWebSocketTask
-struct WebSocketClient: DependencyKey {
-    var connect: (URL) -> AsyncStream<WebSocketEvent>
-    var send: (WebSocketMessage) async throws -> Void
-    var disconnect: () -> Void
+struct WebSocketClient: Sendable {
+    var connect: @Sendable (URL) async -> AsyncStream<WebSocketEvent>
+    var send: @Sendable (WebSocketMessage) async throws -> Void
+    var disconnect: @Sendable () async -> Void
 }
 ```
 
