@@ -54,13 +54,23 @@ UI пассажира и водителя уже собран.
   - `WebSocketClientTests.swift` — 5 unit tests using controllable mock
 - BIRGECore linked to all targets (BIRGEPassenger, BIRGEDrive, BIRGEPassengerTests)
 
+### Session summary (2026-05-02, iOS Location)
+- Task: IOS-015 — LocationClient TCA Dependency
+- Result: production-grade `LocationClient` implemented in BIRGECore
+- Delivered:
+  - `LocationClient.swift` — interface struct, `LocationUpdate`, `LocationTrackingID`, `DependencyKey` with `liveValue`/`testValue`
+  - `LiveLocationClient.swift` — actor-isolated `CLLocationManager` wrapper with `LocationDelegate` bridge, offline-first GRDB writes
+  - `LocationSyncService.swift` — stateless batch sync utility (200 records/batch), injectable upload closure
+  - `LocationClient+DependencyValues.swift` — TCA dependency registration
+  - `LocationClientTests.swift` — 5 unit tests (stream, stop, sync marks synced, batch groups of 200, idempotent)
+- Note: `POST /locations/bulk` endpoint not yet defined — upload closure is a no-op placeholder
+
 ### Next session
-- Task: IOS-015 — LocationService TCA Dependency
-- `LocationClient` dependency: `locationStream() -> AsyncStream<CLLocation>`
-- `Effect.run` обёртка над `CLLocationManager`
-- При потере сети → пишет в GRDB через `LocationRepository`
-- При восстановлении → bulk sync
-- Blocked by: nothing (IOS-014 complete)
+- Task: IOS-016 — RideFeature State Machine
+- `RideFeature` Reducer с 7 состояниями
+- WebSocket события → Actions → State transitions
+- Wire `LocationClient` + `WebSocketClient` into ride lifecycle
+- Blocked by: nothing (IOS-015 complete)
 - Model: Claude Opus 4.6 (Thinking)
 
 

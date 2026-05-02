@@ -61,6 +61,21 @@ responses:
     estimated_wait_seconds: 180
 ```
 
+### POST /api/v1/locations/bulk
+```yaml
+headers:
+  Authorization: "Bearer <access_token>"
+requestBody:
+  ride_id: "uuid"
+  records:
+    - latitude: 43.238
+      longitude: 76.945
+      timestamp: 1715620000.0
+      accuracy: 5.0
+responses:
+  200: { message: "Locations synced", count: 200 }
+```
+
 ### WebSocket: wss://api.birge.kz/ws
 
 ```

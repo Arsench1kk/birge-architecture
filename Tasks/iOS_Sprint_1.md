@@ -13,24 +13,23 @@ last_updated: 2026-05-02
 
 ## 🔴 In Progress
 
-### [IOS-015] LocationService TCA Dependency
-- `LocationClient` dependency: `locationStream() -> AsyncStream<CLLocation>`
-- `Effect.run` обёртка над `CLLocationManager`
-- При потере сети → пишет в GRDB через `LocationRepository`
-- При восстановлении → bulk sync (fetchUnsynced → POST /locations/bulk)
-- `.cancellable(id: LocationTrackingID.self)`
-
-**Architecture ref:** [[Architecture/iOS_Architecture]] Section 5
-
----
-
-## 🟡 Ready to Start
-
 ### [IOS-016] RideFeature State Machine
 - `RideFeature` Reducer с 7 состояниями из [[Architecture/Ride_State_Machine]]
 - WebSocket события → Actions → State transitions
 - `RideMapView` — отображение карты (MapKit)
 - ETA обновление каждые 10 секунд
+
+**Architecture ref:** [[Architecture/Ride_State_Machine]], [[Architecture/iOS_Architecture]] Section 2
+
+---
+
+## 🟡 Ready to Start
+
+### [IOS-017] API Client + Token Refresh
+- `APIClient` TCA dependency: authenticated URLSession wrapper
+- `TokenRefreshClient` — автоматический refresh за 60 секунд до expiry
+- Wire `POST /locations/bulk` to `LocationSyncService`
+- Wire WebSocket `Authorization: Bearer` header
 
 ---
 
@@ -50,6 +49,7 @@ last_updated: 2026-05-02
 - [x] IOS-012: User Profile screen + logout (2026-04-27)
 - [x] IOS-013: OTP XCTest coverage — `BIRGEPassengerTests`, `BIRGEPassenger.xctestplan`, mocked reducer tests, live OTP E2E gated by `RUN_LIVE_OTP_E2E` (2026-05-02)
 - [x] IOS-014: WebSocketClient TCA Dependency — `WebSocketClient` struct, `LiveWebSocketActor`, `DependencyValues` extension, `WebSocketClientTests` (2026-05-02)
+- [x] IOS-015: LocationClient TCA Dependency — `LocationClient` struct, `LiveLocationActor`, `LocationSyncService`, `LocationClientTests` (2026-05-02)
 
 ---
 
