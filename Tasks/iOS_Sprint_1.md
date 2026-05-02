@@ -14,12 +14,30 @@ last_updated: 2026-05-02
 ## 🔴 In Progress
 
 ### [IOS-017] API Client + Token Refresh
-- `APIClient` TCA dependency: authenticated URLSession wrapper
-- `TokenRefreshClient` — автоматический refresh за 60 секунд до expiry
-- Wire `POST /locations/bulk` to `LocationSyncService`
+- [x] `APIClient` TCA dependency: authenticated URLSession wrapper
+- [x] `TokenRefreshClient` TCA dependency with in-memory access token + Keychain refresh token storage
+- [x] 401 handling: refresh access token once, retry original request, clear tokens if retry remains unauthorized
+- [x] Replace stub `APIClient.liveValue` with real URLSession implementation
+- [x] Wire `POST /locations/bulk` to `LocationSyncService`
+- [x] `BIRGEAPIError` decodes backend `{ error_code, message, request_id }`
+- [x] Build verification: `xcodebuild build -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -quiet` passes (2026-05-02)
+- [ ] Timer-based proactive refresh 60 seconds before JWT expiry
 - Wire WebSocket `Authorization: Bearer` header
-- Replace stub `APIClient.liveValue` with real URLSession implementation
-- First unblocker: fix current `swift-navigation` / `CasePathsCore` linker failure so focused iOS tests can compile again
+- First test unblocker: fix current `swift-navigation` / `CasePathsCore` linker failure so focused iOS tests can compile again
+
+Implementation note (2026-05-02):
+- Added `BIRGECore/Sources/BIRGECore/Network/APIClient.swift` live methods for:
+  - `POST /auth/otp/request`
+  - `POST /auth/otp/verify`
+  - `POST /auth/refresh`
+  - `GET /auth/me`
+  - `POST /rides`
+  - `GET /rides/:id`
+  - `PATCH /rides/:id/cancel`
+  - `POST /locations/bulk`
+- Added `BIRGECore/Sources/BIRGECore/Network/TokenRefreshClient.swift`.
+- `AuthClient.liveValue` now delegates OTP/current-user calls to `APIClient.liveValue` so OTP login seeds the in-memory access token.
+- `xcodebuild test -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` still fails before tests run because `SwiftNavigation.framework` cannot link missing `CasePathsCore.CasePathable` / `CasePathsCore.AnyCasePath` symbols.
 
 **Architecture ref:** [[Architecture/iOS_Architecture]] Section 4, [[Context/iOS_Agent_Context]] JWT Strategy
 
@@ -63,4 +81,5 @@ last_updated: 2026-05-02
 - Live OTP E2E ожидает local Vapor + PostgreSQL + Redis + `/tmp/birge-otp.log`
 - Обычный `xcodebuild test -scheme BIRGEPassenger` должен проходить без live backend; live success test теперь skipped by default
 - IOS-016 verification attempted on installed `iPhone 17 Pro` simulator because `iPhone 16 Pro` is not available locally
-- Current test/build blocker: `SwiftNavigation.framework` fails to link due to missing `CasePathsCore.CasePathable` / `CasePathsCore.AnyCasePath` symbols before `BIRGEPassengerTests/RideFeatureTests` can run
+- Build verification now passes for both `BIRGEPassenger` and `BIRGEDrive` on `iPhone 17 Pro`
+- Current test blocker: `SwiftNavigation.framework` fails to link due to missing `CasePathsCore.CasePathable` / `CasePathsCore.AnyCasePath` symbols before `BIRGEPassengerTests` can run; this still reproduces after IOS-017 API client build verification (2026-05-02)

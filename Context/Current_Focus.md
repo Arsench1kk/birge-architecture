@@ -77,17 +77,25 @@ UI пассажира и водителя уже собран.
   - `PassengerAppFeature` navigation updated: `Searching → Ride → RideComplete`
   - `RideFeatureTests` added with 7 reducer tests, including WebSocket JSON decoding, cancel, reconnect, and disconnect recovery
 - Verification:
+  - Fixed Xcode Cmd+B errors in `RideFeature`:
+    - removed `ReducerOf<Self>` circular reference by using `some Reducer<State, Action>`
+    - replaced custom cancellation marker types with namespaced `String` IDs to satisfy `Hashable & Sendable`
+  - Verified: `xcodebuild build -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds
+  - Verified: `xcodebuild build -scheme BIRGEDrive -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds
   - Attempted: `xcodebuild test -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:BIRGEPassengerTests/RideFeatureTests`
-  - Blocked before app/test compilation by third-party package linker failure in `swift-navigation`
+  - Focused tests are still blocked before `RideFeatureTests` execute by third-party package linker failure in `swift-navigation`
   - Error: undefined `CasePathsCore.CasePathable` / `CasePathsCore.AnyCasePath` symbols while linking `SwiftNavigation.framework`
   - Note: `iPhone 16 Pro` simulator is not installed locally; used installed `iPhone 17 Pro`
 
 ### Next session
 - Task: IOS-017 — API Client + Token Refresh
-- Replace stub `APIClient.liveValue` with authenticated URLSession implementation
-- Add token refresh dependency / refresh-before-expiry behavior
-- Wire `GET /rides/:id`, cancel endpoint, `POST /locations/bulk`, and WebSocket auth header
-- First blocker to resolve: `SwiftNavigation` / `CasePathsCore` linker failure before focused RideFeature tests can run
+- Done: replaced stub `APIClient.liveValue` with authenticated URLSession implementation
+- Done: added `TokenRefreshClient` dependency with in-memory access token, Keychain refresh token, 401 refresh-and-retry, and token clearing on auth expiry
+- Done: wired `GET /rides/:id`, `PATCH /rides/:id/cancel`, `POST /locations/bulk`, OTP auth endpoints, `POST /auth/refresh`, `GET /auth/me`, and `POST /rides`
+- Done: `xcodebuild build -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -quiet` succeeds after API client work
+- Remaining: proactive refresh-before-expiry behavior needs a JWT expiry source/decoder
+- Remaining: WebSocket auth header
+- First test blocker to resolve: `SwiftNavigation` / `CasePathsCore` linker failure before focused RideFeature tests can run
 - Model: GPT 5.4/5.5 High for Xcode package/linker triage, then Claude Opus 4.6 for API architecture review
 
 

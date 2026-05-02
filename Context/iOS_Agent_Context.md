@@ -67,7 +67,7 @@ Auth:
 Rides:
   POST /rides              { origin: LatLng, destination: LatLng, tier: Int }
   GET  /rides/:id
-  POST /rides/:id/cancel   { reason: String }
+  PATCH /rides/:id/cancel  { reason: String }
 
 WebSocket:
   wss://api.birge.kz/ws   (Authorization: Bearer <token> в хедере)
@@ -82,6 +82,13 @@ WebSocket:
 // Refresh за 60 секунд до expiry — TokenRefreshClient делает это автоматически
 // При 401 — TokenRefreshClient пробует refresh, при ошибке → logout
 ```
+
+Current iOS implementation note (2026-05-02):
+- `APIClient.liveValue` is URLSession-backed for Phase 1 auth, ride, and location endpoints.
+- `TokenRefreshClient` keeps the access token in memory and stores the refresh token in Keychain.
+- 401 retry is implemented: refresh once, retry original request, clear tokens if still unauthorized.
+- Proactive timer refresh 60 seconds before JWT expiry is not implemented yet because the current backend response does not expose an expiry timestamp to iOS.
+- WebSocket `Authorization: Bearer <token>` header is still pending.
 
 ## Testing
 - XCTest target: `BIRGEPassengerTests`
