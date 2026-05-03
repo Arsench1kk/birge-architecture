@@ -20,6 +20,8 @@ sprint: 1
 - Replaced visible passenger ride emoji/stickers with SF Symbols where applicable.
 - Added real TCA navigation for corridor list and corridor detail screens from Home.
 - Added `CorridorListFeature/View` and `CorridorDetailFeature/View` using mock corridor data while backend `/corridors` remains TODO.
+- Added P-08 OfferFound confirmation flow: `Searching → OfferFound → RideMap` on confirm, decline/expiry returns to searching.
+- Pushed app commit `882230a1 feat(passenger): add offer found confirmation flow`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -27,10 +29,10 @@ sprint: 1
 - ⚠️ `xcodebuild test` still fails before app tests run while linking `SwiftNavigation.framework` against `CasePathsCore` symbols. Treat this as the first technical blocker before claiming test green.
 
 ### Next best steps
-1. Build P-08 `OfferFoundView` and wire AI match found transition.
-2. Implement Vapor `/api/v1/corridors` and replace corridor mock data with `APIClient` calls.
-3. Add disconnection/banner state to `RideMapView` and continue production ride events.
-4. Re-triage `SwiftNavigation` / `CasePathsCore` test linker blocker.
+1. Implement Vapor `/api/v1/corridors` and replace corridor mock data with `APIClient` calls.
+2. Add disconnection/banner state to `RideMapView` and continue production ride events.
+3. Re-triage `SwiftNavigation` / `CasePathsCore` test linker blocker.
+4. Continue remaining passenger mockup gaps: AI explanation, commute setup steps, subscriptions/payment.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.

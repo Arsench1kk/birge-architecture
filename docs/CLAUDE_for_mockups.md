@@ -72,7 +72,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-05-search.html | SearchView.swift | ⚠️ Partial |
 | passenger/P-06a-corridor-list.html | CorridorListView.swift | ✅ Built with mock data |
 | passenger/P-06b-corridor-detail.html | CorridorDetailView.swift | ✅ Built with mock data |
-| passenger/P-08-offer.html | OfferFoundView.swift | ❌ Not built |
+| passenger/P-08-offer.html | OfferFoundView.swift | ✅ Built with countdown + confirm flow |
 | passenger/P-09-driver-en-route.html | RideMapView.swift | ⚠️ UI polished, production events/banner pending |
 | passenger/P-12-ride-complete.html | RideCompleteView.swift | ✅ UI polished, mock data |
 | passenger/P-13-boarding-code.html | BoardingCodeView.swift | ✅ Done |
@@ -209,7 +209,7 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 1. **Merge PRs** — 5 branches need to merge into main (see Solutions doc)
 2. **Task 6** — "No connection" banner in RideMapView (30 min task, state exists, UI missing)
 3. **Task 9** — CorridorListFeature + CorridorDetailFeature are built with mock data; Vapor `/corridors` API is still CRITICAL and next for real product data
-4. **Task 10** — OfferFoundView (P-08) — the AI match found screen is now the next passenger UI screen
+4. ✅ **Task 10** — OfferFoundView (P-08) is built; next passenger work is backend-backed corridors and remaining ride events
 5. **Task 13** — Driver Registration multi-step (D-03a through D-03c)
 6. **Task 16** — Background GPS for driver (IOS-018)
 7. **Task 20** — Kaspi payment (deep link first, webhook later)
