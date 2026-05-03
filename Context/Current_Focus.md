@@ -39,6 +39,9 @@ sprint: 1
 - Implemented Vapor `/api/v1/subscriptions` overview/activation API with persisted passenger subscription state.
 - Connected `SubscriptionsFeature/View` to live subscription plans and activation through `APIClient`, with loading/error/activating states.
 - Pushed app commit `50c3915f feat(subscriptions): connect passenger plans to api`.
+- Added Vapor Payments module for Kaspi checkout deep links and append-only/idempotent webhook events.
+- Connected subscription activation UI to Kaspi handoff before demo confirmation.
+- Pushed app commit `01955808 feat(payments): add kaspi subscription handoff`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -49,9 +52,10 @@ sprint: 1
 - ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
 - ✅ `SubscriptionsFeatureTests` cover API loading, plan selection, activation, and detail dismissal.
 - ✅ Vapor `swift build` succeeds after subscriptions API integration.
+- ✅ Vapor `swift build` succeeds after Kaspi payments module integration.
 
 ### Next best steps
-1. Harden remaining passenger backend integrations: real payment provider/Kaspi handoff, corridor persistence policy, and richer booking UX.
+1. Harden remaining passenger backend integrations: real Kaspi API signature/webhook validation, corridor persistence policy, and richer booking UX.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ### Agent reminder

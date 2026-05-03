@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `01955808` — feat(payments): add kaspi subscription handoff
 - `50c3915f` — feat(subscriptions): connect passenger plans to api
 - `9f06a2a4` — feat(passenger): add subscriptions flow
 - `fe208327` — feat(passenger): add commute setup onboarding
@@ -52,6 +53,8 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - P-17/P-18 subscriptions flow added as `SubscriptionsFeature/View`: current plan, tier list, plan detail, comparison, local activation state, and Home subscription navigation.
 - Vapor subscriptions API added: persisted `PassengerSubscription`, migration, authenticated overview endpoint, and activation endpoint.
 - Passenger `APIClient` now exposes `fetchSubscriptions` and `activateSubscription`; `SubscriptionsFeature/View` uses live plans, active-since text, loading/error state, and activating CTA state.
+- Vapor Payments module added for Kaspi checkout deep links plus append-only `payment_events` and idempotent webhook event insert.
+- Passenger subscriptions now request Kaspi checkout before demo confirmation; the detail CTA shows a Liquid Glass Kaspi handoff card with SF Symbol and deep link.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -64,9 +67,10 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
 - ✅ `SubscriptionsFeatureTests` cover API loading, plan selection, activation, and detail dismissal.
 - ✅ Vapor `swift build` succeeds after subscriptions API integration.
+- ✅ Vapor `swift build` succeeds after Payments/Kaspi handoff integration.
 
 ## Next
-1. Harden remaining passenger backend integrations: real payment provider/Kaspi handoff, corridor persistence policy, and richer booking UX.
+1. Harden remaining passenger backend integrations: real Kaspi API signature/webhook validation, corridor persistence policy, and richer booking UX.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ## Agent Reminder

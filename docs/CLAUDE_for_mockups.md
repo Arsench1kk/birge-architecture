@@ -32,9 +32,9 @@ Backend: **Swift Vapor 4** (not Go, not Node — pure Swift server).
 │       ├── Modules/Rides/       ← Create/fetch/cancel (DONE)
 │       ├── Modules/WebSocket/   ← WSHub ride-scoped (DONE)
 │       ├── Modules/Corridors/   ← DONE
-│       ├── Modules/Subscriptions/← DONE (demo activation, no payment provider)
-│       ├── Modules/Locations/   ← NOT YET IMPLEMENTED
-│       └── Modules/Payments/    ← NOT YET IMPLEMENTED
+│       ├── Modules/Subscriptions/← DONE (API-backed, demo activation)
+│       ├── Modules/Payments/    ← PARTIAL (Kaspi deep link + webhook event skeleton)
+│       └── Modules/Locations/   ← NOT YET IMPLEMENTED
 └── docs/
     ├── mockups/                 ← HTML mockups (READ THESE before building any View)
     │   ├── tokens-v3.css        ← Final unified design tokens
@@ -78,7 +78,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-12-ride-complete.html | RideCompleteView.swift | ✅ UI polished, mock data |
 | passenger/P-13-boarding-code.html | BoardingCodeView.swift | ✅ Done |
 | passenger/P-17-subscriptions.html | SubscriptionsView.swift | ✅ Built with live API plans |
-| passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation |
+| passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation + Kaspi handoff |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
 | passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
 | driver/dashboard.html | DriverAppView.swift | ⚠️ Mocked |
@@ -214,7 +214,7 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 4. ✅ **Task 10** — OfferFoundView (P-08) is built; next passenger work is backend-backed corridors and remaining ride events
 5. **Task 13** — Driver Registration multi-step (D-03a through D-03c)
 6. **Task 16** — Background GPS for driver (IOS-018)
-7. **Task 20** — Kaspi payment (deep link first, webhook later)
+7. **Task 20** — Kaspi payment: ✅ deep link checkout skeleton done; real webhook signature/provider validation still pending
 
 ---
 
