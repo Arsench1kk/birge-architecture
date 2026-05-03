@@ -25,13 +25,14 @@ last_updated: 2026-05-03
 - [x] Wire Home → Corridor list/detail navigation through `PassengerAppFeature`
 - [x] Build P-08 `OfferFoundView`
 - [x] Implement Vapor `/corridors` API and connect corridor screens to real data
-- [ ] Add RideMap disconnection banner and remaining production ride events
+- [x] Add RideMap disconnection banner and remaining production ride events
 
 Implementation note (2026-05-03):
+- `51a890d7` — RideMap recovery banner polished; `RideFeature` now handles direct production lifecycle WebSocket aliases like driver arrived / ride started / ride completed.
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator.
 - Test verification is blocked before tests execute by `SwiftNavigation.framework` linker errors for `CasePathsCore.CasePathable` / `AnyCasePath`.
 
