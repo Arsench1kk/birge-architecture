@@ -83,6 +83,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Driver ride assignment/commands added: backend driver offers, accept/arrived/start/complete endpoints, canonical `ride.status_changed` WebSocket broadcast, and BIRGEDrive polling plus lifecycle command wiring.
 - BIRGEDrive driver auth/session flow added: email login/register, shared API token storage, auth gate before registration/dashboard, and removal of no-token registration/offer fallback.
 - Ride address labels persisted end-to-end: passenger request strings are sent to Vapor, stored on rides, returned in ride DTOs, and used by driver offers.
+- Driver accepted-ride navigation polish added in `DriverAppView`: Liquid Glass maneuver cue, active navigation panel, ETA/speed/safety chips, route phase text, and SF Symbol direction indicators over the map.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -111,9 +112,10 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEDrive` build, and `BIRGEPassenger` build pass after driver ride assignment/commands.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
+- ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
 
 ## Next
-1. Add driver-side live navigation/directions polish for accepted rides.
+1. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
 2. Add persisted named pickup/destination inputs beyond current fixed coordinates.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 

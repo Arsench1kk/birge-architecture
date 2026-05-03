@@ -70,6 +70,8 @@ sprint: 1
 - Pushed app commit `29903977 feat(driver): add auth session flow`.
 - Persisted ride address labels: passenger ride requests now send origin/destination names, Vapor stores them on rides, and driver offers prefer these labels over coordinate fallback.
 - Pushed app commit `5bf3fcc1 feat(rides): persist address labels`.
+- Added BIRGEDrive accepted-ride navigation polish: active maneuver cue, route guidance panel, phase labels, ETA/speed/safety chips, and SF Symbol direction markers over the map.
+- Pushed app commit `5fa70d6a feat(driver): add navigation guidance polish`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -96,9 +98,10 @@ sprint: 1
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEDrive` build, and `BIRGEPassenger` build pass after driver ride assignment/commands.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
+- ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
 
 ### Next best steps
-1. Add driver-side live navigation/directions polish for accepted rides.
+1. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
 2. Add persisted named pickup/destination inputs beyond current fixed coordinates.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 

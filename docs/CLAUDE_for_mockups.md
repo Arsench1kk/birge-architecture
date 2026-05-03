@@ -83,12 +83,12 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation + Kaspi handoff |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
 | passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
-| driver/dashboard.html | DriverAppView.swift | ⚠️ UI polished, live driver auth/profile/today corridors/ride commands and ride address labels hooked; navigation next |
+| driver/dashboard.html | DriverAppView.swift | ⚠️ UI polished, live driver auth/profile/today corridors/ride commands/address labels hooked; navigation guidance polished, live MapKit directions next |
 | driver/D-05-online-waiting.html | DriverAppView.swift | ✅ Built into dashboard online state |
 | driver/offer.html | DriverAppView.swift | ✅ Built into dashboard offer state |
-| driver/D-07-en-route.html | DriverAppView.swift | ✅ Built into active ride pickup state |
+| driver/D-07-en-route.html | DriverAppView.swift | ✅ Built into active ride pickup state with guidance cue |
 | driver/D-08-arrived.html | DriverAppView.swift | ✅ Built into active ride boarding state |
-| driver/D-09-ride-in-progress.html | DriverAppView.swift | ✅ Built into active ride in-progress state |
+| driver/D-09-ride-in-progress.html | DriverAppView.swift | ✅ Built into active ride in-progress state with guidance panel |
 | driver/D-10-ride-complete.html | DriverAppView.swift | ✅ Built into completed ride summary |
 | driver/D-03a-vehicle.html | DriverRegistrationView.swift | ✅ Built into registration flow |
 | driver/D-03b-documents.html | DriverRegistrationView.swift | ✅ Built into registration flow |
