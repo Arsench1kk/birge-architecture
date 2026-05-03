@@ -48,6 +48,8 @@ sprint: 1
 - Pushed app commit `17d44560 feat(corridors): show passenger booking status`.
 - Added `/api/v1/corridors/bookings` and Passenger `MyCorridorsFeature/View` reachable from the Home `Поездки` tab.
 - Pushed app commit `061d6aaf feat(corridors): add passenger bookings list`.
+- Hardened Kaspi webhook handling with `KASPI_WEBHOOK_SECRET`, HMAC-SHA256 signature validation, header fallback support, and backend unit tests.
+- Pushed app commit `98948bf4 feat(payments): validate kaspi webhook signatures`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -62,10 +64,11 @@ sprint: 1
 - ✅ Vapor `swift build` succeeds after persisted corridor bookings integration.
 - ✅ `CorridorDetailFeatureTests` cover booking status and refreshed corridor state after join.
 - ✅ `MyCorridorsFeatureTests` cover booking list loading and selection navigation.
+- ✅ Vapor `swift test` covers Kaspi webhook signature accept/reject behavior.
 
 ### Next best steps
-1. Harden real Kaspi API signature/webhook validation.
-2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Continue driver-side Sprint 1 gaps now that passenger corridor/payment blockers are stable.
+2. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 

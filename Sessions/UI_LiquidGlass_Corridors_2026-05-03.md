@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `98948bf4` — feat(payments): validate kaspi webhook signatures
 - `061d6aaf` — feat(corridors): add passenger bookings list
 - `17d44560` — feat(corridors): show passenger booking status
 - `ab5237fe` — feat(corridors): persist passenger bookings
@@ -61,6 +62,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Corridor booking persistence added with `CorridorBooking`, migration, unique passenger/corridor constraint, and idempotent repeat booking response so seats are not decremented twice.
 - Corridor detail UX now surfaces the successful booking state with a Liquid Glass confirmation card, booking id preview, refreshed seats/participants, and disabled repeat CTA.
 - Passenger My Corridors list added: backend `/corridors/bookings`, iOS `APIClient.fetchCorridorBookings`, Liquid Glass booking cards, empty/error/loading states, and Home `Поездки` tab navigation.
+- Kaspi webhook handling hardened with `KASPI_WEBHOOK_SECRET`, HMAC-SHA256 canonical payload validation, signature header fallback, and backend tests.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -77,10 +79,11 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Vapor `swift build` succeeds after corridor booking persistence.
 - ✅ `CorridorDetailFeatureTests` cover join success, booking id storage, and refreshed corridor state.
 - ✅ `MyCorridorsFeatureTests` cover booking history loading and corridor selection.
+- ✅ Vapor `swift test` covers Kaspi signature accept/reject behavior.
 
 ## Next
-1. Harden real Kaspi API signature/webhook validation.
-2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Continue driver-side Sprint 1 gaps now that passenger corridor/payment blockers are stable.
+2. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ## Agent Reminder

@@ -33,7 +33,7 @@ Backend: **Swift Vapor 4** (not Go, not Node — pure Swift server).
 │       ├── Modules/WebSocket/   ← WSHub ride-scoped (DONE)
 │       ├── Modules/Corridors/   ← DONE (list, booking, persisted booking records)
 │       ├── Modules/Subscriptions/← DONE (API-backed, demo activation)
-│       ├── Modules/Payments/    ← PARTIAL (Kaspi deep link + webhook event skeleton)
+│       ├── Modules/Payments/    ← PARTIAL (Kaspi deep link + signed webhook event skeleton)
 │       └── Modules/Locations/   ← NOT YET IMPLEMENTED
 └── docs/
     ├── mockups/                 ← HTML mockups (READ THESE before building any View)
@@ -215,7 +215,7 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 4. ✅ **Task 10** — OfferFoundView (P-08) is built; next passenger work is backend-backed corridors and remaining ride events
 5. **Task 13** — Driver Registration multi-step (D-03a through D-03c)
 6. **Task 16** — Background GPS for driver (IOS-018)
-7. **Task 20** — Kaspi payment: ✅ deep link checkout skeleton done; real webhook signature/provider validation still pending
+7. **Task 20** — Kaspi payment: ✅ deep link checkout + HMAC webhook validation skeleton done; real merchant API/provider status contract still pending
 
 ---
 
