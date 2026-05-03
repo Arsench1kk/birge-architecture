@@ -1,7 +1,7 @@
 ---
 sprint: 1
 status: active
-last_updated: 2026-05-02
+last_updated: 2026-05-03
 ---
 
 # iOS Sprint 1 — Foundation
@@ -12,6 +12,26 @@ last_updated: 2026-05-02
 ---
 
 ## 🔴 In Progress
+
+### [UI-001] Passenger Liquid Glass Mockup Implementation
+- [x] Add shared Liquid Glass design components in BIRGECore
+- [x] Use native `.glassEffect` on iOS 26+ with `.ultraThinMaterial` fallback
+- [x] Rebuild passenger Splash + Onboarding from final mockups
+- [x] Rebuild Home with AI/corridor previews and glass surfaces
+- [x] Polish BoardingCode and RideComplete screens
+- [x] Replace visible ride-flow emoji/stickers with SF Symbols
+- [x] Build `CorridorListFeature/View` using mock corridor data
+- [x] Build `CorridorDetailFeature/View` using mock corridor data
+- [x] Wire Home → Corridor list/detail navigation through `PassengerAppFeature`
+- [ ] Build P-08 `OfferFoundView`
+- [ ] Implement Vapor `/corridors` API and connect corridor screens to real data
+- [ ] Add RideMap disconnection banner and remaining production ride events
+
+Implementation note (2026-05-03):
+- Active branch: `feature/passenger-liquid-glass-ui`
+- Pushed commits: `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator.
+- Test verification is blocked before tests execute by `SwiftNavigation.framework` linker errors for `CasePathsCore.CasePathable` / `AnyCasePath`.
 
 ### [IOS-017] API Client + Token Refresh
 - [x] `APIClient` TCA dependency: authenticated URLSession wrapper

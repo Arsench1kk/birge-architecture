@@ -68,13 +68,13 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-03c-commute-step3.html | CommuteStep3View.swift | ❌ Not built |
 | passenger/P-03d-commute-step4.html | CommuteStep4View.swift | ❌ Not built |
 | passenger/P-03e-commute-step5.html | CommuteStep5View.swift | ❌ Not built |
-| passenger/P-04-home.html | HomeView.swift | ⚠️ Needs rebuild |
+| passenger/P-04-home.html | HomeView.swift | ✅ Rebuilt with Liquid Glass + corridor previews |
 | passenger/P-05-search.html | SearchView.swift | ⚠️ Partial |
-| passenger/P-06a-corridor-list.html | CorridorListView.swift | ❌ Not built |
-| passenger/P-06b-corridor-detail.html | CorridorDetailView.swift | ❌ Not built |
+| passenger/P-06a-corridor-list.html | CorridorListView.swift | ✅ Built with mock data |
+| passenger/P-06b-corridor-detail.html | CorridorDetailView.swift | ✅ Built with mock data |
 | passenger/P-08-offer.html | OfferFoundView.swift | ❌ Not built |
-| passenger/P-09-driver-en-route.html | RideMapView.swift | ⚠️ Partial |
-| passenger/P-12-ride-complete.html | RideCompleteView.swift | ⚠️ Mock data |
+| passenger/P-09-driver-en-route.html | RideMapView.swift | ⚠️ UI polished, production events/banner pending |
+| passenger/P-12-ride-complete.html | RideCompleteView.swift | ✅ UI polished, mock data |
 | passenger/P-13-boarding-code.html | BoardingCodeView.swift | ✅ Done |
 | passenger/P-17-subscriptions.html | SubscriptionsView.swift | ⚠️ Wrong model |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
@@ -208,8 +208,8 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 
 1. **Merge PRs** — 5 branches need to merge into main (see Solutions doc)
 2. **Task 6** — "No connection" banner in RideMapView (30 min task, state exists, UI missing)
-3. **Task 9** — CorridorListFeature + CorridorDetailFeature + Vapor /corridors API (**CRITICAL — this is the main product**)
-4. **Task 10** — OfferFoundView (P-08) — the AI match found screen
+3. **Task 9** — CorridorListFeature + CorridorDetailFeature are built with mock data; Vapor `/corridors` API is still CRITICAL and next for real product data
+4. **Task 10** — OfferFoundView (P-08) — the AI match found screen is now the next passenger UI screen
 5. **Task 13** — Driver Registration multi-step (D-03a through D-03c)
 6. **Task 16** — Background GPS for driver (IOS-018)
 7. **Task 20** — Kaspi payment (deep link first, webhook later)
@@ -295,3 +295,13 @@ When you need to build something, structure your Codex prompt like this:
 
 *Last updated: 2026-05-03*
 *Next review: after Corridor Flow (Task 9) is complete*
+---
+
+## Latest Codex UI Session (2026-05-03)
+
+- Active app branch: `feature/passenger-liquid-glass-ui`
+- Status: pushed to GitHub after grouped commits.
+- Built: shared Liquid Glass modifiers, Splash, Onboarding, Home, BoardingCode polish, RideComplete polish, Ride/RideRequest SF Symbol cleanup, CorridorList, CorridorDetail, and Home navigation into corridors.
+- Verified: `BIRGEPassenger` build succeeds on `iPhone 17 Pro` simulator.
+- Blocked: `xcodebuild test` still hits `SwiftNavigation` / `CasePathsCore` linker errors before tests execute.
+- Rule for next work: read the relevant mockup, improve the SwiftUI result rather than copying it exactly, keep Liquid Glass on floating surfaces, and use SF Symbols instead of emoji.

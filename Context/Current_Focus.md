@@ -1,9 +1,40 @@
 ---
-last_updated: 2026-05-02
+last_updated: 2026-05-03
 sprint: 1
 ---
 
 # Current Focus — BIRGE
+
+## ▶ Цель сейчас: Passenger Liquid Glass UI по итоговым mockups
+
+### Active branch
+- App repo: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEApp`
+- Branch: `feature/passenger-liquid-glass-ui`
+- Remote: pushed to GitHub
+
+### Session summary (2026-05-03, Passenger Liquid Glass UI)
+- Read final mockups/context from `docs/` and codex prompts.
+- Created grouped commits for existing local UI work and pushed them.
+- Added native iOS 26 Liquid Glass support in BIRGECore with material fallback for older iOS.
+- Rebuilt/polished passenger Splash, Onboarding, Home, BoardingCode, RideComplete, RideMap, and RideRequest surfaces.
+- Replaced visible passenger ride emoji/stickers with SF Symbols where applicable.
+- Added real TCA navigation for corridor list and corridor detail screens from Home.
+- Added `CorridorListFeature/View` and `CorridorDetailFeature/View` using mock corridor data while backend `/corridors` remains TODO.
+
+### Verification
+- ✅ `git diff --check` passed in app repo.
+- ✅ `xcodebuild build -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
+- ⚠️ `xcodebuild test` still fails before app tests run while linking `SwiftNavigation.framework` against `CasePathsCore` symbols. Treat this as the first technical blocker before claiming test green.
+
+### Next best steps
+1. Build P-08 `OfferFoundView` and wire AI match found transition.
+2. Implement Vapor `/api/v1/corridors` and replace corridor mock data with `APIClient` calls.
+3. Add disconnection/banner state to `RideMapView` and continue production ride events.
+4. Re-triage `SwiftNavigation` / `CasePathsCore` test linker blocker.
+
+### Agent reminder
+Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.
+
 
 ## ▶ Цель: Sprint 1 stabilization for demo + auth loop
 
