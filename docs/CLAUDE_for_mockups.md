@@ -78,7 +78,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-13-boarding-code.html | BoardingCodeView.swift | ✅ Done |
 | passenger/P-17-subscriptions.html | SubscriptionsView.swift | ⚠️ Wrong model |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
-| passenger/P-23-ai-explanation.html | AIExplanationView.swift | ❌ Not built |
+| passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
 | driver/dashboard.html | DriverAppView.swift | ⚠️ Mocked |
 | driver/D-05-online-waiting.html | DriverOnlineView.swift | ❌ Not built |
 | driver/offer.html | DriverOfferView.swift | ❌ Not built |
