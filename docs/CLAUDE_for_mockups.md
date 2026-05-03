@@ -63,11 +63,11 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-01-phone.html | PhoneEntryView.swift | ✅ Done |
 | passenger/P-02-otp.html | OTPView.swift | ✅ Done |
 | passenger/P-03-onboarding.html | OnboardingView.swift | ✅ Basic done |
-| passenger/P-03a-commute-step1.html | CommuteStep1View.swift | ❌ Not built |
-| passenger/P-03b-commute-step2.html | CommuteStep2View.swift | ❌ Not built |
-| passenger/P-03c-commute-step3.html | CommuteStep3View.swift | ❌ Not built |
-| passenger/P-03d-commute-step4.html | CommuteStep4View.swift | ❌ Not built |
-| passenger/P-03e-commute-step5.html | CommuteStep5View.swift | ❌ Not built |
+| passenger/P-03a-commute-step1.html | OnboardingView.swift | ✅ Built into onboarding |
+| passenger/P-03b-commute-step2.html | OnboardingView.swift | ✅ Built into onboarding |
+| passenger/P-03c-commute-step3.html | OnboardingView.swift | ✅ Built into onboarding |
+| passenger/P-03d-commute-step4.html | OnboardingView.swift | ✅ Built into onboarding |
+| passenger/P-03e-commute-step5.html | OnboardingView.swift | ✅ Built into onboarding |
 | passenger/P-04-home.html | HomeView.swift | ✅ Rebuilt with Liquid Glass + corridor previews |
 | passenger/P-05-search.html | SearchView.swift | ⚠️ Partial |
 | passenger/P-06a-corridor-list.html | CorridorListView.swift | ✅ Built with mock data |

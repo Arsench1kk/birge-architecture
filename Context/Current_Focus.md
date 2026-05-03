@@ -32,6 +32,8 @@ sprint: 1
 - Pushed app commit `e8a38820 test(passenger): align otp flow tests with splash startup`.
 - Added P-23 `AIExplanationFeature/View` with Liquid Glass cards, SF Symbols, Home AI pill navigation, CTA into corridor list, and reducer coverage.
 - Pushed app commit `da9001cf feat(passenger): add ai explanation screen`.
+- Rebuilt onboarding into an 8-page flow: 3 intro slides plus P-03a–P-03e commute setup for origin, destination, times, weekdays, and AI route summary.
+- Pushed app commit `fe208327 feat(passenger): add commute setup onboarding`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -39,9 +41,10 @@ sprint: 1
 - ✅ Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator; live OTP E2E remains skipped unless `RUN_LIVE_OTP_E2E=1`.
 - ✅ `PassengerAppFeatureTests` cover `Home → AI Explanation → Corridor List`.
+- ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
 
 ### Next best steps
-1. Continue remaining passenger mockup gaps: commute setup steps and subscriptions/payment.
+1. Continue remaining passenger mockup gaps: subscriptions/payment.
 2. Harden corridors with real matching inputs, persistence policy, and booking UX once backend auth/runtime is fully exercised.
 3. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 

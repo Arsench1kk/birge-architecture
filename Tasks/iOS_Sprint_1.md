@@ -27,8 +27,10 @@ last_updated: 2026-05-03
 - [x] Implement Vapor `/corridors` API and connect corridor screens to real data
 - [x] Add RideMap disconnection banner and remaining production ride events
 - [x] Build P-23 `AIExplanationFeature/View` and connect Home AI pill navigation
+- [x] Build P-03a–P-03e commute setup inside passenger onboarding
 
 Implementation note (2026-05-03):
+- `fe208327` — Onboarding now continues into commute setup for origin, destination, morning/evening times, weekdays, and AI summary; `OnboardingFeatureTests` added.
 - `da9001cf` — P-23 AI explanation screen added with Liquid Glass cards, SF Symbols, Home AI pill navigation, corridor-list CTA, and `PassengerAppFeatureTests` coverage.
 - `e8a38820` — `OTPFlowE2ETests` aligned with splash-first app startup; full `BIRGEPassengerTests` now pass with `-skipMacroValidation`.
 - `cf9265e3` — Package graph adjusted to unblock `SwiftNavigation` / `CasePathsCore` linker failure; `RideFeatureTests` and `OTPFeatureTests` pass with `-skipMacroValidation`.
@@ -36,11 +38,12 @@ Implementation note (2026-05-03):
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
 - Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - Full `BIRGEPassengerTests` pass with `-skipMacroValidation`; live OTP E2E stays opt-in via `RUN_LIVE_OTP_E2E=1`.
 - `PassengerAppFeatureTests` cover the new AI explanation navigation path.
+- `OnboardingFeatureTests` cover the new commute setup reducer path.
 
 ### [IOS-017] API Client + Token Refresh
 - [x] `APIClient` TCA dependency: authenticated URLSession wrapper
