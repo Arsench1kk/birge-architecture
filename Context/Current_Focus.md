@@ -74,6 +74,8 @@ sprint: 1
 - Pushed app commit `5fa70d6a feat(driver): add navigation guidance polish`.
 - Restored full live backend Docker stack: Vapor image now builds on Swift 6.0, Kaspi HMAC uses Linux-compatible `swift-crypto`, Postgres config is compiler-friendly in release, `.dockerignore` keeps container context small, and Compose no longer exposes Postgres/Redis host ports.
 - Pushed app commit `ef003825 fix(backend): restore vapor docker live stack`.
+- Fixed live auth manual testing blockers: iOS decodes backend `userId`, unauthenticated 401/409 responses preserve Vapor reason messages, and driver registration now returns `409 Phone already registered` instead of a Postgres duplicate-key 500.
+- Pushed app commit `f9485d50 fix(auth): align live login responses`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -102,6 +104,7 @@ sprint: 1
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
 - ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
 - ✅ Vapor `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local `POST /api/v1/auth/otp/request` return `200 OK` for the full live backend stack.
+- ✅ Passenger OTP request/verify returns `200 OK` with `userId`; duplicate driver phone returns `409 Phone already registered`; `BIRGEPassenger` and `BIRGEDrive` builds pass after live auth response fixes.
 
 ### Next best steps
 1. Run Passenger and Drive in Simulator against the now-running live backend; use OTP from Vapor logs for passenger login and email register/login for driver.
