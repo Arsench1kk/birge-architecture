@@ -86,6 +86,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Driver accepted-ride navigation polish added in `DriverAppView`: Liquid Glass maneuver cue, active navigation panel, ETA/speed/safety chips, route phase text, and SF Symbol direction indicators over the map.
 - Full live backend Docker stack restored for Simulator testing: Swift 6.0 Docker image, Linux-compatible `swift-crypto` for Kaspi signatures, release-friendly Postgres configuration, `.dockerignore`, and Compose DB/Redis ports kept internal.
 - Live auth blockers fixed: Passenger OTP no longer fails decoding backend `userId`, iOS preserves Vapor `reason` messages for auth errors, and Driver duplicate phone registration returns 409 instead of internal server error.
+- BIRGEDrive manual QA fixes added: simulator location tracking no longer aborts when background location mode is absent at runtime, and new driver accounts now see the registration onboarding until core profile fields are saved.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -117,6 +118,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
 - ✅ `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local OTP request to `localhost:8080` pass after Docker live stack fixes.
 - ✅ Live auth verification passes with OTP request/verify, duplicate driver phone 409, and Passenger/Drive builds.
+- ✅ Passenger/Drive builds pass after BIRGEDrive location crash guard and onboarding gate fix.
 
 ## Next
 1. Run Passenger and Drive in Simulator against the now-running live backend.

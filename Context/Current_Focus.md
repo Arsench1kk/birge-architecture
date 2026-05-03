@@ -76,6 +76,8 @@ sprint: 1
 - Pushed app commit `ef003825 fix(backend): restore vapor docker live stack`.
 - Fixed live auth manual testing blockers: iOS decodes backend `userId`, unauthenticated 401/409 responses preserve Vapor reason messages, and driver registration now returns `409 Phone already registered` instead of a Postgres duplicate-key 500.
 - Pushed app commit `f9485d50 fix(auth): align live login responses`.
+- Stabilized BIRGEDrive manual QA: location tracking no longer enables background updates unless `UIBackgroundModes` actually contains `location`, preventing the simulator abort; driver registration completion now requires real profile fields so new driver accounts see personal/vehicle/documents/tier onboarding.
+- Pushed app commit `eddea55d fix(driver): stabilize manual onboarding checks`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -105,6 +107,7 @@ sprint: 1
 - ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
 - ✅ Vapor `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local `POST /api/v1/auth/otp/request` return `200 OK` for the full live backend stack.
 - ✅ Passenger OTP request/verify returns `200 OK` with `userId`; duplicate driver phone returns `409 Phone already registered`; `BIRGEPassenger` and `BIRGEDrive` builds pass after live auth response fixes.
+- ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver location crash guard and onboarding completion gate fix.
 
 ### Next best steps
 1. Run Passenger and Drive in Simulator against the now-running live backend; use OTP from Vapor logs for passenger login and email register/login for driver.
