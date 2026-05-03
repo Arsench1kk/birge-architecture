@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `e8a38820` — test(passenger): align otp flow tests with splash startup
 - `cf9265e3` — fix(tests): unblock passenger package linking
 - `51a890d7` — feat(ride): improve websocket recovery events
 - `2fd2a124` — feat(corridors): connect passenger corridors to API
@@ -40,19 +41,20 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - RideMap recovery banner now uses Liquid Glass, SF Symbols, spinner, and reconnect attempt context.
 - `RideFeature` now accepts direct production lifecycle aliases: driver accepted/arriving/arrived, ride started/completed/cancelled.
 - Package graph adjusted: `swift-case-paths` pinned to `1.5.6`, `swift-navigation` to `2.8.0`, and `CasePaths` / `Perception` / `PerceptionCore` are explicit target products to avoid Xcode 26 test-link gaps.
+- `OTPFlowE2ETests` now matches the splash-first app startup: OTP flow tests start from unauthenticated state, and keychain restore is verified through `splashFinished`.
 
 ## Verification
 - ✅ `git diff --check` passed.
 - ✅ `xcodebuild build -skipMacroValidation -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
 - ✅ `RideFeatureTests` pass with `-skipMacroValidation`.
 - ✅ `OTPFeatureTests` pass with `-skipMacroValidation`.
-- ⚠️ Full `BIRGEPassengerTests` now passes package/link stage but hung in the simulator test run and was interrupted after ~399s.
+- ✅ `OTPFlowE2ETests` pass with `-skipMacroValidation`; live OTP success case is skipped unless `RUN_LIVE_OTP_E2E=1`.
+- ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator.
 
 ## Next
-1. Triage the full `BIRGEPassengerTests` simulator hang now that the package linker blocker is gone.
-2. Continue remaining passenger mockup gaps: AI explanation, commute setup, subscriptions/payment.
-3. Harden corridors with real matching inputs and richer booking UX after local backend auth/runtime verification.
-4. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Continue remaining passenger mockup gaps: AI explanation, commute setup, subscriptions/payment.
+2. Harden corridors with real matching inputs and richer booking UX after local backend auth/runtime verification.
+3. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ## Agent Reminder
 Before the next iOS UI task, read [[Context/Current_Focus]], [[docs/CLAUDE_for_mockups]], and the relevant `docs/mockups/` HTML.

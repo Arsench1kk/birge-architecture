@@ -28,18 +28,19 @@ sprint: 1
 - Pushed app commit `51a890d7 feat(ride): improve websocket recovery events`.
 - Unblocked the `SwiftNavigation` / `CasePathsCore` linker failure by pinning a compatible package graph and adding explicit runtime package products.
 - Pushed app commit `cf9265e3 fix(tests): unblock passenger package linking`.
+- Fixed `OTPFlowE2ETests` for the current splash-first app startup and restored full passenger XCTest suite.
+- Pushed app commit `e8a38820 test(passenger): align otp flow tests with splash startup`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
 - ✅ `xcodebuild build -skipMacroValidation -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
-- ✅ Focused `RideFeatureTests` and `OTPFeatureTests` pass with `-skipMacroValidation`.
-- ⚠️ Full `BIRGEPassengerTests` now passes package/link stage but the full simulator run hung and was interrupted after ~399s; next triage should target the hanging test/run phase, not the old linker error.
+- ✅ Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
+- ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator; live OTP E2E remains skipped unless `RUN_LIVE_OTP_E2E=1`.
 
 ### Next best steps
-1. Triage the full `BIRGEPassengerTests` simulator hang now that the package linker blocker is gone.
-2. Continue remaining passenger mockup gaps: AI explanation, commute setup steps, subscriptions/payment.
-3. Harden corridors with real matching inputs, persistence policy, and booking UX once backend auth/runtime is fully exercised.
-4. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Continue remaining passenger mockup gaps: AI explanation, commute setup steps, subscriptions/payment.
+2. Harden corridors with real matching inputs, persistence policy, and booking UX once backend auth/runtime is fully exercised.
+3. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.
