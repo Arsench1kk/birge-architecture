@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `29903977` — feat(driver): add auth session flow
 - `a12d75b6` — feat(driver): add ride assignment commands
 - `be190fa7` — feat(driver): connect dashboard to profile api
 - `c5012c77` — feat(driver): add driver profile api
@@ -79,6 +80,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Backend Driver module added: authenticated `/api/v1/drivers/me` GET/PUT/POST persists D-03 registration/profile fields and `/api/v1/drivers/corridors/today` provides active corridor candidates plus estimated earnings for the driver dashboard.
 - BIRGEDrive registration/dashboard now uses Driver API through `APIClient`: startup profile load, registration save, today corridors dashboard card, and no-token demo fallback until driver auth/session is implemented.
 - Driver ride assignment/commands added: backend driver offers, accept/arrived/start/complete endpoints, canonical `ride.status_changed` WebSocket broadcast, and BIRGEDrive polling plus lifecycle command wiring.
+- BIRGEDrive driver auth/session flow added: email login/register, shared API token storage, auth gate before registration/dashboard, and removal of no-token registration/offer fallback.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -105,10 +107,11 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Vapor `swift build` and `swift test` pass after driver profile API integration.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after Driver API iOS hookup.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEDrive` build, and `BIRGEPassenger` build pass after driver ride assignment/commands.
+- ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
 
 ## Next
-1. Add driver auth/session path or shared login handoff so BIRGEDrive can call live Driver API without demo fallback.
-2. Replace coordinate-only driver offer addresses with reverse-geocoded/persisted pickup and destination labels.
+1. Replace coordinate-only driver offer addresses with reverse-geocoded/persisted pickup and destination labels.
+2. Add driver-side live navigation/directions polish for accepted rides.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ## Agent Reminder

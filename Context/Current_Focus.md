@@ -64,8 +64,10 @@ sprint: 1
 - Pushed app commit `c5012c77 feat(driver): add driver profile api`.
 - Connected BIRGEDrive registration/dashboard to Driver API: registration saves through `APIClient.updateDriverProfile`, app startup loads `/drivers/me`, dashboard loads `/drivers/corridors/today`, and no-token demo fallback keeps local preview usable until driver auth exists.
 - Pushed app commit `be190fa7 feat(driver): connect dashboard to profile api`.
-- Added driver ride assignment/command path: backend exposes driver offers plus accept/arrived/start/complete endpoints, broadcasts canonical `ride.status_changed`, and BIRGEDrive now polls/accepts/sends lifecycle commands through `APIClient` with demo fallback.
+- Added driver ride assignment/command path: backend exposes driver offers plus accept/arrived/start/complete endpoints, broadcasts canonical `ride.status_changed`, and BIRGEDrive now polls/accepts/sends lifecycle commands through `APIClient`.
 - Pushed app commit `a12d75b6 feat(driver): add ride assignment commands`.
+- Added BIRGEDrive driver auth/session flow: email login/register screen, APIClient `auth/login`/driver `auth/register`, token storage through shared refresh client, and removed no-token demo fallback from registration/offers.
+- Pushed app commit `29903977 feat(driver): add auth session flow`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -90,10 +92,11 @@ sprint: 1
 - ✅ Vapor `swift build` and `swift test` pass after driver profile API integration.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after Driver API iOS hookup.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEDrive` build, and `BIRGEPassenger` build pass after driver ride assignment/commands.
+- ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
 
 ### Next best steps
-1. Add driver auth/session path or shared login handoff so BIRGEDrive can call live Driver API without demo fallback.
-2. Replace coordinate-only driver offer addresses with reverse-geocoded/persisted pickup and destination labels.
+1. Replace coordinate-only driver offer addresses with reverse-geocoded/persisted pickup and destination labels.
+2. Add driver-side live navigation/directions polish for accepted rides.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
