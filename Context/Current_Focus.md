@@ -42,6 +42,8 @@ sprint: 1
 - Added Vapor Payments module for Kaspi checkout deep links and append-only/idempotent webhook events.
 - Connected subscription activation UI to Kaspi handoff before demo confirmation.
 - Pushed app commit `01955808 feat(payments): add kaspi subscription handoff`.
+- Added persisted corridor booking records with passenger/corridor uniqueness and idempotent repeat booking behavior.
+- Pushed app commit `ab5237fe feat(corridors): persist passenger bookings`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -53,9 +55,10 @@ sprint: 1
 - ✅ `SubscriptionsFeatureTests` cover API loading, plan selection, activation, and detail dismissal.
 - ✅ Vapor `swift build` succeeds after subscriptions API integration.
 - ✅ Vapor `swift build` succeeds after Kaspi payments module integration.
+- ✅ Vapor `swift build` succeeds after persisted corridor bookings integration.
 
 ### Next best steps
-1. Harden remaining passenger backend integrations: real Kaspi API signature/webhook validation, corridor persistence policy, and richer booking UX.
+1. Harden remaining passenger backend integrations: real Kaspi API signature/webhook validation and richer corridor booking UX/history.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ### Agent reminder
