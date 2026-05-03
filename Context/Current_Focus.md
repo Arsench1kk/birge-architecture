@@ -34,6 +34,8 @@ sprint: 1
 - Pushed app commit `da9001cf feat(passenger): add ai explanation screen`.
 - Rebuilt onboarding into an 8-page flow: 3 intro slides plus P-03a–P-03e commute setup for origin, destination, times, weekdays, and AI route summary.
 - Pushed app commit `fe208327 feat(passenger): add commute setup onboarding`.
+- Added P-17/P-18 subscriptions flow with TCA state for plans, detail, activation, and Home subscription navigation.
+- Pushed app commit `9f06a2a4 feat(passenger): add subscriptions flow`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -42,11 +44,11 @@ sprint: 1
 - ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator; live OTP E2E remains skipped unless `RUN_LIVE_OTP_E2E=1`.
 - ✅ `PassengerAppFeatureTests` cover `Home → AI Explanation → Corridor List`.
 - ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
+- ✅ `SubscriptionsFeatureTests` cover plan selection, activation, and detail dismissal.
 
 ### Next best steps
-1. Continue remaining passenger mockup gaps: subscriptions/payment.
-2. Harden corridors with real matching inputs, persistence policy, and booking UX once backend auth/runtime is fully exercised.
-3. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Harden passenger backend integrations: payment/subscription API, corridor persistence policy, and richer booking UX.
+2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.

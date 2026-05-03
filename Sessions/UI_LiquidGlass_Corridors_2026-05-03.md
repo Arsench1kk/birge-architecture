@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `9f06a2a4` — feat(passenger): add subscriptions flow
 - `fe208327` — feat(passenger): add commute setup onboarding
 - `da9001cf` — feat(passenger): add ai explanation screen
 - `e8a38820` — test(passenger): align otp flow tests with splash startup
@@ -47,6 +48,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - P-23 AI explanation screen added as `AIExplanationFeature/View`: native SwiftUI scroll view with Liquid Glass hero/step/privacy cards, SF Symbols instead of the mockup robot/emoji, and CTA into corridor list.
 - Home AI pill now opens AI explanation.
 - P-03a–P-03e commute setup is now part of `OnboardingFeature/View`: origin, destination, times, weekdays, and final AI route summary.
+- P-17/P-18 subscriptions flow added as `SubscriptionsFeature/View`: current plan, tier list, plan detail, comparison, local activation state, and Home subscription navigation.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -57,11 +59,11 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator.
 - ✅ `PassengerAppFeatureTests` cover `Home → AI Explanation → Corridor List`.
 - ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
+- ✅ `SubscriptionsFeatureTests` cover plan selection, activation, and detail dismissal.
 
 ## Next
-1. Continue remaining passenger mockup gaps: subscriptions/payment.
-2. Harden corridors with real matching inputs and richer booking UX after local backend auth/runtime verification.
-3. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Harden passenger backend integrations: payment/subscription API, corridor persistence policy, and richer booking UX.
+2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ## Agent Reminder
 Before the next iOS UI task, read [[Context/Current_Focus]], [[docs/CLAUDE_for_mockups]], and the relevant `docs/mockups/` HTML.
