@@ -85,9 +85,9 @@ They are the **visual specification** for every SwiftUI view you write.
 | driver/dashboard.html | DriverAppView.swift | ⚠️ Mocked |
 | driver/D-05-online-waiting.html | DriverOnlineView.swift | ❌ Not built |
 | driver/offer.html | DriverOfferView.swift | ❌ Not built |
-| driver/D-03a-vehicle.html | VehicleInfoView.swift | ❌ Not built |
-| driver/D-03b-documents.html | DocumentsUploadView.swift | ❌ Not built |
-| driver/D-03c-tier-selection.html | TierSelectionView.swift | ❌ Not built |
+| driver/D-03a-vehicle.html | DriverRegistrationView.swift | ✅ Built into registration flow |
+| driver/D-03b-documents.html | DriverRegistrationView.swift | ✅ Built into registration flow |
+| driver/D-03c-tier-selection.html | DriverRegistrationView.swift | ✅ Built into registration flow |
 | driver/D-12-earnings.html | EarningsView.swift | ⚠️ Mocked |
 | driver/D-14-payout.html | PayoutView.swift | ⚠️ Mocked |
 

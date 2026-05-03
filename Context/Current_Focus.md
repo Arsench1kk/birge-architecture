@@ -50,6 +50,8 @@ sprint: 1
 - Pushed app commit `061d6aaf feat(corridors): add passenger bookings list`.
 - Hardened Kaspi webhook handling with `KASPI_WEBHOOK_SECRET`, HMAC-SHA256 signature validation, header fallback support, and backend unit tests.
 - Pushed app commit `98948bf4 feat(payments): validate kaspi webhook signatures`.
+- Started driver-side Sprint 1 gaps with D-03 registration onboarding: personal data, vehicle, documents, and subscription tier steps before dashboard.
+- Pushed app commit `d83fec67 feat(driver): add registration onboarding flow`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -65,9 +67,10 @@ sprint: 1
 - ✅ `CorridorDetailFeatureTests` cover booking status and refreshed corridor state after join.
 - ✅ `MyCorridorsFeatureTests` cover booking list loading and selection navigation.
 - ✅ Vapor `swift test` covers Kaspi webhook signature accept/reject behavior.
+- ✅ `BIRGEDrive` builds after driver registration onboarding integration.
 
 ### Next best steps
-1. Continue driver-side Sprint 1 gaps now that passenger corridor/payment blockers are stable.
+1. Continue driver-side Sprint 1 gaps: online waiting / driver offer / driver ride lifecycle polish.
 2. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
