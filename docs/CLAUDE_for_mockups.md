@@ -85,6 +85,10 @@ They are the **visual specification** for every SwiftUI view you write.
 | driver/dashboard.html | DriverAppView.swift | ⚠️ Mocked |
 | driver/D-05-online-waiting.html | DriverAppView.swift | ✅ Built into dashboard online state |
 | driver/offer.html | DriverAppView.swift | ✅ Built into dashboard offer state |
+| driver/D-07-en-route.html | DriverAppView.swift | ✅ Built into active ride pickup state |
+| driver/D-08-arrived.html | DriverAppView.swift | ✅ Built into active ride boarding state |
+| driver/D-09-ride-in-progress.html | DriverAppView.swift | ✅ Built into active ride in-progress state |
+| driver/D-10-ride-complete.html | DriverAppView.swift | ✅ Built into completed ride summary |
 | driver/D-03a-vehicle.html | DriverRegistrationView.swift | ✅ Built into registration flow |
 | driver/D-03b-documents.html | DriverRegistrationView.swift | ✅ Built into registration flow |
 | driver/D-03c-tier-selection.html | DriverRegistrationView.swift | ✅ Built into registration flow |

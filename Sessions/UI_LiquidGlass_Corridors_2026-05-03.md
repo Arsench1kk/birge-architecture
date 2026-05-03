@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `079ac13a` — feat(driver): add active ride lifecycle polish
 - `136f91a0` — feat(driver): polish online offer surfaces
 - `d83fec67` — feat(driver): add registration onboarding flow
 - `98948bf4` — feat(payments): validate kaspi webhook signatures
@@ -67,6 +68,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Kaspi webhook handling hardened with `KASPI_WEBHOOK_SECRET`, HMAC-SHA256 canonical payload validation, signature header fallback, and backend tests.
 - Driver-side work started: BIRGEDrive now presents a 4-step registration onboarding flow before dashboard, covering D-03 personal info, D-03a vehicle, D-03b documents, and D-03c tier selection with Liquid Glass and SF Symbols.
 - Driver D-05 online waiting and `driver/offer` surfaces polished in `DriverAppView`: map-style background, Liquid Glass navigation/working sheets, SF Symbol status icons, offer alert, countdown, AI match pill, route card, metrics grid, and passenger confirmation row.
+- Driver D-07/D-08/D-09/D-10 lifecycle polished with active ride route sheet, pickup/boarding/in-progress states, boarding codes, passenger manifest, route progress, and completed ride summary/next-ride actions.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -86,10 +88,11 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Vapor `swift test` covers Kaspi signature accept/reject behavior.
 - ✅ `BIRGEDrive` build passes after driver registration onboarding integration.
 - ✅ `BIRGEDrive` build passes after driver online waiting / offer polish.
+- ✅ `BIRGEDrive` build passes after driver active ride lifecycle polish.
 
 ## Next
-1. Continue driver-side Sprint 1 gaps: active ride lifecycle polish / dedicated DriverRideFeature.
-2. Add driver background GPS tracking via `LocationClient` and backend location bulk endpoint.
+1. Continue IOS-018 with driver background GPS tracking via `LocationClient` and backend location bulk endpoint.
+2. Add backend Driver module for registration/profile/corridors/today when UI flow needs live data.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ## Agent Reminder

@@ -54,6 +54,8 @@ sprint: 1
 - Pushed app commit `d83fec67 feat(driver): add registration onboarding flow`.
 - Polished driver D-05 online waiting and `driver/offer` surfaces in `DriverAppView` with a map-style background, Liquid Glass top/bottom overlays, SF Symbols, offer alert, match pill, route card, metrics grid, and passenger confirmation row.
 - Pushed app commit `136f91a0 feat(driver): polish online offer surfaces`.
+- Polished driver D-07/D-08/D-09/D-10 lifecycle in `DriverAppView` and `DriverAppFeature`: active ride route sheet, pickup/boarding/in-progress state panels, boarding codes, passenger manifest, progress bar, and completed ride summary with next-ride action.
+- Pushed app commit `079ac13a feat(driver): add active ride lifecycle polish`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -71,10 +73,11 @@ sprint: 1
 - ✅ Vapor `swift test` covers Kaspi webhook signature accept/reject behavior.
 - ✅ `BIRGEDrive` builds after driver registration onboarding integration.
 - ✅ `BIRGEDrive` builds after online waiting / driver offer Liquid Glass polish.
+- ✅ `BIRGEDrive` builds after active ride lifecycle polish.
 
 ### Next best steps
-1. Continue driver-side Sprint 1 gaps: active ride lifecycle polish / dedicated DriverRideFeature.
-2. Add driver background GPS tracking via `LocationClient` and backend location bulk endpoint.
+1. Continue IOS-018 with driver background GPS tracking via `LocationClient` and backend location bulk endpoint.
+2. Add backend Driver module for registration/profile/corridors/today when UI flow needs live data.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
