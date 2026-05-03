@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-05-03
+last_updated: 2026-05-04
 sprint: 1
 ---
 
@@ -72,6 +72,8 @@ sprint: 1
 - Pushed app commit `5bf3fcc1 feat(rides): persist address labels`.
 - Added BIRGEDrive accepted-ride navigation polish: active maneuver cue, route guidance panel, phase labels, ETA/speed/safety chips, and SF Symbol direction markers over the map.
 - Pushed app commit `5fa70d6a feat(driver): add navigation guidance polish`.
+- Restored full live backend Docker stack: Vapor image now builds on Swift 6.0, Kaspi HMAC uses Linux-compatible `swift-crypto`, Postgres config is compiler-friendly in release, `.dockerignore` keeps container context small, and Compose no longer exposes Postgres/Redis host ports.
+- Pushed app commit `ef003825 fix(backend): restore vapor docker live stack`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -99,11 +101,13 @@ sprint: 1
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
 - ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
+- ✅ Vapor `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local `POST /api/v1/auth/otp/request` return `200 OK` for the full live backend stack.
 
 ### Next best steps
-1. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
-2. Add persisted named pickup/destination inputs beyond current fixed coordinates.
-3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
+1. Run Passenger and Drive in Simulator against the now-running live backend; use OTP from Vapor logs for passenger login and email register/login for driver.
+2. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
+3. Add persisted named pickup/destination inputs beyond current fixed coordinates.
+4. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.

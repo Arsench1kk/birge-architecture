@@ -1,7 +1,7 @@
 ---
 sprint: 1
 status: active
-last_updated: 2026-05-03
+last_updated: 2026-05-04
 ---
 
 # iOS Sprint 1 — Foundation
@@ -46,6 +46,10 @@ last_updated: 2026-05-03
 - [x] Add BIRGEDrive email login/register session flow and remove no-token demo fallback
 - [x] Persist passenger ride address labels and show them in driver offers
 - [x] Add driver-side navigation guidance polish for accepted rides
+- [x] Restore Docker Compose live backend stack for Simulator testing
+
+Implementation note (2026-05-04):
+- `ef003825` — Docker live backend stack is restored: Dockerfile uses Swift 6.0, Kaspi HMAC imports `swift-crypto` instead of macOS-only `CryptoKit`, Postgres configuration compiles in Linux release, `.dockerignore` prevents copying `.build`, and Compose keeps Postgres/Redis internal to avoid local port conflicts.
 
 Implementation note (2026-05-03):
 - `5fa70d6a` — BIRGEDrive active rides now show a Liquid Glass maneuver cue, navigation guidance card, ETA/speed/safety chips, route phase labels, and SF Symbol direction markers; real MapKit route geometry remains the next routing step.
@@ -74,7 +78,7 @@ Implementation note (2026-05-03):
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `5fa70d6a`, `5bf3fcc1`, `29903977`, `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `ef003825`, `5fa70d6a`, `5bf3fcc1`, `29903977`, `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
 - Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - Full `BIRGEPassengerTests` pass with `-skipMacroValidation`; live OTP E2E stays opt-in via `RUN_LIVE_OTP_E2E=1`.
@@ -84,6 +88,7 @@ Implementation note (2026-05-03):
 - Vapor `swift build` passes after subscriptions API integration.
 - Vapor `swift build` passes after Payments/Kaspi handoff integration.
 - Vapor `swift build` passes after corridor booking persistence.
+- Full live backend verification passes: `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local OTP request returns `200 OK` on `localhost:8080`.
 
 ### [IOS-017] API Client + Token Refresh
 - [x] `APIClient` TCA dependency: authenticated URLSession wrapper

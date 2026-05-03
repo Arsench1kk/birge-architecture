@@ -84,6 +84,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - BIRGEDrive driver auth/session flow added: email login/register, shared API token storage, auth gate before registration/dashboard, and removal of no-token registration/offer fallback.
 - Ride address labels persisted end-to-end: passenger request strings are sent to Vapor, stored on rides, returned in ride DTOs, and used by driver offers.
 - Driver accepted-ride navigation polish added in `DriverAppView`: Liquid Glass maneuver cue, active navigation panel, ETA/speed/safety chips, route phase text, and SF Symbol direction indicators over the map.
+- Full live backend Docker stack restored for Simulator testing: Swift 6.0 Docker image, Linux-compatible `swift-crypto` for Kaspi signatures, release-friendly Postgres configuration, `.dockerignore`, and Compose DB/Redis ports kept internal.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -113,11 +114,13 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
 - ✅ `git diff --check` and `BIRGEDrive` build pass after driver navigation guidance polish.
+- ✅ `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local OTP request to `localhost:8080` pass after Docker live stack fixes.
 
 ## Next
-1. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
-2. Add persisted named pickup/destination inputs beyond current fixed coordinates.
-3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
+1. Run Passenger and Drive in Simulator against the now-running live backend.
+2. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
+3. Add persisted named pickup/destination inputs beyond current fixed coordinates.
+4. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ## Agent Reminder
 Before the next iOS UI task, read [[Context/Current_Focus]], [[docs/CLAUDE_for_mockups]], and the relevant `docs/mockups/` HTML.
