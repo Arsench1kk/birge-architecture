@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `cf9265e3` — fix(tests): unblock passenger package linking
 - `51a890d7` — feat(ride): improve websocket recovery events
 - `2fd2a124` — feat(corridors): connect passenger corridors to API
 - `882230a1` — feat(passenger): add offer found confirmation flow
@@ -38,14 +39,17 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Home, corridor list, and corridor detail screens now load live corridors with loading/error states.
 - RideMap recovery banner now uses Liquid Glass, SF Symbols, spinner, and reconnect attempt context.
 - `RideFeature` now accepts direct production lifecycle aliases: driver accepted/arriving/arrived, ride started/completed/cancelled.
+- Package graph adjusted: `swift-case-paths` pinned to `1.5.6`, `swift-navigation` to `2.8.0`, and `CasePaths` / `Perception` / `PerceptionCore` are explicit target products to avoid Xcode 26 test-link gaps.
 
 ## Verification
 - ✅ `git diff --check` passed.
-- ✅ `xcodebuild build -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
-- ⚠️ `xcodebuild test` is still blocked before test execution by `SwiftNavigation.framework` linker errors for `CasePathsCore.CasePathable` / `AnyCasePath`.
+- ✅ `xcodebuild build -skipMacroValidation -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
+- ✅ `RideFeatureTests` pass with `-skipMacroValidation`.
+- ✅ `OTPFeatureTests` pass with `-skipMacroValidation`.
+- ⚠️ Full `BIRGEPassengerTests` now passes package/link stage but hung in the simulator test run and was interrupted after ~399s.
 
 ## Next
-1. Fix or isolate the `SwiftNavigation` / `CasePathsCore` test linker blocker.
+1. Triage the full `BIRGEPassengerTests` simulator hang now that the package linker blocker is gone.
 2. Continue remaining passenger mockup gaps: AI explanation, commute setup, subscriptions/payment.
 3. Harden corridors with real matching inputs and richer booking UX after local backend auth/runtime verification.
 4. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.

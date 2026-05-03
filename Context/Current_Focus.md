@@ -26,14 +26,17 @@ sprint: 1
 - Pushed app commit `2fd2a124 feat(corridors): connect passenger corridors to API`.
 - Improved RideMap WebSocket recovery UI and production lifecycle event aliases.
 - Pushed app commit `51a890d7 feat(ride): improve websocket recovery events`.
+- Unblocked the `SwiftNavigation` / `CasePathsCore` linker failure by pinning a compatible package graph and adding explicit runtime package products.
+- Pushed app commit `cf9265e3 fix(tests): unblock passenger package linking`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
-- ✅ `xcodebuild build -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
-- ⚠️ `xcodebuild test` still fails before app tests run while linking `SwiftNavigation.framework` against `CasePathsCore` symbols. Treat this as the first technical blocker before claiming test green.
+- ✅ `xcodebuild build -skipMacroValidation -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro'` succeeds.
+- ✅ Focused `RideFeatureTests` and `OTPFeatureTests` pass with `-skipMacroValidation`.
+- ⚠️ Full `BIRGEPassengerTests` now passes package/link stage but the full simulator run hung and was interrupted after ~399s; next triage should target the hanging test/run phase, not the old linker error.
 
 ### Next best steps
-1. Re-triage `SwiftNavigation` / `CasePathsCore` test linker blocker.
+1. Triage the full `BIRGEPassengerTests` simulator hang now that the package linker blocker is gone.
 2. Continue remaining passenger mockup gaps: AI explanation, commute setup steps, subscriptions/payment.
 3. Harden corridors with real matching inputs, persistence policy, and booking UX once backend auth/runtime is fully exercised.
 4. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.

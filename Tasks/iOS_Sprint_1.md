@@ -28,13 +28,15 @@ last_updated: 2026-05-03
 - [x] Add RideMap disconnection banner and remaining production ride events
 
 Implementation note (2026-05-03):
+- `cf9265e3` — Package graph adjusted to unblock `SwiftNavigation` / `CasePathsCore` linker failure; `RideFeatureTests` and `OTPFeatureTests` pass with `-skipMacroValidation`.
 - `51a890d7` — RideMap recovery banner polished; `RideFeature` now handles direct production lifecycle WebSocket aliases like driver arrived / ride started / ride completed.
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
-- Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator.
-- Test verification is blocked before tests execute by `SwiftNavigation.framework` linker errors for `CasePathsCore.CasePathable` / `AnyCasePath`.
+- Pushed commits: `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
+- Focused `RideFeatureTests` and `OTPFeatureTests` pass with `-skipMacroValidation`.
+- Full `BIRGEPassengerTests` no longer hits the package linker blocker, but the full simulator run hung and was interrupted after ~399s.
 
 ### [IOS-017] API Client + Token Refresh
 - [x] `APIClient` TCA dependency: authenticated URLSession wrapper
@@ -46,7 +48,7 @@ Implementation note (2026-05-03):
 - [x] Build verification: `xcodebuild build -scheme BIRGEPassenger -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -quiet` passes (2026-05-02)
 - [ ] Timer-based proactive refresh 60 seconds before JWT expiry
 - Wire WebSocket `Authorization: Bearer` header
-- First test unblocker: fix current `swift-navigation` / `CasePathsCore` linker failure so focused iOS tests can compile again
+- [x] First test unblocker: fixed current `swift-navigation` / `CasePathsCore` linker failure so focused iOS tests compile and run
 
 Implementation note (2026-05-02):
 - Added `BIRGECore/Sources/BIRGECore/Network/APIClient.swift` live methods for:
