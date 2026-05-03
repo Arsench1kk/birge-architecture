@@ -52,6 +52,8 @@ sprint: 1
 - Pushed app commit `98948bf4 feat(payments): validate kaspi webhook signatures`.
 - Started driver-side Sprint 1 gaps with D-03 registration onboarding: personal data, vehicle, documents, and subscription tier steps before dashboard.
 - Pushed app commit `d83fec67 feat(driver): add registration onboarding flow`.
+- Polished driver D-05 online waiting and `driver/offer` surfaces in `DriverAppView` with a map-style background, Liquid Glass top/bottom overlays, SF Symbols, offer alert, match pill, route card, metrics grid, and passenger confirmation row.
+- Pushed app commit `136f91a0 feat(driver): polish online offer surfaces`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -68,12 +70,12 @@ sprint: 1
 - ✅ `MyCorridorsFeatureTests` cover booking list loading and selection navigation.
 - ✅ Vapor `swift test` covers Kaspi webhook signature accept/reject behavior.
 - ✅ `BIRGEDrive` builds after driver registration onboarding integration.
+- ✅ `BIRGEDrive` builds after online waiting / driver offer Liquid Glass polish.
 
 ### Next best steps
-1. Continue driver-side Sprint 1 gaps: online waiting / driver offer / driver ride lifecycle polish.
-2. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
-2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
-2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Continue driver-side Sprint 1 gaps: active ride lifecycle polish / dedicated DriverRideFeature.
+2. Add driver background GPS tracking via `LocationClient` and backend location bulk endpoint.
+3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.

@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `136f91a0` — feat(driver): polish online offer surfaces
 - `d83fec67` — feat(driver): add registration onboarding flow
 - `98948bf4` — feat(payments): validate kaspi webhook signatures
 - `061d6aaf` — feat(corridors): add passenger bookings list
@@ -65,6 +66,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Passenger My Corridors list added: backend `/corridors/bookings`, iOS `APIClient.fetchCorridorBookings`, Liquid Glass booking cards, empty/error/loading states, and Home `Поездки` tab navigation.
 - Kaspi webhook handling hardened with `KASPI_WEBHOOK_SECRET`, HMAC-SHA256 canonical payload validation, signature header fallback, and backend tests.
 - Driver-side work started: BIRGEDrive now presents a 4-step registration onboarding flow before dashboard, covering D-03 personal info, D-03a vehicle, D-03b documents, and D-03c tier selection with Liquid Glass and SF Symbols.
+- Driver D-05 online waiting and `driver/offer` surfaces polished in `DriverAppView`: map-style background, Liquid Glass navigation/working sheets, SF Symbol status icons, offer alert, countdown, AI match pill, route card, metrics grid, and passenger confirmation row.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -83,11 +85,12 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ `MyCorridorsFeatureTests` cover booking history loading and corridor selection.
 - ✅ Vapor `swift test` covers Kaspi signature accept/reject behavior.
 - ✅ `BIRGEDrive` build passes after driver registration onboarding integration.
+- ✅ `BIRGEDrive` build passes after driver online waiting / offer polish.
 
 ## Next
-1. Continue driver-side Sprint 1 gaps: online waiting / driver offer / driver ride lifecycle polish.
-2. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
-2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
+1. Continue driver-side Sprint 1 gaps: active ride lifecycle polish / dedicated DriverRideFeature.
+2. Add driver background GPS tracking via `LocationClient` and backend location bulk endpoint.
+3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ## Agent Reminder
 Before the next iOS UI task, read [[Context/Current_Focus]], [[docs/CLAUDE_for_mockups]], and the relevant `docs/mockups/` HTML.

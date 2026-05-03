@@ -83,8 +83,8 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
 | passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
 | driver/dashboard.html | DriverAppView.swift | ⚠️ Mocked |
-| driver/D-05-online-waiting.html | DriverOnlineView.swift | ❌ Not built |
-| driver/offer.html | DriverOfferView.swift | ❌ Not built |
+| driver/D-05-online-waiting.html | DriverAppView.swift | ✅ Built into dashboard online state |
+| driver/offer.html | DriverAppView.swift | ✅ Built into dashboard offer state |
 | driver/D-03a-vehicle.html | DriverRegistrationView.swift | ✅ Built into registration flow |
 | driver/D-03b-documents.html | DriverRegistrationView.swift | ✅ Built into registration flow |
 | driver/D-03c-tier-selection.html | DriverRegistrationView.swift | ✅ Built into registration flow |
@@ -213,7 +213,7 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 2. **Task 6** — "No connection" banner in RideMapView (30 min task, state exists, UI missing)
 3. **Task 9** — CorridorListFeature + CorridorDetailFeature are built with mock data; Vapor `/corridors` API is still CRITICAL and next for real product data
 4. ✅ **Task 10** — OfferFoundView (P-08) is built; next passenger work is backend-backed corridors and remaining ride events
-5. **Task 13** — Driver Registration multi-step (D-03a through D-03c)
+5. ✅ **Task 13** — Driver Registration multi-step (D-03a through D-03c) + D-05/offer UI polish
 6. **Task 16** — Background GPS for driver (IOS-018)
 7. **Task 20** — Kaspi payment: ✅ deep link checkout + HMAC webhook validation skeleton done; real merchant API/provider status contract still pending
 
@@ -227,9 +227,9 @@ The backend is **Swift Vapor 4**, not Go, not Python.
 birge-vapor/Sources/App/
 ├── Modules/Auth/        ← DONE — OTP, JWT, /auth/me
 ├── Modules/Rides/       ← DONE — create, fetch, cancel, WebSocket
-├── Modules/Corridors/   ← TODO — GET /corridors, POST /corridors/:id/book
+├── Modules/Corridors/   ← DONE — GET /corridors, booking, booking history
 ├── Modules/Locations/   ← TODO — POST /locations/bulk
-├── Modules/Payments/    ← TODO — Kaspi webhook, payout
+├── Modules/Payments/    ← PARTIAL — Kaspi checkout deep link + signed webhook event skeleton
 └── Modules/Driver/      ← TODO — registration, corridors/today
 ```
 
