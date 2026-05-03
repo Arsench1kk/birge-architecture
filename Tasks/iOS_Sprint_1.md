@@ -42,8 +42,10 @@ last_updated: 2026-05-03
 - [x] Broadcast latest driver GPS batch point as `ride.location_update` over WebSocket
 - [x] Add Vapor Driver profile API for registration persistence and today corridors
 - [x] Connect BIRGEDrive registration/dashboard to Driver profile and today corridors API
+- [x] Add backend driver ride offers plus accept/arrived/start/complete commands and wire BIRGEDrive to them
 
 Implementation note (2026-05-03):
+- `a12d75b6` — Added driver-facing ride assignment endpoints (`GET /rides/driver/offers`, accept, arrived, start, complete), canonical `ride.status_changed` broadcasts, APIClient methods, and BIRGEDrive polling/accept/command wiring with no-token demo fallback.
 - `be190fa7` — BIRGEDrive now loads driver profile/today corridors on startup, saves registration via `APIClient.updateDriverProfile`, shows live profile/vehicle/corridor state on the dashboard, and keeps a no-token demo fallback until driver auth is added.
 - `c5012c77` — Added authenticated Driver API: `/api/v1/drivers/me` GET/PUT/POST persists registration/profile fields, auto-creates draft profiles for driver users, and `/api/v1/drivers/corridors/today` returns active corridor candidates plus estimated earnings.
 - `85a66398` — `/locations/bulk` now broadcasts the newest GPS point in each batch as canonical `ride.location_update` to `ride/<ride_id>` WebSocket subscribers; backend tests cover JSON contract.
@@ -66,7 +68,7 @@ Implementation note (2026-05-03):
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
 - Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - Full `BIRGEPassengerTests` pass with `-skipMacroValidation`; live OTP E2E stays opt-in via `RUN_LIVE_OTP_E2E=1`.
@@ -118,7 +120,8 @@ Implementation note (2026-05-02):
 - [x] Backend Driver profile/today corridors API
 - [x] BIRGEDrive Driver API hookup for registration/profile/today corridors
 - `DriverRideFeature` Reducer for BIRGEDrive target
-- Driver-side FSM: accept/decline, navigation, pickup confirmation
+- [x] Driver-side FSM backend commands: accept, pickup arrival, ride start, completion
+- Driver-side navigation polish and live map directions
 - [x] Background GPS tracking via `LocationClient` + `/locations/bulk` sync
 
 ---
@@ -153,4 +156,4 @@ Implementation note (2026-05-02):
 - Обычный `xcodebuild test -scheme BIRGEPassenger` должен проходить без live backend; live success test теперь skipped by default
 - IOS-016 verification attempted on installed `iPhone 17 Pro` simulator because `iPhone 16 Pro` is not available locally
 - Build verification now passes for both `BIRGEPassenger` and `BIRGEDrive` on `iPhone 17 Pro`
-- Current test status: package linker blocker and splash-start OTP E2E mismatch are fixed; full `BIRGEPassengerTests` pass with `-skipMacroValidation` on `iPhone 17 Pro` simulator (2026-05-03), including the subscription Kaspi checkout handoff reducer path; corridor booking persistence is backend-verified with `swift build`; `CorridorDetailFeatureTests` cover visible booking status after join; `MyCorridorsFeatureTests` cover passenger booking history loading and selection; Vapor `swift test` covers Kaspi signature validation; `BIRGEDrive` build passes after driver registration onboarding, online/offer surface polish, active ride lifecycle polish, background GPS sync wiring, and Driver API hookup; `BIRGEPassenger` build and Vapor `swift test` also pass after `/locations/bulk`, location WebSocket broadcast, and driver profile API integration.
+- Current test status: package linker blocker and splash-start OTP E2E mismatch are fixed; full `BIRGEPassengerTests` pass with `-skipMacroValidation` on `iPhone 17 Pro` simulator (2026-05-03), including the subscription Kaspi checkout handoff reducer path; corridor booking persistence is backend-verified with `swift build`; `CorridorDetailFeatureTests` cover visible booking status after join; `MyCorridorsFeatureTests` cover passenger booking history loading and selection; Vapor `swift test` covers Kaspi signature validation and ride status broadcast JSON; `BIRGEDrive` build passes after driver registration onboarding, online/offer surface polish, active ride lifecycle polish, background GPS sync wiring, Driver API hookup, and driver ride command wiring; `BIRGEPassenger` build and Vapor `swift test` also pass after `/locations/bulk`, location WebSocket broadcast, driver profile API integration, and driver assignment commands.
