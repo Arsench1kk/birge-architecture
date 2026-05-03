@@ -44,6 +44,8 @@ sprint: 1
 - Pushed app commit `01955808 feat(payments): add kaspi subscription handoff`.
 - Added persisted corridor booking records with passenger/corridor uniqueness and idempotent repeat booking behavior.
 - Pushed app commit `ab5237fe feat(corridors): persist passenger bookings`.
+- Updated CorridorDetail UX to show persisted booking status, booking id, refreshed seats/participants, and disabled re-join CTA after success.
+- Pushed app commit `17d44560 feat(corridors): show passenger booking status`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -56,9 +58,11 @@ sprint: 1
 - ✅ Vapor `swift build` succeeds after subscriptions API integration.
 - ✅ Vapor `swift build` succeeds after Kaspi payments module integration.
 - ✅ Vapor `swift build` succeeds after persisted corridor bookings integration.
+- ✅ `CorridorDetailFeatureTests` cover booking status and refreshed corridor state after join.
 
 ### Next best steps
-1. Harden remaining passenger backend integrations: real Kaspi API signature/webhook validation and richer corridor booking UX/history.
+1. Add passenger corridor booking history/list surface or move to real Kaspi API signature/webhook validation.
+2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ### Agent reminder

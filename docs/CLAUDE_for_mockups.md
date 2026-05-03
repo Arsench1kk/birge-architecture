@@ -72,7 +72,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-04-home.html | HomeView.swift | ✅ Rebuilt with Liquid Glass + corridor previews |
 | passenger/P-05-search.html | SearchView.swift | ⚠️ Partial |
 | passenger/P-06a-corridor-list.html | CorridorListView.swift | ✅ Built with mock data |
-| passenger/P-06b-corridor-detail.html | CorridorDetailView.swift | ✅ Built with API booking + persisted backend record |
+| passenger/P-06b-corridor-detail.html | CorridorDetailView.swift | ✅ Built with API booking + visible persisted booking status |
 | passenger/P-08-offer.html | OfferFoundView.swift | ✅ Built with countdown + confirm flow |
 | passenger/P-09-driver-en-route.html | RideMapView.swift | ⚠️ UI polished, production events/banner pending |
 | passenger/P-12-ride-complete.html | RideCompleteView.swift | ✅ UI polished, mock data |

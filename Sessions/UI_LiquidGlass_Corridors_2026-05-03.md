@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `17d44560` — feat(corridors): show passenger booking status
 - `ab5237fe` — feat(corridors): persist passenger bookings
 - `01955808` — feat(payments): add kaspi subscription handoff
 - `50c3915f` — feat(subscriptions): connect passenger plans to api
@@ -57,6 +58,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Vapor Payments module added for Kaspi checkout deep links plus append-only `payment_events` and idempotent webhook event insert.
 - Passenger subscriptions now request Kaspi checkout before demo confirmation; the detail CTA shows a Liquid Glass Kaspi handoff card with SF Symbol and deep link.
 - Corridor booking persistence added with `CorridorBooking`, migration, unique passenger/corridor constraint, and idempotent repeat booking response so seats are not decremented twice.
+- Corridor detail UX now surfaces the successful booking state with a Liquid Glass confirmation card, booking id preview, refreshed seats/participants, and disabled repeat CTA.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -71,9 +73,10 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Vapor `swift build` succeeds after subscriptions API integration.
 - ✅ Vapor `swift build` succeeds after Payments/Kaspi handoff integration.
 - ✅ Vapor `swift build` succeeds after corridor booking persistence.
+- ✅ `CorridorDetailFeatureTests` cover join success, booking id storage, and refreshed corridor state.
 
 ## Next
-1. Harden remaining passenger backend integrations: real Kaspi API signature/webhook validation and richer corridor booking UX/history.
+1. Add passenger corridor booking history/list surface or move to real Kaspi API signature/webhook validation.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ## Agent Reminder
