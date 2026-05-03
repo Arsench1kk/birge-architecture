@@ -232,7 +232,7 @@ birge-vapor/Sources/App/
 ├── Modules/Auth/        ← DONE — OTP, JWT, /auth/me
 ├── Modules/Rides/       ← DONE — create, fetch, cancel, WebSocket
 ├── Modules/Corridors/   ← DONE — GET /corridors, booking, booking history
-├── Modules/Locations/   ← DONE — POST /locations/bulk stores authenticated GPS batches
+├── Modules/Locations/   ← DONE — POST /locations/bulk stores GPS batches and broadcasts ride.location_update
 ├── Modules/Payments/    ← PARTIAL — Kaspi checkout deep link + signed webhook event skeleton
 └── Modules/Driver/      ← TODO — registration, corridors/today
 ```

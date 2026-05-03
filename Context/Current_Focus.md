@@ -58,6 +58,8 @@ sprint: 1
 - Pushed app commit `079ac13a feat(driver): add active ride lifecycle polish`.
 - Added driver background GPS sync path: BIRGEDrive starts `LocationClient` tracking on accepted rides, stops/syncs on completion/offline, enables driver background location Info.plist keys, and Vapor now exposes authenticated `POST /api/v1/locations/bulk` backed by `driver_location_records`.
 - Pushed app commit `e778858b feat(driver): sync background locations`.
+- Added live driver location broadcast: `/locations/bulk` now emits the latest batch point as canonical `ride.location_update` on `ride/<ride_id>` WebSocket channels, matching passenger `RideFeature` parsing.
+- Pushed app commit `85a66398 feat(locations): broadcast driver updates`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -78,10 +80,11 @@ sprint: 1
 - ✅ `BIRGEDrive` builds after active ride lifecycle polish.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` build after driver background GPS sync work.
 - ✅ Vapor `swift build` and `swift test` pass after `/locations/bulk` integration.
+- ✅ Vapor `swift build`, `swift test`, and `BIRGEPassenger` build pass after location WebSocket broadcast.
 
 ### Next best steps
 1. Add backend Driver module for registration/profile/corridors/today when UI flow needs live data.
-2. Add live driver WebSocket/location broadcast from stored GPS records to passenger ride map.
+2. Replace demo-generated BIRGEDrive ride IDs with backend ride assignment once Driver module exists.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
