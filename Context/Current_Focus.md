@@ -60,6 +60,8 @@ sprint: 1
 - Pushed app commit `e778858b feat(driver): sync background locations`.
 - Added live driver location broadcast: `/locations/bulk` now emits the latest batch point as canonical `ride.location_update` on `ride/<ride_id>` WebSocket channels, matching passenger `RideFeature` parsing.
 - Pushed app commit `85a66398 feat(locations): broadcast driver updates`.
+- Added backend Driver module: authenticated `/api/v1/drivers/me` GET/PUT/POST for registration/profile persistence and `/api/v1/drivers/corridors/today` for driver dashboard corridor candidates.
+- Pushed app commit `c5012c77 feat(driver): add driver profile api`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -81,9 +83,10 @@ sprint: 1
 - ✅ `BIRGEDrive` and `BIRGEPassenger` build after driver background GPS sync work.
 - ✅ Vapor `swift build` and `swift test` pass after `/locations/bulk` integration.
 - ✅ Vapor `swift build`, `swift test`, and `BIRGEPassenger` build pass after location WebSocket broadcast.
+- ✅ Vapor `swift build` and `swift test` pass after driver profile API integration.
 
 ### Next best steps
-1. Add backend Driver module for registration/profile/corridors/today when UI flow needs live data.
+1. Connect BIRGEDrive registration/dashboard screens to `/api/v1/drivers/me` and `/api/v1/drivers/corridors/today`.
 2. Replace demo-generated BIRGEDrive ride IDs with backend ride assignment once Driver module exists.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 

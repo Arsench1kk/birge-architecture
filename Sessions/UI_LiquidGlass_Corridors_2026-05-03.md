@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `c5012c77` — feat(driver): add driver profile api
 - `85a66398` — feat(locations): broadcast driver updates
 - `e778858b` — feat(driver): sync background locations
 - `079ac13a` — feat(driver): add active ride lifecycle polish
@@ -73,6 +74,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Driver D-07/D-08/D-09/D-10 lifecycle polished with active ride route sheet, pickup/boarding/in-progress states, boarding codes, passenger manifest, route progress, and completed ride summary/next-ride actions.
 - Driver background GPS sync path added: active rides start `LocationClient`, completion/offline stops and syncs pending GRDB records, BIRGEDrive has background location plist keys, and Vapor stores authenticated location batches in `driver_location_records`.
 - Location batches now broadcast the newest point as `ride.location_update` over `ride/<ride_id>` WebSocket channels for passenger map consumption.
+- Backend Driver module added: authenticated `/api/v1/drivers/me` GET/PUT/POST persists D-03 registration/profile fields and `/api/v1/drivers/corridors/today` provides active corridor candidates plus estimated earnings for the driver dashboard.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -96,9 +98,10 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` build after driver background GPS sync work.
 - ✅ Vapor `swift build` and `swift test` pass after `/locations/bulk` integration.
 - ✅ Vapor `swift build`, Vapor `swift test`, and `BIRGEPassenger` build pass after location WebSocket broadcast.
+- ✅ Vapor `swift build` and `swift test` pass after driver profile API integration.
 
 ## Next
-1. Add backend Driver module for registration/profile/corridors/today when UI flow needs live data.
+1. Connect BIRGEDrive registration/dashboard screens to `/api/v1/drivers/me` and `/api/v1/drivers/corridors/today`.
 2. Replace demo-generated BIRGEDrive ride IDs with backend ride assignment once Driver module exists.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
