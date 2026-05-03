@@ -31,7 +31,8 @@ Backend: **Swift Vapor 4** (not Go, not Node — pure Swift server).
 │       ├── Modules/Auth/        ← OTP + JWT (DONE)
 │       ├── Modules/Rides/       ← Create/fetch/cancel (DONE)
 │       ├── Modules/WebSocket/   ← WSHub ride-scoped (DONE)
-│       ├── Modules/Corridors/   ← NOT YET IMPLEMENTED
+│       ├── Modules/Corridors/   ← DONE
+│       ├── Modules/Subscriptions/← DONE (demo activation, no payment provider)
 │       ├── Modules/Locations/   ← NOT YET IMPLEMENTED
 │       └── Modules/Payments/    ← NOT YET IMPLEMENTED
 └── docs/
@@ -76,8 +77,8 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-09-driver-en-route.html | RideMapView.swift | ⚠️ UI polished, production events/banner pending |
 | passenger/P-12-ride-complete.html | RideCompleteView.swift | ✅ UI polished, mock data |
 | passenger/P-13-boarding-code.html | BoardingCodeView.swift | ✅ Done |
-| passenger/P-17-subscriptions.html | SubscriptionsView.swift | ✅ Built with local TCA model |
-| passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with local TCA model |
+| passenger/P-17-subscriptions.html | SubscriptionsView.swift | ✅ Built with live API plans |
+| passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
 | passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
 | driver/dashboard.html | DriverAppView.swift | ⚠️ Mocked |

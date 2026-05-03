@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `50c3915f` — feat(subscriptions): connect passenger plans to api
 - `9f06a2a4` — feat(passenger): add subscriptions flow
 - `fe208327` — feat(passenger): add commute setup onboarding
 - `da9001cf` — feat(passenger): add ai explanation screen
@@ -49,6 +50,8 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Home AI pill now opens AI explanation.
 - P-03a–P-03e commute setup is now part of `OnboardingFeature/View`: origin, destination, times, weekdays, and final AI route summary.
 - P-17/P-18 subscriptions flow added as `SubscriptionsFeature/View`: current plan, tier list, plan detail, comparison, local activation state, and Home subscription navigation.
+- Vapor subscriptions API added: persisted `PassengerSubscription`, migration, authenticated overview endpoint, and activation endpoint.
+- Passenger `APIClient` now exposes `fetchSubscriptions` and `activateSubscription`; `SubscriptionsFeature/View` uses live plans, active-since text, loading/error state, and activating CTA state.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -59,10 +62,11 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator.
 - ✅ `PassengerAppFeatureTests` cover `Home → AI Explanation → Corridor List`.
 - ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
-- ✅ `SubscriptionsFeatureTests` cover plan selection, activation, and detail dismissal.
+- ✅ `SubscriptionsFeatureTests` cover API loading, plan selection, activation, and detail dismissal.
+- ✅ Vapor `swift build` succeeds after subscriptions API integration.
 
 ## Next
-1. Harden passenger backend integrations: payment/subscription API, corridor persistence policy, and richer booking UX.
+1. Harden remaining passenger backend integrations: real payment provider/Kaspi handoff, corridor persistence policy, and richer booking UX.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ## Agent Reminder

@@ -36,6 +36,9 @@ sprint: 1
 - Pushed app commit `fe208327 feat(passenger): add commute setup onboarding`.
 - Added P-17/P-18 subscriptions flow with TCA state for plans, detail, activation, and Home subscription navigation.
 - Pushed app commit `9f06a2a4 feat(passenger): add subscriptions flow`.
+- Implemented Vapor `/api/v1/subscriptions` overview/activation API with persisted passenger subscription state.
+- Connected `SubscriptionsFeature/View` to live subscription plans and activation through `APIClient`, with loading/error/activating states.
+- Pushed app commit `50c3915f feat(subscriptions): connect passenger plans to api`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -44,10 +47,11 @@ sprint: 1
 - ✅ Full `BIRGEPassengerTests` pass with `-skipMacroValidation` on installed `iPhone 17 Pro` simulator; live OTP E2E remains skipped unless `RUN_LIVE_OTP_E2E=1`.
 - ✅ `PassengerAppFeatureTests` cover `Home → AI Explanation → Corridor List`.
 - ✅ `OnboardingFeatureTests` cover commute setup paging, inputs, day selection, add-another-route, and finish delegate.
-- ✅ `SubscriptionsFeatureTests` cover plan selection, activation, and detail dismissal.
+- ✅ `SubscriptionsFeatureTests` cover API loading, plan selection, activation, and detail dismissal.
+- ✅ Vapor `swift build` succeeds after subscriptions API integration.
 
 ### Next best steps
-1. Harden passenger backend integrations: payment/subscription API, corridor persistence policy, and richer booking UX.
+1. Harden remaining passenger backend integrations: real payment provider/Kaspi handoff, corridor persistence policy, and richer booking UX.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 
 ### Agent reminder
