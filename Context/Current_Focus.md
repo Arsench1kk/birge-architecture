@@ -46,6 +46,8 @@ sprint: 1
 - Pushed app commit `ab5237fe feat(corridors): persist passenger bookings`.
 - Updated CorridorDetail UX to show persisted booking status, booking id, refreshed seats/participants, and disabled re-join CTA after success.
 - Pushed app commit `17d44560 feat(corridors): show passenger booking status`.
+- Added `/api/v1/corridors/bookings` and Passenger `MyCorridorsFeature/View` reachable from the Home `Поездки` tab.
+- Pushed app commit `061d6aaf feat(corridors): add passenger bookings list`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -59,9 +61,11 @@ sprint: 1
 - ✅ Vapor `swift build` succeeds after Kaspi payments module integration.
 - ✅ Vapor `swift build` succeeds after persisted corridor bookings integration.
 - ✅ `CorridorDetailFeatureTests` cover booking status and refreshed corridor state after join.
+- ✅ `MyCorridorsFeatureTests` cover booking list loading and selection navigation.
 
 ### Next best steps
-1. Add passenger corridor booking history/list surface or move to real Kaspi API signature/webhook validation.
+1. Harden real Kaspi API signature/webhook validation.
+2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 2. Continue driver-side Sprint 1 gaps once passenger blocker/UI pass is stable.
 

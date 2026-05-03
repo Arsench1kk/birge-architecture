@@ -33,8 +33,10 @@ last_updated: 2026-05-03
 - [x] Add Kaspi subscription checkout handoff and payment event ledger skeleton
 - [x] Persist passenger corridor bookings and make repeat booking idempotent
 - [x] Show passenger corridor booking status/id in CorridorDetail after join
+- [x] Add passenger My Corridors list backed by `/corridors/bookings`
 
 Implementation note (2026-05-03):
+- `061d6aaf` — Added authenticated `/api/v1/corridors/bookings`, `APIClient.fetchCorridorBookings`, `MyCorridorsFeature/View`, Home `Поездки` navigation, and reducer/navigation tests.
 - `17d44560` — `CorridorDetailFeature/View` now stores booking id/status, refreshes corridor seats/participants from `CorridorBookingResponse`, disables repeat join, and has reducer coverage.
 - `ab5237fe` — Vapor corridor bookings now persist passenger/corridor records with uniqueness; repeat booking returns the existing booking instead of decrementing seats again.
 - `01955808` — Vapor Payments module added with Kaspi checkout deep link, append-only `payment_events`, idempotent webhook event handling, iOS `createKaspiCheckout`, and subscription UI handoff before demo activation.
@@ -48,7 +50,7 @@ Implementation note (2026-05-03):
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
 - Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - Full `BIRGEPassengerTests` pass with `-skipMacroValidation`; live OTP E2E stays opt-in via `RUN_LIVE_OTP_E2E=1`.
@@ -128,4 +130,4 @@ Implementation note (2026-05-02):
 - Обычный `xcodebuild test -scheme BIRGEPassenger` должен проходить без live backend; live success test теперь skipped by default
 - IOS-016 verification attempted on installed `iPhone 17 Pro` simulator because `iPhone 16 Pro` is not available locally
 - Build verification now passes for both `BIRGEPassenger` and `BIRGEDrive` on `iPhone 17 Pro`
-- Current test status: package linker blocker and splash-start OTP E2E mismatch are fixed; full `BIRGEPassengerTests` pass with `-skipMacroValidation` on `iPhone 17 Pro` simulator (2026-05-03), including the subscription Kaspi checkout handoff reducer path; corridor booking persistence is backend-verified with `swift build`; `CorridorDetailFeatureTests` cover visible booking status after join.
+- Current test status: package linker blocker and splash-start OTP E2E mismatch are fixed; full `BIRGEPassengerTests` pass with `-skipMacroValidation` on `iPhone 17 Pro` simulator (2026-05-03), including the subscription Kaspi checkout handoff reducer path; corridor booking persistence is backend-verified with `swift build`; `CorridorDetailFeatureTests` cover visible booking status after join; `MyCorridorsFeatureTests` cover passenger booking history loading and selection.

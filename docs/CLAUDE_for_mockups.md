@@ -77,6 +77,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-09-driver-en-route.html | RideMapView.swift | ⚠️ UI polished, production events/banner pending |
 | passenger/P-12-ride-complete.html | RideCompleteView.swift | ✅ UI polished, mock data |
 | passenger/P-13-boarding-code.html | BoardingCodeView.swift | ✅ Done |
+| passenger/P-14-rides-history.html | MyCorridorsView.swift | ✅ Corridor bookings list |
 | passenger/P-17-subscriptions.html | SubscriptionsView.swift | ✅ Built with live API plans |
 | passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation + Kaspi handoff |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
