@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `2fd2a124` — feat(corridors): connect passenger corridors to API
 - `882230a1` — feat(passenger): add offer found confirmation flow
 - `9a58800a` — feat(core): add liquid glass design components
 - `dcbdf02c` — feat(passenger): add splash and onboarding flow
@@ -31,6 +32,9 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - Corridor list and corridor detail TCA features/views.
 - Home → corridor list/detail navigation in `PassengerAppFeature`.
 - P-08 `OfferFoundFeature/View` with countdown, Liquid Glass card, SF Symbols, and confirm/decline navigation.
+- Vapor `Corridor` model, migration, controller/service/DTOs, seeded corridor list, and passenger booking endpoint.
+- Passenger `APIClient` corridor DTOs plus live `GET /corridors` and `POST /corridors/:id/book` methods.
+- Home, corridor list, and corridor detail screens now load live corridors with loading/error states.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -38,10 +42,10 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ⚠️ `xcodebuild test` is still blocked before test execution by `SwiftNavigation.framework` linker errors for `CasePathsCore.CasePathable` / `AnyCasePath`.
 
 ## Next
-1. Implement Vapor `/api/v1/corridors` and connect corridor UI to real API data.
-2. Add RideMap disconnection banner and remaining ride lifecycle events.
-3. Fix or isolate the `SwiftNavigation` / `CasePathsCore` test linker blocker.
-4. Continue remaining passenger mockup gaps: AI explanation, commute setup, subscriptions/payment.
+1. Add RideMap disconnection banner and remaining ride lifecycle events.
+2. Fix or isolate the `SwiftNavigation` / `CasePathsCore` test linker blocker.
+3. Continue remaining passenger mockup gaps: AI explanation, commute setup, subscriptions/payment.
+4. Harden corridors with real matching inputs and richer booking UX after local backend auth/runtime verification.
 
 ## Agent Reminder
 Before the next iOS UI task, read [[Context/Current_Focus]], [[docs/CLAUDE_for_mockups]], and the relevant `docs/mockups/` HTML.

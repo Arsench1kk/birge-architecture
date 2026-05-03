@@ -19,9 +19,11 @@ sprint: 1
 - Rebuilt/polished passenger Splash, Onboarding, Home, BoardingCode, RideComplete, RideMap, and RideRequest surfaces.
 - Replaced visible passenger ride emoji/stickers with SF Symbols where applicable.
 - Added real TCA navigation for corridor list and corridor detail screens from Home.
-- Added `CorridorListFeature/View` and `CorridorDetailFeature/View` using mock corridor data while backend `/corridors` remains TODO.
+- Added `CorridorListFeature/View` and `CorridorDetailFeature/View`; they now load live corridor data through `APIClient`.
 - Added P-08 OfferFound confirmation flow: `Searching → OfferFound → RideMap` on confirm, decline/expiry returns to searching.
-- Pushed app commit `882230a1 feat(passenger): add offer found confirmation flow`.
+- Implemented Vapor `/api/v1/corridors` with default seeded corridors and passenger booking endpoint.
+- Connected Passenger Home, corridor list, and corridor detail screens to live `APIClient.fetchCorridors` / `bookCorridor` calls with loading/error states.
+- Pushed app commit `2fd2a124 feat(corridors): connect passenger corridors to API`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -29,10 +31,10 @@ sprint: 1
 - ⚠️ `xcodebuild test` still fails before app tests run while linking `SwiftNavigation.framework` against `CasePathsCore` symbols. Treat this as the first technical blocker before claiming test green.
 
 ### Next best steps
-1. Implement Vapor `/api/v1/corridors` and replace corridor mock data with `APIClient` calls.
-2. Add disconnection/banner state to `RideMapView` and continue production ride events.
-3. Re-triage `SwiftNavigation` / `CasePathsCore` test linker blocker.
-4. Continue remaining passenger mockup gaps: AI explanation, commute setup steps, subscriptions/payment.
+1. Add disconnection/banner state to `RideMapView` and continue production ride events.
+2. Re-triage `SwiftNavigation` / `CasePathsCore` test linker blocker.
+3. Continue remaining passenger mockup gaps: AI explanation, commute setup steps, subscriptions/payment.
+4. Harden corridors with real matching inputs, persistence policy, and booking UX once backend auth/runtime is fully exercised.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.
