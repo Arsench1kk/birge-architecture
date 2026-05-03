@@ -218,7 +218,7 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 3. **Task 9** — CorridorListFeature + CorridorDetailFeature are built with mock data; Vapor `/corridors` API is still CRITICAL and next for real product data
 4. ✅ **Task 10** — OfferFoundView (P-08) is built; next passenger work is backend-backed corridors and remaining ride events
 5. ✅ **Task 13** — Driver Registration multi-step (D-03a through D-03c) + D-05/offer UI polish
-6. **Task 16** — Background GPS for driver (IOS-018)
+6. ✅ **Task 16** — Background GPS for driver (IOS-018) via `LocationClient` + `/locations/bulk`
 7. **Task 20** — Kaspi payment: ✅ deep link checkout + HMAC webhook validation skeleton done; real merchant API/provider status contract still pending
 
 ---
@@ -232,7 +232,7 @@ birge-vapor/Sources/App/
 ├── Modules/Auth/        ← DONE — OTP, JWT, /auth/me
 ├── Modules/Rides/       ← DONE — create, fetch, cancel, WebSocket
 ├── Modules/Corridors/   ← DONE — GET /corridors, booking, booking history
-├── Modules/Locations/   ← TODO — POST /locations/bulk
+├── Modules/Locations/   ← DONE — POST /locations/bulk stores authenticated GPS batches
 ├── Modules/Payments/    ← PARTIAL — Kaspi checkout deep link + signed webhook event skeleton
 └── Modules/Driver/      ← TODO — registration, corridors/today
 ```
