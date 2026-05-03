@@ -83,7 +83,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation + Kaspi handoff |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
 | passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
-| driver/dashboard.html | DriverAppView.swift | ⚠️ UI polished, API hookup next |
+| driver/dashboard.html | DriverAppView.swift | ⚠️ UI polished, profile/today corridors API hooked; ride assignment next |
 | driver/D-05-online-waiting.html | DriverAppView.swift | ✅ Built into dashboard online state |
 | driver/offer.html | DriverAppView.swift | ✅ Built into dashboard offer state |
 | driver/D-07-en-route.html | DriverAppView.swift | ✅ Built into active ride pickup state |
@@ -219,7 +219,7 @@ Fallback for iOS 18: `.ultraThinMaterial` + custom stroke.
 3. **Task 9** — CorridorListFeature + CorridorDetailFeature are built with mock data; Vapor `/corridors` API is still CRITICAL and next for real product data
 4. ✅ **Task 10** — OfferFoundView (P-08) is built; next passenger work is backend-backed corridors and remaining ride events
 5. ✅ **Task 13** — Driver Registration multi-step (D-03a through D-03c) + D-05/offer UI polish
-6. **Next driver step** — connect BIRGEDrive registration/dashboard UI to `/api/v1/drivers/me` and `/api/v1/drivers/corridors/today`
+6. ✅ **Driver API hookup** — BIRGEDrive registration/dashboard uses `/api/v1/drivers/me` and `/api/v1/drivers/corridors/today`; next is ride assignment/driver commands
 7. ✅ **Task 16** — Background GPS for driver (IOS-018) via `LocationClient` + `/locations/bulk`
 8. **Task 20** — Kaspi payment: ✅ deep link checkout + HMAC webhook validation skeleton done; real merchant API/provider status contract still pending
 

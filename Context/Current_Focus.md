@@ -62,6 +62,8 @@ sprint: 1
 - Pushed app commit `85a66398 feat(locations): broadcast driver updates`.
 - Added backend Driver module: authenticated `/api/v1/drivers/me` GET/PUT/POST for registration/profile persistence and `/api/v1/drivers/corridors/today` for driver dashboard corridor candidates.
 - Pushed app commit `c5012c77 feat(driver): add driver profile api`.
+- Connected BIRGEDrive registration/dashboard to Driver API: registration saves through `APIClient.updateDriverProfile`, app startup loads `/drivers/me`, dashboard loads `/drivers/corridors/today`, and no-token demo fallback keeps local preview usable until driver auth exists.
+- Pushed app commit `be190fa7 feat(driver): connect dashboard to profile api`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -84,10 +86,11 @@ sprint: 1
 - ✅ Vapor `swift build` and `swift test` pass after `/locations/bulk` integration.
 - ✅ Vapor `swift build`, `swift test`, and `BIRGEPassenger` build pass after location WebSocket broadcast.
 - ✅ Vapor `swift build` and `swift test` pass after driver profile API integration.
+- ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after Driver API iOS hookup.
 
 ### Next best steps
-1. Connect BIRGEDrive registration/dashboard screens to `/api/v1/drivers/me` and `/api/v1/drivers/corridors/today`.
-2. Replace demo-generated BIRGEDrive ride IDs with backend ride assignment once Driver module exists.
+1. Replace demo-generated BIRGEDrive ride IDs/offers with backend ride assignment and driver command endpoints.
+2. Add driver auth/session path or shared login handoff so BIRGEDrive can call live Driver API without demo fallback.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
