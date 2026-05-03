@@ -68,6 +68,8 @@ sprint: 1
 - Pushed app commit `a12d75b6 feat(driver): add ride assignment commands`.
 - Added BIRGEDrive driver auth/session flow: email login/register screen, APIClient `auth/login`/driver `auth/register`, token storage through shared refresh client, and removed no-token demo fallback from registration/offers.
 - Pushed app commit `29903977 feat(driver): add auth session flow`.
+- Persisted ride address labels: passenger ride requests now send origin/destination names, Vapor stores them on rides, and driver offers prefer these labels over coordinate fallback.
+- Pushed app commit `5bf3fcc1 feat(rides): persist address labels`.
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -93,10 +95,11 @@ sprint: 1
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after Driver API iOS hookup.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEDrive` build, and `BIRGEPassenger` build pass after driver ride assignment/commands.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
+- ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
 
 ### Next best steps
-1. Replace coordinate-only driver offer addresses with reverse-geocoded/persisted pickup and destination labels.
-2. Add driver-side live navigation/directions polish for accepted rides.
+1. Add driver-side live navigation/directions polish for accepted rides.
+2. Add persisted named pickup/destination inputs beyond current fixed coordinates.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder

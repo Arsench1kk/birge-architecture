@@ -83,7 +83,7 @@ They are the **visual specification** for every SwiftUI view you write.
 | passenger/P-18-subscription-detail.html | SubscriptionsView.swift | ✅ Built with live API activation + Kaspi handoff |
 | passenger/P-19-profile.html | ProfileView.swift | ✅ Real API |
 | passenger/P-23-ai-explanation.html | AIExplanationView.swift | ✅ Built with Liquid Glass + SF Symbols |
-| driver/dashboard.html | DriverAppView.swift | ⚠️ UI polished, live driver auth/profile/today corridors/ride commands hooked; navigation/address quality next |
+| driver/dashboard.html | DriverAppView.swift | ⚠️ UI polished, live driver auth/profile/today corridors/ride commands and ride address labels hooked; navigation next |
 | driver/D-05-online-waiting.html | DriverAppView.swift | ✅ Built into dashboard online state |
 | driver/offer.html | DriverAppView.swift | ✅ Built into dashboard offer state |
 | driver/D-07-en-route.html | DriverAppView.swift | ✅ Built into active ride pickup state |

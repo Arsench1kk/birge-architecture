@@ -11,6 +11,7 @@ branch: feature/passenger-liquid-glass-ui
 Implemented and pushed the first major passenger UI pass from the final mockups. The SwiftUI implementation should use the mockups as product direction, then improve the result with native platform behavior, Liquid Glass, and SF Symbols.
 
 ## Commits pushed
+- `5bf3fcc1` — feat(rides): persist address labels
 - `29903977` — feat(driver): add auth session flow
 - `a12d75b6` — feat(driver): add ride assignment commands
 - `be190fa7` — feat(driver): connect dashboard to profile api
@@ -81,6 +82,7 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - BIRGEDrive registration/dashboard now uses Driver API through `APIClient`: startup profile load, registration save, today corridors dashboard card, and no-token demo fallback until driver auth/session is implemented.
 - Driver ride assignment/commands added: backend driver offers, accept/arrived/start/complete endpoints, canonical `ride.status_changed` WebSocket broadcast, and BIRGEDrive polling plus lifecycle command wiring.
 - BIRGEDrive driver auth/session flow added: email login/register, shared API token storage, auth gate before registration/dashboard, and removal of no-token registration/offer fallback.
+- Ride address labels persisted end-to-end: passenger request strings are sent to Vapor, stored on rides, returned in ride DTOs, and used by driver offers.
 
 ## Verification
 - ✅ `git diff --check` passed.
@@ -108,10 +110,11 @@ Implemented and pushed the first major passenger UI pass from the final mockups.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after Driver API iOS hookup.
 - ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEDrive` build, and `BIRGEPassenger` build pass after driver ride assignment/commands.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver auth/session flow.
+- ✅ Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build, and `BIRGEDrive` build pass after ride address labels.
 
 ## Next
-1. Replace coordinate-only driver offer addresses with reverse-geocoded/persisted pickup and destination labels.
-2. Add driver-side live navigation/directions polish for accepted rides.
+1. Add driver-side live navigation/directions polish for accepted rides.
+2. Add persisted named pickup/destination inputs beyond current fixed coordinates.
 3. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ## Agent Reminder
