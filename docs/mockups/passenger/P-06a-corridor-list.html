@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE — Коридоры</title>
+<style>
+:root{--blue:#0EA5E9;--blue-dark:#0284C7;--blue-light:#E0F2FE;--text:#0C1A2E;--text-gray:#64748B;--text-light:#94A3B8;--divider:rgba(14,165,233,0.12);--radius-card:20px;--shadow-card:0 8px 32px rgba(14,165,233,0.08),inset 0 1px 0 rgba(255,255,255,0.8)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'SF Pro Display',BlinkMacSystemFont,sans-serif;background:linear-gradient(160deg,#E0F2FE 0%,#F0F9FF 40%,#fff 100%);min-height:100vh;color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+.screen{width:393px;height:852px;margin:0 auto;position:relative;overflow:hidden}
+.nav-bar{position:absolute;top:0;left:0;right:0;z-index:30;padding:59px 20px 12px;background:rgba(240,249,255,0.88);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid var(--divider);display:flex;align-items:center;justify-content:center}
+.nav-back{position:absolute;left:20px;font-size:15px;color:var(--blue);font-weight:500;cursor:pointer}
+.nav-title{font-size:17px;font-weight:700}
+.filter-bar{position:absolute;top:95px;left:0;right:0;z-index:25;padding:10px 20px;background:rgba(240,249,255,0.80);backdrop-filter:blur(16px)}
+.filter-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.filter-scroll::-webkit-scrollbar{display:none}
+.fpill{padding:8px 16px;border-radius:100px;font-size:14px;font-weight:600;white-space:nowrap;flex-shrink:0;cursor:pointer;background:rgba(14,165,233,0.08);color:var(--blue-dark)}
+.fpill.active{background:var(--blue);color:#fff}
+.ai-sum{position:absolute;top:140px;left:0;right:0;z-index:20;padding:8px 20px}
+.ai-sum-c{padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;color:var(--blue-dark);background:rgba(255,255,255,0.72);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.6);box-shadow:var(--shadow-card)}
+.scroll{position:absolute;top:185px;bottom:76px;left:0;right:0;overflow-y:auto;padding:16px 20px 24px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.cc{padding:18px;margin-bottom:12px;border-radius:var(--radius-card);background:rgba(255,255,255,0.72);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.6);box-shadow:var(--shadow-card);cursor:pointer;transition:transform .15s}
+.cc:active{transform:scale(.98)}
+.cc.muted{opacity:.8}
+.cc-top{display:flex;align-items:center;justify-content:space-between}
+.ai-b{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;background:linear-gradient(135deg,#E0F2FE,#BAE6FD);border:1px solid rgba(14,165,233,0.3);font-size:12px;font-weight:600;color:var(--blue-dark)}
+.ai-b.m{background:#F1F5F9;border-color:#E2E8F0;color:var(--text-gray)}
+.sp{padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600}
+.sp-g{background:#D1FAE5;color:#065F46}
+.sp-b{background:var(--blue-light);color:var(--blue-dark)}
+.sp-y{background:#F1F5F9;color:var(--text-gray)}
+.rc{margin-top:10px}
+.rr{display:flex;align-items:center;gap:10px}
+.rd{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.rl{width:2px;height:16px;border-left:2px dashed var(--blue);margin-left:3px}
+.rn{font-size:16px;font-weight:700}
+.sr{display:flex;align-items:center;gap:16px;margin-top:10px;font-size:14px;color:var(--text-gray)}
+.sr .b{color:var(--blue);font-weight:700}
+.cd{height:1px;background:var(--divider);margin:12px 0}
+.pr{display:flex;align-items:center}
+.pa{display:flex}
+.pav{width:32px;height:32px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;margin-left:-8px;flex-shrink:0}
+.pav:first-child{margin-left:0}
+.c1{background:#7C3AED}.c2{background:#10B981}.c3{background:#F59E0B}.c4{background:#0EA5E9}.c5{background:#EC4899}
+.pf{font-size:13px;color:var(--text-gray);margin-left:8px;flex:1}
+.pl{font-size:14px;font-weight:700;color:var(--blue);cursor:pointer;flex-shrink:0}
+.bt{text-align:center;padding:8px 0 16px}
+.bt p{font-size:13px;color:var(--text-gray)}
+.bt a{font-size:14px;color:var(--blue);font-weight:600;margin-top:4px;display:inline-block;text-decoration:none}
+.tb{position:absolute;bottom:0;left:0;right:0;z-index:30;display:flex;align-items:center;padding:8px 0 34px;background:rgba(255,255,255,0.88);backdrop-filter:blur(30px);border-top:1px solid var(--divider)}
+.ti{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.ti-i{font-size:20px}
+.ti-l{font-size:10px;font-weight:500;color:var(--text-light)}
+.ti.a .ti-l{color:var(--blue)}
+
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="screen">
+<div class="nav-bar"><div class="nav-back">&#8592; Назад</div><div class="nav-title">Коридоры</div></div>
+<div class="filter-bar"><div class="filter-scroll">
+<div class="fpill active">Все &#10003;</div><div class="fpill">Утро 07–09</div><div class="fpill">Вечер 17–20</div><div class="fpill">Рядом со мной</div><div class="fpill">до 1000&#8376;</div>
+</div></div>
+<div class="ai-sum"><div class="ai-sum-c">&#10024; AI нашёл 5 коридоров по вашим маршрутам</div></div>
+<div class="scroll">
+<div class="cc"><div class="cc-top"><div class="ai-b">&#10024; 98% совпадение</div><div class="sp sp-g">Места есть</div></div><div class="rc"><div class="rr"><div class="rd"></div><div class="rn">Алатау, пр. Аль-Фараби</div></div><div class="rl"></div><div class="rr"><div class="rd"></div><div class="rn">Есентай Парк, 77/8</div></div></div><div class="sr"><span>&#9200; 07:30</span><span>&#128101; <span class="b">3</span> / 4 места</span><span>&#128176; <span class="b">890&#8376;</span></span></div><div class="cd"></div><div class="pr"><div class="pa"><div class="pav c1">А</div><div class="pav c2">М</div><div class="pav c3">Д</div></div><div class="pf">+1 свободно</div><div class="pl">Подробнее &#8594;</div></div></div>
+<div class="cc"><div class="cc-top"><div class="ai-b">&#10024; 87% совпадение</div><div class="sp sp-b">1 место</div></div><div class="rc"><div class="rr"><div class="rd"></div><div class="rn">Бостандык</div></div><div class="rl"></div><div class="rr"><div class="rd"></div><div class="rn">Алмалы</div></div></div><div class="sr"><span>&#9200; 08:00</span><span>&#128101; <span class="b">3</span> / 4</span><span>&#128176; <span class="b">750&#8376;</span></span></div><div class="cd"></div><div class="pr"><div class="pa"><div class="pav c4">К</div><div class="pav c5">Н</div><div class="pav c2">Т</div></div><div class="pf"></div><div class="pl">Подробнее &#8594;</div></div></div>
+<div class="cc"><div class="cc-top"><div class="ai-b">&#10024; 74% совпадение</div><div class="sp sp-y">2 места</div></div><div class="rc"><div class="rr"><div class="rd"></div><div class="rn">Медеу</div></div><div class="rl"></div><div class="rr"><div class="rd"></div><div class="rn">Абай</div></div></div><div class="sr"><span>&#9200; 07:45</span><span>&#128101; <span class="b">2</span> / 4</span><span>&#128176; <span class="b">650&#8376;</span></span></div><div class="cd"></div><div class="pr"><div class="pa"><div class="pav c3">Р</div><div class="pav c4">С</div></div><div class="pf"></div><div class="pl">Подробнее &#8594;</div></div></div>
+<div class="cc muted"><div class="cc-top"><div class="ai-b m">61% совпадение</div></div><div class="rc"><div class="rr"><div class="rd"></div><div class="rn">Орбита</div></div><div class="rl"></div><div class="rr"><div class="rd"></div><div class="rn">Достык</div></div></div><div class="sr"><span>&#9200; 08:30</span><span>&#128101; <span class="b">1</span> / 4</span><span>&#128176; <span class="b">580&#8376;</span></span></div><div class="cd"></div><div class="pr"><div class="pa"><div class="pav c2">Б</div></div><div class="pf"></div><div class="pl">Подробнее &#8594;</div></div></div>
+<div class="bt"><p>Это все коридоры по вашим маршрутам</p><a href="#">Добавить новый маршрут &#8594;</a></div>
+</div>
+<div class="tb"><div class="ti"><div class="ti-i">&#128506;</div><div class="ti-l">Главная</div></div><div class="ti a"><div class="ti-i">&#128663;</div><div class="ti-l">Поездки</div></div><div class="ti"><div class="ti-i">&#128179;</div><div class="ti-l">Подписка</div></div><div class="ti"><div class="ti-i">&#128100;</div><div class="ti-l">Профиль</div></div></div>
+</div>
+<script>
+// ─── BIRGE Prototype Navigation ───
+document.addEventListener('DOMContentLoaded', () => {
+
+  function addClickByText(text, href) {
+    const all = document.querySelectorAll('button, a, [role="button"], div, span');
+    all.forEach(el => {
+      if (el.textContent.trim().includes(text)) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = href;
+        });
+      }
+    });
+  }
+
+  // Back button
+  addClickByText('Назад', 'P-04-home.html');
+
+  // Corridor cards
+  const corridorCards = document.querySelectorAll('.cc');
+  corridorCards.forEach(card => {
+    card.addEventListener('click', () => {
+      window.location.href = 'P-06b-corridor-detail.html';
+    });
+  });
+
+  // Tab bar
+  addClickByText('Главная', 'P-04-home.html');
+  addClickByText('Поездки', 'P-14-rides-history.html');
+  addClickByText('Подписка', 'P-17-subscriptions.html');
+  addClickByText('Профиль', 'P-19-profile.html');
+
+});
+</script>
+</body>
+</html>

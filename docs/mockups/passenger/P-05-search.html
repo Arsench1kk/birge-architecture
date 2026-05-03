@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Search</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --white: #FFFFFF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --shadow-card: 0 8px 32px rgba(14,165,233,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            padding-bottom: 40px;
+            position: relative;
+        }
+
+        /* TOP SEARCH BAR */
+        .search-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(240,249,255,0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            padding: 59px 16px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 44px;
+            background: rgba(14,165,233,0.06);
+            border: 1.5px solid rgba(14,165,233,0.2);
+            border-radius: 14px;
+            padding: 0 36px 0 14px;
+            font-size: 15px;
+            color: var(--text);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--blue);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 12px;
+            color: var(--text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+
+        /* LIST ITEMS */
+        .list-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(14,165,233,0.08);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .list-item:active { background: rgba(14,165,233,0.04); }
+
+        .item-icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .item-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .item-address {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* SECTION LABEL */
+        .section-label {
+            padding: 16px 16px 8px;
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* MY LOCATION */
+        .my-location {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(14,165,233,0.08);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+        }
+        .my-location-text {
+            font-size: 15px;
+            color: var(--blue);
+            font-weight: 500;
+        }
+
+        /* AI BADGE */
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+            border: 1px solid rgba(14,165,233,0.3);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue-dark);
+        }
+
+        /* AI CORRIDOR HINT */
+        .ai-corridor-card {
+            margin: 16px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(14,165,233,0.04);
+            border: 1px solid rgba(14,165,233,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .ai-icon-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* DARK MODE */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --white: #1A2332;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --blue-light: rgba(14,165,233,0.15);
+                --divider: rgba(14,165,233,0.08);
+            }
+            body {
+                background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+            }
+            .search-header {
+                background: rgba(10,22,40,0.88);
+                border-bottom-color: var(--divider);
+            }
+            .search-input {
+                background: rgba(255,255,255,0.06);
+                border-color: rgba(14,165,233,0.2);
+                color: #F0F9FF;
+            }
+            .ai-corridor-card {
+                background: rgba(255,255,255,0.06);
+                border-color: rgba(255,255,255,0.1);
+            }
+            [style*="background: white"], [style*="background:white"], [style*="background: #fff"] {
+                background: #1A2332 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP SEARCH BAR -->
+    <header class="search-header">
+        <button class="back-btn" onclick="nav('../passenger/P-04-home.html')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <div class="input-wrapper">
+            <input type="text" class="search-input" value="Есентай Парк" placeholder="Куда едем?">
+            <button class="clear-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- MY LOCATION -->
+    <div class="my-location" onclick="nav('../passenger/P-04-home.html')">
+        <div class="item-icon-circle" style="background: rgba(14,165,233,0.1);">
+            <span style="color: #0EA5E9;">➤</span>
+        </div>
+        <span class="my-location-text">Моё местоположение</span>
+    </div>
+
+    <!-- SAVED -->
+    <section>
+        <h3 class="section-label">СОХРАНЁННЫЕ</h3>
+        
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(14,165,233,0.1);">🏠</div>
+            <div class="item-content">
+                <span class="item-name">Дом</span>
+                <span class="item-address">Алатау, пр. Аль-Фараби 21</span>
+            </div>
+            <div class="ai-badge">Коридор</div>
+        </div>
+
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(245,158,11,0.1);">💼</div>
+            <div class="item-content">
+                <span class="item-name">Работа</span>
+                <span class="item-address">Есентай Парк, 77/8</span>
+            </div>
+            <div class="ai-badge">Коридор</div>
+        </div>
+    </section>
+
+    <!-- RECENT -->
+    <section>
+        <h3 class="section-label">НЕДАВНИЕ</h3>
+        
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(100,116,139,0.08);">🕐</div>
+            <div class="item-content">
+                <span class="item-name">Есентай Парк</span>
+                <span class="item-address">пр. Аль-Фараби, 77/8</span>
+            </div>
+        </div>
+
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(100,116,139,0.08);">🕐</div>
+            <div class="item-content">
+                <span class="item-name">Алматы Арена</span>
+                <span class="item-address">мкр. Нуркент, 7</span>
+            </div>
+        </div>
+
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(100,116,139,0.08);">🕐</div>
+            <div class="item-content">
+                <span class="item-name">Аэропорт Алматы</span>
+                <span class="item-address">ул. Майлина, 2</span>
+            </div>
+        </div>
+
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(100,116,139,0.08);">🕐</div>
+            <div class="item-content">
+                <span class="item-name">Проспект Достык 5</span>
+                <span class="item-address">Алматы</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEARBY -->
+    <section>
+        <h3 class="section-label">РЯДОМ</h3>
+
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(14,165,233,0.08);">📌</div>
+            <div class="item-content">
+                <span class="item-name">Mega Center Alma-Ata</span>
+                <span class="item-address">ул. Розыбакиева, 247А</span>
+            </div>
+        </div>
+
+        <div class="list-item" onclick="nav('../passenger/P-04-home.html')">
+            <div class="item-icon-circle" style="background: rgba(14,165,233,0.08);">📌</div>
+            <div class="item-content">
+                <span class="item-name">ТРЦ Forum</span>
+                <span class="item-address">пр. Сейфуллина, 617</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI CORRIDOR HINT -->
+    <div class="ai-corridor-card" onclick="nav('../passenger/P-06b-corridor-detail.html')">
+        <div class="ai-icon-circle">AI</div>
+        <div class="item-content">
+            <span class="item-name" style="font-size: 14px;">Есентай Парк — ваш частый маршрут</span>
+            <span class="item-address" style="margin-top: 2px;">Коридор в 07:30 · 890₸ · 3 места</span>
+        </div>
+        <div style="color: #0EA5E9; font-size: 18px; font-weight: bold;">›</div>
+    </div>
+
+    <script>
+        function nav(href) {
+            window.location.href = href;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE — Коридор</title>
+<style>
+:root{--blue:#0EA5E9;--blue-dark:#0284C7;--blue-light:#E0F2FE;--text:#0C1A2E;--text-gray:#64748B;--text-light:#94A3B8;--divider:rgba(14,165,233,0.12);--radius-card:20px;--shadow-card:0 8px 32px rgba(14,165,233,0.08),inset 0 1px 0 rgba(255,255,255,0.8)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'SF Pro Display',BlinkMacSystemFont,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+.screen{width:393px;height:852px;margin:0 auto;position:relative;overflow:hidden}
+
+/* MAP */
+.map{position:absolute;top:0;left:0;right:0;height:420px;background:linear-gradient(170deg,#DBEAFE,#E0F2FE);z-index:0}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,233,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.07) 1px,transparent 1px);background-size:28px 28px}
+.map-svg{position:absolute;inset:0;width:100%;height:100%}
+.back-circle{position:absolute;top:59px;left:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--blue);cursor:pointer;z-index:5;box-shadow:var(--shadow-card)}
+.route-pill{position:absolute;top:59px;left:50%;transform:translateX(-50%);padding:8px 16px;border-radius:100px;font-size:14px;font-weight:700;color:var(--blue-dark);background:rgba(255,255,255,0.82);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);box-shadow:var(--shadow-card);z-index:5;white-space:nowrap}
+
+/* BOTTOM SHEET */
+.sheet{position:absolute;bottom:0;left:0;right:0;top:380px;z-index:10;background:rgba(255,255,255,0.92);backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);border:1px solid rgba(255,255,255,0.7);border-bottom:none;border-radius:28px 28px 0 0;box-shadow:0 -8px 40px rgba(14,165,233,0.10);display:flex;flex-direction:column}
+.drag{width:36px;height:4px;background:rgba(0,0,0,0.12);border-radius:2px;margin:12px auto 0;flex-shrink:0}
+.sheet-scroll{flex:1;overflow-y:auto;padding:16px 20px 0;scrollbar-width:none}
+.sheet-scroll::-webkit-scrollbar{display:none}
+
+/* ROUTE HEADER */
+.rh-title{font-size:22px;font-weight:700}
+.rh-sub{font-size:14px;color:var(--text-gray);margin-top:4px}
+.pills-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;padding:6px 14px;border-radius:100px;font-size:13px;font-weight:600}
+.pill-b{background:var(--blue-light);color:var(--blue-dark)}
+.pill-g{background:#D1FAE5;color:#065F46}
+.divider{height:1px;background:var(--divider);margin:16px 0}
+
+/* SECTION LABELS */
+.sec{font-size:11px;color:var(--text-gray);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+
+/* STOPS */
+.stop{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
+.stop-time{width:48px;font-size:13px;font-weight:700;color:var(--blue);flex-shrink:0;padding-top:2px}
+.stop-vis{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
+.stop-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.dot-filled{background:var(--blue);border:3px solid white;box-shadow:0 0 0 2px var(--blue)}
+.dot-hollow{background:white;border:3px solid var(--blue)}
+.dot-end{background:var(--blue-dark);border:3px solid white;box-shadow:0 0 0 2px var(--blue-dark)}
+.stop-line{width:2px;height:24px;border-left:2px dashed var(--blue);margin:2px 0}
+.stop-info{flex:1;padding-top:0}
+.stop-addr{font-size:15px;font-weight:700}
+.stop-tag{display:inline-flex;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:600;margin-left:6px}
+.tag-b{background:var(--blue-light);color:var(--blue-dark)}
+.tag-g{background:#D1FAE5;color:#065F46}
+
+/* PASSENGERS */
+.sec-row{display:flex;justify-content:space-between;align-items:center}
+.sec-count{font-size:13px;color:var(--text-gray)}
+.prow{display:flex;align-items:center;gap:12px;padding:10px 0}
+.pav{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0}
+.p1{background:#EDE9FE;color:#7C3AED}.p2{background:#D1FAE5;color:#065F46}.p3{background:#F1F5F9;color:var(--text-light)}
+.pav-empty{background:#F8FAFC;border:1.5px dashed #CBD5E1;color:var(--text-light);font-size:20px;font-weight:400}
+.pinfo{flex:1}
+.pname{font-size:15px;font-weight:700}
+.pname.it{font-style:italic;font-weight:400;color:var(--text-gray)}
+.pmeta{font-size:13px;color:var(--text-gray)}
+.pstatus{display:flex;align-items:center;gap:4px;font-size:12px;flex-shrink:0}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sdot-g{background:#10B981}
+.sdot-y{background:#CBD5E1}
+.st-g{color:#10B981}
+.st-y{color:var(--text-gray)}
+.pstatus .pill{padding:4px 10px;font-size:12px}
+
+/* AI CARD */
+.ai-card{padding:14px 16px;border-radius:16px;border-left:3px solid var(--blue);background:rgba(14,165,233,0.04);display:flex;align-items:flex-start;gap:10px;backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,0.6);border-right:1px solid rgba(255,255,255,0.6);border-bottom:1px solid rgba(255,255,255,0.6);box-shadow:var(--shadow-card)}
+.ai-card-icon{font-size:20px;flex-shrink:0;padding-top:1px}
+.ai-card-t{font-size:14px;font-weight:700;color:var(--blue-dark)}
+.ai-card-d{font-size:13px;color:var(--text-gray);line-height:1.4;margin-top:2px}
+.ai-card-info{flex-shrink:0;font-size:16px;cursor:pointer;padding-top:1px}
+
+/* FREE TRIAL */
+.trial{text-align:center;margin:24px 0 16px}
+.trial-pill{display:inline-flex;align-items:center;padding:8px 16px;border-radius:100px;background:#D1FAE5;font-size:13px;font-weight:700;color:#065F46}
+
+/* BOTTOM CTA */
+.cta{position:absolute;bottom:0;left:0;right:0;z-index:15;padding:16px 20px 34px;background:rgba(255,255,255,0.92);backdrop-filter:blur(40px);border-top:1px solid var(--divider)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:56px;border:none;border-radius:16px;font-size:17px;font-weight:600;cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn-p{background:linear-gradient(135deg,#0EA5E9,#0284C7);color:#fff;box-shadow:0 4px 20px rgba(14,165,233,0.35)}
+.btn-gh{background:transparent;color:var(--text-gray);font-weight:400;height:44px;margin-top:8px}
+
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="screen">
+
+<!-- MAP -->
+<div class="map">
+<div class="map-grid"></div>
+<svg class="map-svg" viewBox="0 0 393 420" preserveAspectRatio="none">
+<line x1="0" y1="180" x2="393" y2="350" stroke="#CBD5E1" stroke-width="6" opacity="0.5"/>
+<line x1="50" y1="0" x2="350" y2="400" stroke="#CBD5E1" stroke-width="6" opacity="0.4"/>
+<defs><filter id="gl" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<path d="M 80,120 C 120,170 200,240 240,290 Q 280,330 330,370" stroke="#0EA5E9" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#gl)"/>
+<!-- Stop 1 --><circle cx="80" cy="120" r="10" fill="#0EA5E9" stroke="white" stroke-width="3"/>
+<!-- Stop 2 --><circle cx="160" cy="210" r="8" fill="white" stroke="#0EA5E9" stroke-width="3"/>
+<!-- Stop 3 --><circle cx="240" cy="290" r="8" fill="white" stroke="#0EA5E9" stroke-width="3"/>
+<!-- Stop 4 --><circle cx="330" cy="370" r="10" fill="#0284C7" stroke="white" stroke-width="3"/>
+<!-- Time labels -->
+<rect x="58" y="136" width="44" height="20" rx="10" fill="rgba(255,255,255,0.85)"/><text x="80" y="150" text-anchor="middle" font-size="11" font-weight="600" fill="#0EA5E9" font-family="-apple-system,sans-serif">07:30</text>
+<rect x="138" y="226" width="44" height="20" rx="10" fill="rgba(255,255,255,0.85)"/><text x="160" y="240" text-anchor="middle" font-size="11" font-weight="600" fill="#64748B" font-family="-apple-system,sans-serif">07:38</text>
+<rect x="218" y="306" width="44" height="20" rx="10" fill="rgba(255,255,255,0.85)"/><text x="240" y="320" text-anchor="middle" font-size="11" font-weight="600" fill="#64748B" font-family="-apple-system,sans-serif">07:45</text>
+<rect x="308" y="346" width="44" height="20" rx="10" fill="rgba(255,255,255,0.85)"/><text x="330" y="360" text-anchor="middle" font-size="11" font-weight="600" fill="#0284C7" font-family="-apple-system,sans-serif">08:05</text>
+<!-- Passenger avatars -->
+<circle cx="100" cy="145" r="13" fill="#0EA5E9" stroke="white" stroke-width="2"/><text x="100" y="150" text-anchor="middle" font-size="11" font-weight="700" fill="white" font-family="-apple-system,sans-serif">А</text>
+<circle cx="180" cy="230" r="13" fill="#7C3AED" stroke="white" stroke-width="2"/><text x="180" y="235" text-anchor="middle" font-size="11" font-weight="700" fill="white" font-family="-apple-system,sans-serif">М</text>
+</svg>
+<div class="back-circle">&#8592;</div>
+<div class="route-pill">&#128205; Алатау &#8594; Есентай</div>
+</div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet">
+<div class="drag"></div>
+<div class="sheet-scroll">
+<div class="rh-title">Алатау &#8594; Есентай</div>
+<div class="rh-sub">пр. Аль-Фараби &#8594; Есентай Парк, 77/8</div>
+<div class="pills-row">
+<div class="pill pill-b">&#9200; 07:30</div>
+<div class="pill pill-b">&#128336; ~35 мин</div>
+<div class="pill pill-g">&#128176; 890&#8376;/поездка</div>
+</div>
+<div class="divider"></div>
+
+<!-- STOPS -->
+<div class="sec">ОСТАНОВКИ</div>
+<div class="stop"><div class="stop-time">07:30</div><div class="stop-vis"><div class="stop-dot dot-filled"></div><div class="stop-line"></div></div><div class="stop-info"><span class="stop-addr">пр. Аль-Фараби, 12</span><span class="stop-tag tag-b">ТЫ ЗДЕСЬ</span></div></div>
+<div class="stop"><div class="stop-time">07:38</div><div class="stop-vis"><div class="stop-dot dot-hollow"></div><div class="stop-line"></div></div><div class="stop-info"><span class="stop-addr">Алматы Арена</span></div></div>
+<div class="stop"><div class="stop-time">07:45</div><div class="stop-vis"><div class="stop-dot dot-hollow"></div><div class="stop-line"></div></div><div class="stop-info"><span class="stop-addr">пр. Достык, 5</span></div></div>
+<div class="stop"><div class="stop-time">08:05</div><div class="stop-vis"><div class="stop-dot dot-end"></div></div><div class="stop-info"><span class="stop-addr">Есентай Парк, 77/8</span><span class="stop-tag tag-g">ФИНАЛ</span></div></div>
+<div class="divider"></div>
+
+<!-- PASSENGERS -->
+<div class="sec-row"><div class="sec">ПОПУТЧИКИ</div><div class="sec-count">3 из 4 мест занято</div></div>
+<div class="prow"><div class="pav p1">А</div><div class="pinfo"><div class="pname">А. Сейткали</div><div class="pmeta">&#9792; &middot; 28 лет &middot; садится на Аль-Фараби</div></div><div class="pstatus"><div class="sdot sdot-g"></div><span class="st-g">Подтверждён</span></div></div>
+<div class="prow"><div class="pav p2">М</div><div class="pinfo"><div class="pname">М. Кенжеев</div><div class="pmeta">&#9794; &middot; 34 года &middot; садится на Арена</div></div><div class="pstatus"><div class="sdot sdot-g"></div><span class="st-g">Подтверждён</span></div></div>
+<div class="prow"><div class="pav p3">?</div><div class="pinfo"><div class="pname it">Анонимный пассажир</div><div class="pmeta">&#9792; &middot; садится на Аль-Фараби</div></div><div class="pstatus"><div class="sdot sdot-y"></div><span class="st-y">Скрыт</span></div></div>
+<div class="prow"><div class="pav pav-empty">+</div><div class="pinfo"><div class="pname it">1 место свободно</div></div><div class="pstatus"><div class="pill pill-b">Ваше место</div></div></div>
+<div class="divider"></div>
+
+<!-- AI CARD -->
+<div class="ai-card"><div class="ai-card-icon">&#129302;</div><div style="flex:1"><div class="ai-card-t">Как AI создал этот коридор</div><div class="ai-card-d">847 похожих маршрутов проанализировано &middot; радиус 500м &middot; &plusmn;15 мин</div></div><div class="ai-card-info">&#8505;&#65039;</div></div>
+
+<!-- TRIAL -->
+<div class="trial"><div class="trial-pill">&#127873; Первая поездка бесплатно</div></div>
+<div style="height:100px"></div>
+</div>
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="cta">
+<button class="btn btn-p">Подписаться на коридор &middot; 890&#8376;/поездка</button>
+<button class="btn btn-gh">Попробовать бесплатно (1 поездка)</button>
+</div>
+
+</div>
+<script>
+// ─── BIRGE Prototype Navigation ───
+document.addEventListener('DOMContentLoaded', () => {
+
+  function addClickByText(text, href) {
+    const all = document.querySelectorAll('button, a, [role="button"], div, span');
+    all.forEach(el => {
+      if (el.textContent.trim().includes(text)) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = href;
+        });
+      }
+    });
+  }
+
+  // Buttons
+  addClickByText('Подписаться', 'searching.html');
+  addClickByText('Попробовать', 'searching.html');
+  addClickByText('Выбрать', 'searching.html');
+
+  // Back button
+  const backBtn = document.querySelector('.back-circle');
+  if (backBtn) {
+    backBtn.style.cursor = 'pointer';
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'P-06a-corridor-list.html';
+    });
+  }
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - Earnings Overview</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 120px;
+        }
+
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            background: rgba(240,249,255,0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            padding: 59px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .hero {
+            margin-top: 100px;
+            padding: 24px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            border-radius: 20px;
+            margin: 100px 20px 0;
+            color: white;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.3);
+        }
+
+        .label-white {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-val {
+            font-size: 44px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .hero-stats {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 6px;
+        }
+
+        .hero-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 16px 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 0 20px;
+            margin-top: 14px;
+        }
+
+        .history-section {
+            padding: 0 20px;
+            margin-top: 16px;
+        }
+
+        .label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .history-list {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 18px;
+            padding: 0 16px;
+        }
+
+        .history-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(14,165,233,0.1);
+        }
+        .history-row:last-child { border-bottom: none; }
+
+        .history-date {
+            width: 32px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #E0F2FE;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0EA5E9, #0284C7);
+            border-radius: 3px;
+        }
+
+        .btn-primary {
+            width: calc(100% - 40px);
+            margin: 16px 20px;
+            height: 52px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        .glass-tabbar {
+            position: fixed;
+            bottom: 0;
+            width: 393px;
+            z-index: 100;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--divider);
+            padding: 8px 0 34px;
+            display: flex;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-light);
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .tab-item.active {
+            color: var(--blue);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-nav, .glass-tabbar { background: rgba(10,22,40,0.88); }
+            .glass-card, .history-list { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .progress-bar { background: rgba(14,165,233,0.1); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <div class="nav-title">Заработок</div>
+    </nav>
+
+    <div class="hero">
+        <div class="label-white">ЭТА НЕДЕЛЯ</div>
+        <div class="hero-val">24 850₸</div>
+        <div class="hero-stats">28 поездок · 8 коридоров</div>
+        
+        <div class="hero-divider"></div>
+
+        <div class="hero-grid">
+            <div>
+                <div class="label-white">Прошлая</div>
+                <div style="font-size: 18px; font-weight: 700; margin-top: 4px;">19 200₸</div>
+            </div>
+            <div>
+                <div class="label-white">Рост</div>
+                <div style="font-size: 18px; font-weight: 700; margin-top: 4px;">+29%↑</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-stats">
+        <div class="glass-card" style="text-align: center;">
+            <div style="font-size: 18px; font-weight: 700; color: var(--blue);">3 400₸</div>
+            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Сегодня</div>
+        </div>
+        <div class="glass-card" style="text-align: center;">
+            <div style="font-size: 18px; font-weight: 700;">4</div>
+            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Поездки</div>
+        </div>
+        <div class="glass-card" style="text-align: center;">
+            <div style="font-size: 18px; font-weight: 700; color: #F59E0B;">4.9⭐</div>
+            <div style="font-size: 12px; color: var(--text-gray); margin-top: 4px;">Рейтинг</div>
+        </div>
+    </div>
+
+    <div class="history-section">
+        <div class="label">ПОСЛЕДНИЕ 7 ДНЕЙ</div>
+        <div class="history-list">
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Вс</div>
+                    <div style="font-size: 16px; font-weight: 700;">3</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">1 200₸</div>
+            </div>
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Сб</div>
+                    <div style="font-size: 16px; font-weight: 700;">2</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 90%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">4 800₸</div>
+            </div>
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Пт</div>
+                    <div style="font-size: 16px; font-weight: 700;">1</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 70%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">3 400₸</div>
+            </div>
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Чт</div>
+                    <div style="font-size: 16px; font-weight: 700;">30</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">2 900₸</div>
+            </div>
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Ср</div>
+                    <div style="font-size: 16px; font-weight: 700;">29</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">4 100₸</div>
+            </div>
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Вт</div>
+                    <div style="font-size: 16px; font-weight: 700;">28</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 50%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">2 450₸</div>
+            </div>
+            <div class="history-row" onclick="window.location.href='D-13-earnings-detail.html'">
+                <div class="history-date">
+                    <div style="font-size: 11px; color: var(--text-light);">Пн</div>
+                    <div style="font-size: 16px; font-weight: 700;">27</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; width: 64px; text-align: right;">6 000₸</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding: 16px 20px 40px;">
+        <button class="btn-primary" onclick="window.location.href='D-14-payout.html'">Вывести средства</button>
+    </div>
+
+    <div class="glass-tabbar">
+        <div class="tab-item" onclick="window.location.href='dashboard.html'">
+            <span style="font-size: 20px;">🗺</span>
+            <span>Карта</span>
+        </div>
+        <div class="tab-item active">
+            <span style="font-size: 20px;">💰</span>
+            <span>Заработок</span>
+        </div>
+        <div class="tab-item" onclick="window.location.href='D-15-profile.html'">
+            <span style="font-size: 20px;">👤</span>
+            <span>Профиль</span>
+        </div>
+    </div>
+
+</body>
+</html>

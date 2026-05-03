@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE Drive - Phone</title>
+<style>
+:root {
+  --blue:        #0EA5E9;
+  --blue-dark:   #0284C7;
+  --blue-light:  #E0F2FE;
+  --bg:          #F0F9FF;
+  --white:       #FFFFFF;
+  --text:        #0C1A2E;
+  --text-gray:   #64748B;
+  --text-light:  #94A3B8;
+  --divider:     rgba(14,165,233,0.12);
+  --radius-card: 20px;
+  --radius-btn:  16px;
+  --shadow-card: 0 8px 32px rgba(14,165,233,0.08);
+  --shadow-btn:  0 4px 20px rgba(14,165,233,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+  min-height: 100vh;
+  width: 393px;
+  margin: 0 auto;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+.glass-nav {
+  position: fixed; top: 0; width: 393px; z-index: 100;
+  background: rgba(240,249,255,0.88);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid var(--divider);
+  padding: 59px 20px 12px;
+  display: flex; align-items: center;
+}
+.back-btn { font-size: 15px; color: var(--blue); cursor: pointer; text-decoration: none; }
+
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 56px;
+  border: none; border-radius: var(--radius-btn);
+  font-size: 17px; font-weight: 600; cursor: pointer;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #0EA5E9, #0284C7);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+
+.main-content {
+  padding: 24px; margin-top: 100px;
+}
+.title-xl { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.body-md { font-size: 15px; color: var(--text-gray); margin-top: 8px; }
+
+.input-row {
+  display: flex; align-items: center;
+  padding: 4px; border-radius: 18px; margin-top: 32px;
+}
+.input-left {
+  width: 65px; display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: bold; color: var(--blue); gap: 4px;
+}
+.input-divider { width: 1px; height: 28px; background: rgba(14,165,233,0.2); }
+.input-right {
+  border: none; background: transparent; font-size: 17px; flex: 1; padding: 16px; outline: none; color: var(--text);
+}
+
+.bottom-card {
+  margin: 24px; padding: 16px; border-radius: 16px;
+  position: absolute; bottom: 34px; width: calc(100% - 48px);
+}
+.bottom-card-text { font-size: 13px; color: var(--text-gray); text-align: center; }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #0A1628;
+    --white:       #1A2332;
+    --text:        #F0F9FF;
+    --text-gray:   #94A3B8;
+    --divider:     rgba(14,165,233,0.08);
+  }
+  body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+  .glass-nav { background: rgba(10,22,40,0.88); }
+  .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+  input { color: #F0F9FF; }
+}
+</style>
+</head>
+<body>
+
+<div class="glass-nav">
+  <a href="../index.html" class="back-btn">← Назад</a>
+</div>
+
+<div class="main-content">
+  <h1 class="title-xl">Войти как водитель</h1>
+  <p class="body-md">Введите номер телефона</p>
+  
+  <div class="glass-card input-row">
+    <div class="input-left">
+      <span>🇰🇿</span>
+      <span>+7</span>
+    </div>
+    <div class="input-divider"></div>
+    <input type="tel" class="input-right" placeholder="(777) 000-00-00">
+  </div>
+  
+  <p style="font-size: 13px; color: var(--text-gray); text-align: center; margin-top: 12px;">На этот номер придёт SMS с кодом</p>
+  
+  <div style="margin-top: 32px;">
+    <button class="btn btn-primary" onclick="window.location.href='D-02-otp.html'">Продолжить</button>
+  </div>
+</div>
+
+<div class="glass-card bottom-card">
+  <p class="bottom-card-text">
+    🔒 Ваши данные защищены. Мы не передаём номер третьим лицам.
+  </p>
+</div>
+
+</body>
+</html>

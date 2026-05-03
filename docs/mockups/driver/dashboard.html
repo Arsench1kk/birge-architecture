@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - Dashboard (Offline)</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --green: #10B981;
+            --green-dark: #059669;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            width: 393px; margin: 0 auto; min-height: 100vh;
+            position: relative; overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .map-container {
+            position: fixed; inset: 0; z-index: 0;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+        }
+        .map-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        
+        .car-marker {
+            position: absolute;
+            width: 40px; height: 40px;
+            background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            left: 50%; top: 40%;
+        }
+
+        .top-bar {
+            position: fixed; top: 0; width: 393px; z-index: 10;
+            background: rgba(240,249,255,0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            padding: 59px 16px 12px;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .status-row {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .status-badge {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 16px; font-weight: 700; color: var(--text-gray);
+        }
+
+        .dot-offline {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--text-light);
+        }
+
+        .btn-online-small {
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            color: white; padding: 8px 20px; border-radius: 100px;
+            font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.35);
+        }
+
+        .chips-row {
+            display: flex; gap: 8px; margin-top: 10px;
+        }
+
+        .chip {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.6);
+            padding: 6px 12px; border-radius: 100px;
+            font-size: 13px; color: var(--text-light);
+            box-shadow: 0 4px 12px rgba(14,165,233,0.05);
+        }
+
+        .tab-bar {
+            position: fixed; bottom: 0; width: 393px; z-index: 20;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-top: 1px solid var(--divider);
+            padding: 8px 0 34px;
+            display: flex;
+        }
+
+        .tab-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+            font-size: 10px; font-weight: 600; color: var(--text-light);
+        }
+        .tab-item.active { color: var(--blue); }
+
+        .bottom-sheet {
+            position: fixed; bottom: 82px; width: 393px; z-index: 10;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-bottom: none;
+            border-radius: 28px 28px 0 0;
+            padding-bottom: 16px;
+            box-shadow: 0 -8px 40px rgba(14,165,233,0.1);
+        }
+
+        .drag-handle {
+            width: 36px; height: 4px;
+            background: rgba(0,0,0,0.12);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        .offline-section { padding: 20px; text-align: center; }
+
+        .btn-online-large {
+            margin: 20px 20px 0; width: calc(100% - 40px); height: 56px;
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            color: white; border: none; border-radius: 16px;
+            font-size: 17px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(16,185,129,0.35);
+        }
+
+        .divider {
+            height: 1px; background: var(--divider); margin: 16px 20px;
+        }
+
+        .section-label {
+            font-size: 11px; color: var(--text-light); text-transform: uppercase;
+            font-weight: 600; margin-bottom: 10px; letter-spacing: 0.5px;
+        }
+
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .corridors-section { padding: 0 20px; margin-top: 4px; }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            .map-container { background: linear-gradient(160deg, #0D1F3C, #0A2040); }
+            .top-bar { background: rgba(10,22,40,0.88); }
+            .tab-bar { background: rgba(10,22,40,0.90); }
+            .bottom-sheet { background: rgba(13,31,60,0.92); border-color: rgba(255,255,255,0.08); }
+            .glass-card, .chip { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .car-marker { background: #1A2332; }
+            .dot-offline { background: #64748B; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="map-container">
+        <div class="map-grid"></div>
+        <svg class="map-svg">
+            <line x1="0" y1="45%" x2="100%" y2="45%" stroke="#CBD5E1" stroke-width="7" opacity="0.4"/>
+            <line x1="10%" y1="0" x2="90%" y2="100%" stroke="#CBD5E1" stroke-width="7" opacity="0.3"/>
+        </svg>
+        <div class="car-marker">🚗</div>
+    </div>
+
+    <div class="top-bar">
+        <div class="status-row">
+            <div class="status-badge">
+                <div class="dot-offline"></div>
+                Оффлайн
+            </div>
+            <button class="btn-online-small" onclick="window.location.href='D-05-online-waiting.html'">Выйти онлайн</button>
+        </div>
+        <div class="chips-row">
+            <div class="chip">⏱ Сегодня: 0ч</div>
+            <div class="chip">💰 0₸</div>
+            <div class="chip">🚗 0 поездок</div>
+        </div>
+    </div>
+
+    <div class="bottom-sheet">
+        <div class="drag-handle"></div>
+        
+        <div class="offline-section">
+            <div style="width:56px;height:56px;background:rgba(148,163,184,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:28px;">😴</div>
+            <div style="font-weight:700;font-size:20px;color:var(--text-gray);margin-top:12px;">Вы оффлайн</div>
+            <div style="font-size:14px;color:var(--text-light);margin-top:6px;line-height:1.5;">Нажмите "Выйти онлайн" чтобы начать получать заявки</div>
+        </div>
+
+        <button class="btn-online-large" onclick="window.location.href='D-05-online-waiting.html'">Выйти онлайн 🟢</button>
+
+        <div class="divider"></div>
+
+        <div class="stats-grid">
+            <div style="grid-column: 1 / -1;">
+                <div class="section-label">СТАТИСТИКА СЕГОДНЯ</div>
+            </div>
+            <div class="glass-card" style="text-align:center;">
+                <div style="font-weight:700;font-size:22px;color:var(--text);">0₸</div>
+                <div style="font-size:12px;color:var(--text-light);margin-top:4px;">Заработок</div>
+            </div>
+            <div class="glass-card" style="text-align:center;">
+                <div style="font-weight:700;font-size:22px;color:var(--text);">0</div>
+                <div style="font-size:12px;color:var(--text-light);margin-top:4px;">Поездок</div>
+            </div>
+        </div>
+
+        <div class="corridors-section">
+            <div class="section-label" style="margin-top:16px;">МОИ КОРИДОРЫ</div>
+            <div class="glass-card" style="display:flex;align-items:center;gap:12px;padding:14px 16px;">
+                <div style="width:36px;height:36px;background:var(--blue-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">🛣</div>
+                <div style="flex:1;">
+                    <div style="font-weight:700;font-size:15px;color:var(--text);">Алатау → Достык</div>
+                    <div style="font-size:13px;color:var(--text-gray);margin-top:2px;">17:30 · 4 пассажира</div>
+                </div>
+                <div style="background:rgba(14,165,233,0.1);color:var(--blue);padding:4px 8px;border-radius:100px;font-size:12px;font-weight:700;">17:30</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab-item active">
+            <span style="font-size:20px;">🗺</span>
+            Карта
+        </div>
+        <div class="tab-item">
+            <span style="font-size:20px;">💰</span>
+            Заработок
+        </div>
+        <div class="tab-item">
+            <span style="font-size:20px;">👤</span>
+            Профиль
+        </div>
+    </div>
+
+</body>
+</html>

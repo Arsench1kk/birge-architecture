@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Offer Found</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        .top-section {
+            padding: 59px 20px 0;
+            text-align: center;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+            border: 1px solid rgba(14,165,233,0.3);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue-dark);
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-top: 12px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-top: 6px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08);
+        }
+
+        .offer-card {
+            margin: 24px 20px 0;
+            padding: 20px;
+            border: 2px solid var(--blue);
+            background: rgba(14,165,233,0.04);
+        }
+
+        .route-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .vline {
+            width: 2px;
+            height: 14px;
+            border-left: 2px dashed var(--blue);
+            margin: 6px 0 6px 4px;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 14px 0;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-top: 4px;
+        }
+
+        .companion-list {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .avatar-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: -8px;
+        }
+        .avatar:first-child { margin-left: 0; }
+
+        .timer-card {
+            margin: 16px 20px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            height: 56px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        .btn-ghost {
+            height: 44px;
+            background: transparent;
+            color: var(--text-gray);
+            font-weight: 400;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .offer-card { background: rgba(14,165,233,0.08); border-color: var(--blue); }
+            .avatar { border-color: #1A2332; }
+            .timer-card { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-section">
+        <div class="ai-badge">✨ AI нашёл коридор</div>
+        <h1 class="title">Совпадение найдено!</h1>
+        <p class="subtitle">Ваш коридор готов к отправлению</p>
+    </div>
+
+    <div class="glass-card offer-card">
+        <div class="route-section">
+            <div class="route-row">
+                <div class="dot" style="background: var(--blue);"></div>
+                <span style="font-size: 16px; font-weight: 700;">Алатау, пр. Аль-Фараби 21</span>
+            </div>
+            <div class="vline"></div>
+            <div class="route-row">
+                <div class="dot" style="background: #EF4444;"></div>
+                <span style="font-size: 16px; color: var(--text-gray);">Есентай Парк, 77/8</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">⏰ Отправление</div>
+                <div class="detail-value">07:30</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">⏱ В пути</div>
+                <div class="detail-value">~35 мин</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">💰 Стоимость</div>
+                <div class="detail-value" style="color: var(--blue);">890₸</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">👥 Попутчики</div>
+                <div class="detail-value">3 / 4</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="companions">
+            <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">ЕДУТ С ВАМИ</div>
+            <div class="companion-list">
+                <div class="avatar-group">
+                    <div class="avatar" style="background: #EDE9FE; color: #7C3AED;">А</div>
+                    <div class="avatar" style="background: #D1FAE5; color: #065F46;">М</div>
+                    <div class="avatar" style="background: #FEF3C7; color: #92400E;">Д</div>
+                </div>
+                <span style="font-size: 13px; color: var(--text-gray); margin-left: 8px;">Асан, Мади, Динара</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 14px; text-align: center;">
+            <div class="ai-badge" style="font-size: 11px; padding: 4px 10px;">98% совпадение маршрута</div>
+        </div>
+    </div>
+
+    <div class="timer-card">
+        <span style="font-size: 13px; color: #92400E; font-weight: 700;">Подтвердите в течение</span>
+        <span style="font-size: 24px; font-weight: 700; color: #F59E0B; font-variant-numeric: tabular-nums;">0:45</span>
+    </div>
+
+    <div style="padding: 0 20px; display: flex; flex-direction: column; gap: 10px;">
+        <button class="btn btn-primary" onclick="window.location.href='active-ride.html'">Подтвердить поездку · 890₸</button>
+        <button class="btn btn-ghost" onclick="window.location.href='searching.html'">Отклонить</button>
+    </div>
+
+</body>
+</html>

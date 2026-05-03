@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Home</title>
+    <link rel="stylesheet" href="../tokens.css">
+    <style>
+        /* Map Background Layer */
+        .map-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #B3E8E3, #E6F7F5);
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .map-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+        }
+
+        .pin {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pin-pickup {
+            top: 55%;
+            left: 30%;
+        }
+
+        .pin-destination {
+            top: 35%;
+            left: 65%;
+        }
+
+        /* Top Bar Layer */
+        .top-bar {
+            position: absolute;
+            top: 59px;
+            left: 0;
+            width: 100%;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .wordmark {
+            color: var(--color-brand-primary);
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .avatar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-surface-elevated);
+            box-shadow: var(--shadow-1);
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--color-text-primary);
+        }
+
+        /* Bottom Sheet Layer */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--color-surface-elevated);
+            border-radius: 28px 28px 0 0;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.10);
+            padding: 12px 16px 34px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .handle-bar {
+            width: 36px;
+            height: 4px;
+            background: var(--color-border-default);
+            border-radius: var(--radius-full);
+            margin: 0 auto 16px;
+        }
+
+        .search-bar {
+            width: 100%;
+            height: 52px;
+            background: var(--color-surface-secondary);
+            border-radius: 14px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--color-text-tertiary);
+            font-size: 15px;
+            cursor: text;
+        }
+
+        .corridor-scroll {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            padding-bottom: 4px;
+        }
+        
+        .corridor-scroll::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .corridor-card {
+            flex: 0 0 140px;
+            height: 88px;
+            background: var(--color-surface-primary);
+            border-radius: 14px;
+            border: 1.5px solid var(--color-border-default);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .corridor-card-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .corridor-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .corridor-card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .corridor-card-info {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+        
+        .pill-brand {
+            background: var(--color-brand-subtle);
+            color: var(--color-brand-primary);
+            align-self: flex-start;
+        }
+
+        .call-taxi-btn {
+            margin-top: 16px;
+        }
+    
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="iphone-frame">
+        
+        <!-- 1. FULL-SCREEN MAP BACKGROUND -->
+        <div class="map-layer">
+            <svg class="map-lines" viewBox="0 0 393 852" preserveAspectRatio="none">
+                <path d="M -50 200 Q 150 250 200 400 T 450 600" fill="none" stroke="var(--color-brand-primary)" stroke-width="8" />
+                <path d="M 100 -50 Q 150 300 50 500 T 300 900" fill="none" stroke="var(--color-brand-primary)" stroke-width="6" />
+                <path d="M -20 600 Q 200 550 250 700 T 450 850" fill="none" stroke="var(--color-brand-primary)" stroke-width="10" />
+                <path d="M 350 -50 Q 250 200 350 450 T 150 900" fill="none" stroke="var(--color-brand-primary)" stroke-width="5" />
+            </svg>
+
+            <!-- Pickup Pin -->
+            <div class="pin pin-pickup">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 28C16 28 26 19.3333 26 12C26 6.47715 21.5228 2 16 2C10.4772 2 6 6.47715 6 12C6 19.3333 16 28 16 28Z" fill="var(--color-brand-primary)"/>
+                    <circle cx="16" cy="12" r="4" fill="white"/>
+                </svg>
+            </div>
+
+            <!-- Destination Pin -->
+            <div class="pin pin-destination">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 28C16 28 26 19.3333 26 12C26 6.47715 21.5228 2 16 2C10.4772 2 6 6.47715 6 12C6 19.3333 16 28 16 28Z" fill="var(--color-danger)"/>
+                    <circle cx="16" cy="12" r="4" fill="white"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 2. TOP BAR -->
+        <div class="top-bar">
+            <div class="wordmark">BIRGE</div>
+            <button class="avatar-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+        </div>
+
+        <!-- 3. BOTTOM SHEET -->
+        <div class="bottom-sheet">
+            <div class="handle-bar"></div>
+            
+            <div class="search-bar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Куда едем?</span>
+            </div>
+
+            <div class="corridor-scroll">
+                <!-- Card 1 -->
+                <div class="corridor-card">
+                    <div class="corridor-card-header">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="corridor-card-title">Алатау → Достык</span>
+                    </div>
+                    <div class="corridor-card-footer">
+                        <span class="corridor-card-info">~35 мин &middot; 850 &#8376;</span>
+                        <div class="pill pill-brand">4 места</div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="corridor-card">
+                    <div class="corridor-card-header">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="corridor-card-title">ЦУМ → Вокзал</span>
+                    </div>
+                    <div class="corridor-card-footer">
+                        <span class="corridor-card-info">~15 мин &middot; 500 &#8376;</span>
+                        <div class="pill pill-brand">2 места</div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="corridor-card">
+                    <div class="corridor-card-header">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="corridor-card-title">Аэропорт → Сити</span>
+                    </div>
+                    <div class="corridor-card-footer">
+                        <span class="corridor-card-info">~45 мин &middot; 1500 &#8376;</span>
+                        <div class="pill pill-brand">3 места</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary call-taxi-btn">Вызвать такси</button>
+        </div>
+
+    </div>
+</body>
+</html>

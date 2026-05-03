@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - Earnings Detail</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            background: rgba(240,249,255,0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            padding: 59px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            font-size: 15px;
+            color: var(--blue);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .hero {
+            margin-top: 100px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hero-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-val {
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-top: 8px;
+        }
+
+        .hero-stats {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-top: 6px;
+        }
+
+        .timeline-section {
+            padding: 0 20px;
+            margin-top: 24px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .pill {
+            background: rgba(14,165,233,0.1);
+            color: var(--blue-dark);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .ride-time {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .ride-route {
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .ride-meta {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .ride-val {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .total-summary {
+            background: rgba(14,165,233,0.06);
+            border: 1px solid rgba(14,165,233,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: calc(100% - 40px);
+            margin: 0 20px 40px;
+            height: 52px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-nav { background: rgba(10,22,40,0.88); }
+            .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .pill { background: rgba(14,165,233,0.15); color: #38BDF8; }
+            .total-summary { background: rgba(14,165,233,0.1); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <a href="dashboard.html" class="nav-btn">← Назад</a>
+        <div class="nav-title">2 мая 2026</div>
+        <div style="width: 50px;"></div>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-label">2 МАЯ · ЧЕТВЕРГ</div>
+        <div class="hero-val">3 400₸</div>
+        <div class="hero-stats">4 поездки · 24.8 км · 2ч 14м</div>
+    </div>
+
+    <div class="timeline-section">
+        <div class="section-label">ПОЕЗДКИ ДНЯ</div>
+
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pill">🛣 Коридор</span>
+                <span class="ride-time">18:40–19:15</span>
+            </div>
+            <div class="ride-route">Есентай → Алатау</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
+                <span class="ride-meta">4 пассажира · 35 мин</span>
+                <span class="ride-val">890₸</span>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pill">🛣 Коридор</span>
+                <span class="ride-time">17:30–18:05</span>
+            </div>
+            <div class="ride-route">Алатау → Достык</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
+                <span class="ride-meta">4 пассажира · 35 мин</span>
+                <span class="ride-val">890₸</span>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pill" style="background: rgba(16,185,129,0.1); color: #059669;">🚗 Такси</span>
+                <span class="ride-time">15:10–15:40</span>
+            </div>
+            <div class="ride-route">ЦУМ → Арбат</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
+                <span class="ride-meta">1 пассажир · 30 мин</span>
+                <span class="ride-val">750₸</span>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="pill">🛣 Коридор</span>
+                <span class="ride-time">08:15–08:50</span>
+            </div>
+            <div class="ride-route">Орбита → Саяхат</div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
+                <span class="ride-meta">4 пассажира · 35 мин</span>
+                <span class="ride-val">870₸</span>
+            </div>
+        </div>
+
+        <div class="glass-card total-summary">
+            <span style="font-size: 12px; font-weight: 700; color: var(--blue-dark);">ИТОГО</span>
+            <span style="font-size: 20px; font-weight: 700; color: var(--blue);">3 400₸</span>
+        </div>
+    </div>
+
+    <button class="btn-primary" onclick="window.location.href='D-14-payout.html'">Вывести средства</button>
+
+</body>
+</html>

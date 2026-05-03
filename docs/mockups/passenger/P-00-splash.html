@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE Splash</title>
+<style>
+/* CSS copied from birge-v2.css */
+:root {
+  --blue:        #0EA5E9;
+  --blue-dark:   #0284C7;
+  --blue-light:  #E0F2FE;
+  --bg:          #F0F9FF;
+  --white:       #FFFFFF;
+  --text:        #0C1A2E;
+  --text-gray:   #64748B;
+  --text-light:  #94A3B8;
+  --success:     #10B981;
+  --warning:     #F59E0B;
+  --error:       #EF4444;
+  --divider:     rgba(14,165,233,0.12);
+  --radius-card: 20px;
+  --radius-btn:  16px;
+  --radius-pill: 100px;
+  --shadow-card: 0 8px 32px rgba(14,165,233,0.08),
+                 inset 0 1px 0 rgba(255,255,255,0.8);
+  --shadow-btn:  0 4px 20px rgba(14,165,233,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.screen {
+  width: 393px; min-height: 852px;
+  margin: 0 auto;
+  position: relative; overflow: hidden;
+  background: radial-gradient(circle at center, #0EA5E9 0%, #0284C7 100%);
+}
+.safe-bottom { padding-bottom: 34px; }
+
+/* Splash Specific Styles */
+.pulse-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 1);
+  animation: pulse 3s infinite ease-out;
+}
+.pulse-1 { width: 100px; height: 100px; animation-delay: 0s; opacity: 0.15; }
+.pulse-2 { width: 100px; height: 100px; animation-delay: 1s; opacity: 0.10; }
+.pulse-3 { width: 100px; height: 100px; animation-delay: 2s; opacity: 0.05; }
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.15; }
+  100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
+}
+
+.center-content {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: calc(100% - 48px);
+}
+.splash-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.brand-title {
+  font-size: 52px; font-weight: 700; color: white; letter-spacing: -1px; line-height: 1;
+}
+.brand-subtitle {
+  font-size: 18px; color: white; opacity: 0.75; margin-top: 6px;
+}
+.brand-divider {
+  width: 40px; height: 2px; background: white; margin: 20px auto; opacity: 0.5;
+}
+.brand-desc {
+  font-size: 14px; color: white; opacity: 0.6;
+}
+.footer {
+  position: absolute; bottom: 34px; left: 0; width: 100%;
+  text-align: center; font-size: 11px; color: white; opacity: 0.4;
+}
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="pulse-ring pulse-1"></div>
+  <div class="pulse-ring pulse-2"></div>
+  <div class="pulse-ring pulse-3"></div>
+  
+  <div class="center-content">
+    <div class="splash-card">
+      <div class="brand-title">BIRGE</div>
+      <div class="brand-subtitle">вместе</div>
+      <div class="brand-divider"></div>
+      <div class="brand-desc">Умные поездки по Алматы</div>
+    </div>
+  </div>
+
+  <div class="footer">&copy; 2026 BIRGE</div>
+</div>
+
+<script>
+// ─── BIRGE Prototype Navigation ───
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => window.location.href = 'P-01-phone.html', 2000);
+});
+</script>
+</body>
+</html>

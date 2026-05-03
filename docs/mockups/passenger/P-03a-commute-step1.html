@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE Commute - Step 1</title>
+<style>
+/* CSS copied from birge-v2.css */
+:root {
+  --blue:        #0EA5E9;
+  --blue-dark:   #0284C7;
+  --blue-light:  #E0F2FE;
+  --bg:          #F0F9FF;
+  --white:       #FFFFFF;
+  --text:        #0C1A2E;
+  --text-gray:   #64748B;
+  --text-light:  #94A3B8;
+  --success:     #10B981;
+  --warning:     #F59E0B;
+  --error:       #EF4444;
+  --divider:     rgba(14,165,233,0.12);
+  --radius-card: 20px;
+  --radius-btn:  16px;
+  --radius-pill: 100px;
+  --shadow-card: 0 8px 32px rgba(14,165,233,0.08),
+                 inset 0 1px 0 rgba(255,255,255,0.8);
+  --shadow-btn:  0 4px 20px rgba(14,165,233,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+  min-height: 100vh;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.glass-nav {
+  background: rgba(240,249,255,0.88);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid var(--divider);
+}
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 56px;
+  border: none; border-radius: var(--radius-btn);
+  font-size: 17px; font-weight: 600; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: linear-gradient(135deg, #0EA5E9, #0284C7);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+.progress-bar {
+  width: 100%; height: 4px;
+  background: var(--blue-light);
+  border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0EA5E9, #0284C7);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.screen {
+  width: 393px; min-height: 852px;
+  margin: 0 auto;
+  position: relative; overflow: hidden;
+}
+.nav-bar {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 393px; z-index: 100;
+  padding: 59px 20px 12px;
+}
+
+/* Specific styles */
+.header-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.back-btn { font-size: 20px; color: var(--blue); cursor: pointer; }
+.step-label { font-size: 12px; color: var(--text-gray); }
+.main-content { padding: 24px; margin-top: 110px; }
+.title { font-size: 28px; font-weight: 700; line-height: 1.2; white-space: pre-line; }
+.subtitle { font-size: 15px; color: var(--text-gray); margin-top: 8px; }
+.spacer-24 { height: 24px; }
+.spacer-20 { height: 20px; }
+.spacer-16 { height: 16px; }
+
+.search-input-card {
+  padding: 16px; border-radius: 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+.search-input {
+  border: none; background: transparent; font-size: 16px; flex: 1; outline: none; color: var(--text);
+}
+.quick-options { display: flex; flex-direction: column; gap: 10px; }
+.quick-card {
+  padding: 14px 16px; border-radius: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer;
+}
+.icon-circle {
+  width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.bg-home { background: #E0F2FE; }
+.bg-work { background: #EDE9FE; }
+.bg-study { background: #D1FAE5; }
+.quick-text { font-size: 16px; font-weight: 600; flex: 1; }
+.quick-arrow { color: var(--text-gray); font-size: 18px; }
+
+.map-container {
+  height: 200px; border-radius: 20px; background: #E8F4F8; position: relative; overflow: hidden;
+}
+.map-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.map-roads {
+  position: absolute; inset: 0;
+}
+.map-pin {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%);
+  font-size: 32px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.bottom-fixed {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 393px; padding: 20px 24px 40px; background: linear-gradient(transparent, #fff 30%);
+}
+
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="nav-bar glass-nav">
+    <div class="header-top">
+      <div class="back-btn">&#8592;</div>
+      <div class="step-label">Шаг 1 из 5</div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 20%;"></div>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="title">Откуда вы<br>обычно едете?</div>
+    <div class="subtitle">Укажите точку отправления &mdash; дом, работа или уч&euml;ба</div>
+    
+    <div class="spacer-24"></div>
+    
+    <div class="glass-card search-input-card">
+      <div>&#128269;</div>
+      <input type="text" class="search-input" placeholder="Поиск адреса...">
+    </div>
+    
+    <div class="spacer-16"></div>
+    
+    <div class="quick-options">
+      <div class="glass-card quick-card">
+        <div class="icon-circle bg-home">&#127968;</div>
+        <div class="quick-text">Добавить дом</div>
+        <div class="quick-arrow">&#8594;</div>
+      </div>
+      <div class="glass-card quick-card">
+        <div class="icon-circle bg-work">&#128188;</div>
+        <div class="quick-text">Добавить работу</div>
+        <div class="quick-arrow">&#8594;</div>
+      </div>
+      <div class="glass-card quick-card">
+        <div class="icon-circle bg-study">&#127891;</div>
+        <div class="quick-text">Добавить уч&euml;бу</div>
+        <div class="quick-arrow">&#8594;</div>
+      </div>
+    </div>
+    
+    <div class="spacer-20"></div>
+    
+    <div class="map-container">
+      <div class="map-grid"></div>
+      <svg class="map-roads" width="100%" height="100%">
+        <line x1="0" y1="100" x2="393" y2="100" stroke="#CBD5E1" stroke-width="6" />
+        <line x1="100" y1="0" x2="250" y2="200" stroke="#CBD5E1" stroke-width="6" />
+      </svg>
+      <div class="map-pin">&#128205;</div>
+    </div>
+  </div>
+  
+  <div class="bottom-fixed">
+    <button class="btn btn-primary">Далее &#8594;</button>
+  </div>
+</div>
+
+<script>
+// ─── BIRGE Prototype Navigation ───
+document.addEventListener('DOMContentLoaded', () => {
+  function addClickByText(text, href) {
+    const all = document.querySelectorAll('button, a, [role="button"]');
+    all.forEach(el => {
+      if (el.textContent.trim().includes(text)) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = href;
+        });
+      }
+    });
+  }
+  addClickByText('Далее', 'P-03b-commute-step2.html');
+  addClickByText('←', 'P-02-otp.html');
+});
+</script>
+</body>
+</html>

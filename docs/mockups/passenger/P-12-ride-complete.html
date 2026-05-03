@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Ride Complete</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --success: #10B981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        .success-section {
+            padding: 59px 20px 0;
+            text-align: center;
+        }
+
+        @keyframes checkScale {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(16,185,129,0.3);
+            animation: checkScale 0.4s ease-out forwards;
+        }
+
+        .checkmark-icon {
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 16px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-top: 6px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08);
+            padding: 20px;
+        }
+
+        .summary-card {
+            margin: 20px 20px;
+        }
+
+        .summary-total {
+            font-size: 36px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 16px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 4px 0;
+        }
+        .stat-item:not(:last-child) {
+            border-right: 1px solid rgba(14,165,233,0.1);
+        }
+
+        .stat-val {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .route-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .dot-blue { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+
+        .rating-card {
+            margin: 0 20px;
+        }
+
+        .stars-row {
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .star {
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        .tags-row {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .tag-pill {
+            background: rgba(14,165,233,0.08);
+            color: #0284C7;
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: 13px;
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            height: 52px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        .btn-ghost {
+            height: 44px;
+            background: transparent;
+            color: var(--text-gray);
+            font-weight: 400;
+            margin-top: 8px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .tag-pill { background: rgba(14,165,233,0.15); color: #38BDF8; }
+            .stat-item:not(:last-child) { border-color: rgba(255,255,255,0.05); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-section">
+        <div class="checkmark-circle">
+            <span class="checkmark-icon">✓</span>
+        </div>
+        <h1 class="title">Поездка завершена</h1>
+        <p class="subtitle">Спасибо за поездку!</p>
+    </div>
+
+    <div class="glass-card summary-card">
+        <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">ИТОГО</div>
+        <div class="summary-total">850 ₸</div>
+        <div style="font-size: 13px; color: var(--text-gray); margin-top: 4px;">Списано с Kaspi · •••• 4782</div>
+
+        <div class="divider"></div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-val">18 мин</div>
+                <div class="stat-lbl">Время</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">6.2 км</div>
+                <div class="stat-lbl">Дистанция</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val" style="color: var(--blue);">3 чел</div>
+                <div class="stat-lbl">Попутчики</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="route-inline">
+            <div class="dot-blue"></div>
+            <div style="color: var(--text-gray); flex: 1;">Алатау</div>
+            <div style="color: var(--text-light);">›</div>
+            <div style="font-weight: 700; flex: 1; text-align: right;">Есентай</div>
+        </div>
+    </div>
+
+    <div class="glass-card rating-card">
+        <h3 style="font-size: 17px; font-weight: 700; text-align: center;">Оцените водителя</h3>
+        <p style="font-size: 14px; color: var(--text-gray); text-align: center; margin-top: 4px;">Асан Бекович</p>
+        
+        <div class="stars-row">
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star">⭐</span>
+            <span class="star" style="opacity: 0.3;">⭐</span>
+            <span class="star" style="opacity: 0.3;">⭐</span>
+        </div>
+
+        <div class="tags-row">
+            <div class="tag-pill">Чистая машина</div>
+            <div class="tag-pill">Пунктуальный</div>
+            <div class="tag-pill">Вежливый</div>
+            <div class="tag-pill">Хороший маршрут</div>
+        </div>
+    </div>
+
+    <div style="padding: 16px 20px 40px;">
+        <button class="btn btn-primary" onclick="window.location.href='P-04-home.html'">На главную</button>
+        <button class="btn btn-ghost" onclick="window.location.href='P-16-report-issue.html'">Сообщить о проблеме</button>
+    </div>
+
+</body>
+</html>

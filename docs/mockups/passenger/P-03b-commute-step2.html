@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE Commute - Step 2</title>
+<style>
+/* CSS copied from birge-v2.css */
+:root {
+  --blue:        #0EA5E9;
+  --blue-dark:   #0284C7;
+  --blue-light:  #E0F2FE;
+  --bg:          #F0F9FF;
+  --white:       #FFFFFF;
+  --text:        #0C1A2E;
+  --text-gray:   #64748B;
+  --text-light:  #94A3B8;
+  --success:     #10B981;
+  --warning:     #F59E0B;
+  --error:       #EF4444;
+  --divider:     rgba(14,165,233,0.12);
+  --radius-card: 20px;
+  --radius-btn:  16px;
+  --radius-pill: 100px;
+  --shadow-card: 0 8px 32px rgba(14,165,233,0.08),
+                 inset 0 1px 0 rgba(255,255,255,0.8);
+  --shadow-btn:  0 4px 20px rgba(14,165,233,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+  min-height: 100vh;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.glass-nav {
+  background: rgba(240,249,255,0.88);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid var(--divider);
+}
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 56px;
+  border: none; border-radius: var(--radius-btn);
+  font-size: 17px; font-weight: 600; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: linear-gradient(135deg, #0EA5E9, #0284C7);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+.progress-bar {
+  width: 100%; height: 4px;
+  background: var(--blue-light);
+  border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0EA5E9, #0284C7);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.screen {
+  width: 393px; min-height: 852px;
+  margin: 0 auto;
+  position: relative; overflow: hidden;
+}
+.nav-bar {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 393px; z-index: 100;
+  padding: 59px 20px 12px;
+}
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.back-btn { font-size: 20px; color: var(--blue); cursor: pointer; }
+.step-label { font-size: 12px; color: var(--text-gray); }
+.main-content { padding: 24px; margin-top: 110px; }
+.title { font-size: 28px; font-weight: 700; line-height: 1.2; white-space: pre-line; }
+.subtitle { font-size: 15px; color: var(--text-gray); margin-top: 8px; }
+.spacer-24 { height: 24px; }
+.spacer-20 { height: 20px; }
+.spacer-16 { height: 16px; }
+
+.search-input-card {
+  padding: 16px; border-radius: 18px; display: flex; align-items: center; gap: 12px;
+}
+.search-input {
+  border: none; background: transparent; font-size: 16px; flex: 1; outline: none; color: var(--text);
+}
+
+.map-container {
+  height: 200px; border-radius: 20px; background: #E8F4F8; position: relative; overflow: hidden;
+}
+.map-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.bottom-fixed {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 393px; padding: 20px 24px 40px; background: linear-gradient(transparent, #fff 30%);
+}
+
+/* Step 2 Specific */
+.confirmation-chip {
+  padding: 8px 14px; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 14px; color: var(--blue);
+}
+.check-circle {
+  width: 16px; height: 16px; border-radius: 50%; background: var(--success); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;
+}
+.recent-card { padding: 16px; border-radius: 18px; }
+.recent-label { font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 12px; font-weight: 600; }
+.recent-row {
+  display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--divider);
+  font-size: 15px; color: var(--text); gap: 12px;
+}
+.recent-row:last-child { border-bottom: none; }
+.recent-text { flex: 1; }
+.recent-arrow { color: var(--text-gray); }
+
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="nav-bar glass-nav">
+    <div class="header-top">
+      <div class="back-btn">&#8592;</div>
+      <div class="step-label">Шаг 2 из 5</div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 40%;"></div>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="glass-card confirmation-chip">
+      &#128205; Алатау, пр. Аль-Фараби
+      <div class="check-circle">&#10003;</div>
+    </div>
+    
+    <div class="spacer-16"></div>
+    <div class="title">Куда вы<br>обычно едете?</div>
+    <div class="subtitle">Укажите пункт назначения</div>
+    
+    <div class="spacer-24"></div>
+    
+    <div class="glass-card search-input-card">
+      <div>&#128269;</div>
+      <input type="text" class="search-input" placeholder="Пункт назначения...">
+    </div>
+    
+    <div class="spacer-16"></div>
+    
+    <div class="glass-card recent-card">
+      <div class="recent-label">Недавние</div>
+      <div class="recent-row">
+        <span>&#127970;</span>
+        <span class="recent-text">Есентай Парк, пр. Аль-Фараби 77</span>
+        <span class="recent-arrow">&#8594;</span>
+      </div>
+      <div class="recent-row">
+        <span>&#127979;</span>
+        <span class="recent-text">КБТУ, ул. Толе Би 59</span>
+        <span class="recent-arrow">&#8594;</span>
+      </div>
+      <div class="recent-row">
+        <span>&#128662;</span>
+        <span class="recent-text">MEGA Alma-Ata, ул. Розыбакиева</span>
+        <span class="recent-arrow">&#8594;</span>
+      </div>
+    </div>
+    
+    <div class="spacer-20"></div>
+    
+    <div class="map-container">
+      <div class="map-grid"></div>
+      <svg width="100%" height="100%" style="position: absolute;">
+        <path d="M 80 100 Q 150 50, 280 100" stroke="#0EA5E9" stroke-width="3" stroke-dasharray="6,6" fill="none" />
+      </svg>
+      <div style="position: absolute; left: 80px; top: 100px; transform: translate(-50%, -100%); font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">&#128205;</div>
+      <div style="position: absolute; left: 280px; top: 100px; transform: translate(-50%, -100%); font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">&#127937;</div>
+    </div>
+  </div>
+  
+  <div class="bottom-fixed">
+    <button class="btn btn-primary">Далее &#8594;</button>
+  </div>
+</div>
+
+<script>
+// ─── BIRGE Prototype Navigation ───
+document.addEventListener('DOMContentLoaded', () => {
+  function addClickByText(text, href) {
+    const all = document.querySelectorAll('button, a, [role="button"]');
+    all.forEach(el => {
+      if (el.textContent.trim().includes(text)) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = href;
+        });
+      }
+    });
+  }
+  addClickByText('Далее', 'P-03c-commute-step3.html');
+  addClickByText('←', 'P-03a-commute-step1.html');
+});
+</script>
+</body>
+</html>

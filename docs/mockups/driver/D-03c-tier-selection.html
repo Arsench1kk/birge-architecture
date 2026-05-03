@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver — Тариф (4/4)</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --bg: #FFFFFF;
+        }
+        body { margin: 0; font-family: -apple-system, sans-serif; color: var(--text); background: #F8FAFC; -webkit-font-smoothing: antialiased; }
+        .screen { width: 393px; margin: 0 auto; background: var(--bg); min-height: 852px; position: relative; overflow-x: hidden; }
+        
+        /* HEADER */
+        .header { position: fixed; top: 0; width: 393px; z-index: 100; padding: 59px 20px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(14,165,233,0.12); box-sizing: border-box; }
+        .header-row1 { display: flex; align-items: center; }
+        .back-link { color: var(--blue); font-size: 15px; text-decoration: none; font-weight: 500; }
+        .header-row2 { margin-top: 10px; font-size: 12px; color: var(--text-gray); text-align: right; }
+        .header-row3 { margin-top: 6px; margin-bottom: 12px; width: 100%; height: 4px; background: var(--blue-light); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #0EA5E9, #10B981); border-radius: 2px; }
+
+        /* CONTENT */
+        .content { margin-top: 130px; padding: 20px; padding-bottom: 140px; }
+        .title { font-size: 28px; font-weight: 700; color: #0C1A2E; margin: 0; }
+        .subtitle { font-size: 15px; color: var(--text-gray); margin-top: 6px; margin-bottom: 0; }
+
+        .glass-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(24px); box-shadow: 0 8px 32px rgba(14,165,233,0.08); border-radius: 18px; border: 1px solid rgba(255,255,255,0.6); }
+        
+        /* BANNER */
+        .eco-banner { padding: 12px 16px; border-radius: 14px; background: rgba(14,165,233,0.06); border: 1px solid rgba(14,165,233,0.2); margin-top: 16px; margin-bottom: 20px; font-size: 13px; color: #0284C7; text-align: center; line-height: 1.5; }
+
+        /* CARDS */
+        .tier-card { padding: 18px; margin-bottom: 10px; border: 1px solid rgba(14,165,233,0.15); }
+        .t-row { display: flex; justify-content: space-between; align-items: baseline; }
+        .t-title { font-size: 20px; font-weight: 700; }
+        .t-price { font-size: 14px; color: var(--text-gray); }
+        .t-sub { font-size: 13px; color: var(--text-gray); margin-top: 2px; }
+
+        .features { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .feat { font-size: 14px; }
+        .feat-gray { font-size: 14px; color: #94A3B8; }
+
+        .btn-outline { width: 100%; height: 44px; border-radius: 16px; border: 1.5px solid var(--blue); background: transparent; color: var(--blue); font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 14px; }
+
+        /* PRO CARD */
+        .pro-wrapper { position: relative; margin-top: 20px; margin-bottom: 10px; }
+        .pro-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #0EA5E9, #0284C7); color: white; padding: 4px 18px; border-radius: 100px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(14,165,233,0.4); white-space: nowrap; z-index: 10; }
+        .tier-pro { border: 2px solid var(--blue); background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(2,132,199,0.03)); box-shadow: 0 8px 32px rgba(14,165,233,0.15); }
+        .btn-pro { width: 100%; height: 44px; border-radius: 16px; border: none; background: linear-gradient(135deg, #0EA5E9, #0284C7); color: white; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 14px; box-shadow: 0 4px 16px rgba(14,165,233,0.3); }
+
+        .compare-link { display: block; text-align: center; font-size: 14px; color: var(--blue); text-decoration: none; font-weight: 500; margin-top: 16px; }
+
+        /* BOTTOM CTA */
+        .bottom-cta { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 393px; z-index: 100; background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); border-top: 1px solid rgba(14,165,233,0.12); padding: 16px 20px 34px; box-sizing: border-box; }
+        .btn-primary { width: 100%; height: 56px; border-radius: 16px; border: none; background: linear-gradient(135deg, #0EA5E9, #0284C7); color: white; font-size: 17px; font-weight: 600; box-shadow: 0 4px 20px rgba(14,165,233,0.35); cursor: pointer; transition: transform 0.1s; }
+        .btn-primary:active { transform: scale(0.98); }
+    
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="screen">
+        <header class="header">
+            <div class="header-row1">
+                <a href="D-03b-documents.html" class="back-link">← Назад</a>
+            </div>
+            <div class="header-row2">Готово! 🎉</div>
+            <div class="header-row3">
+                <div class="progress-fill"></div>
+            </div>
+        </header>
+
+        <main class="content">
+            <h1 class="title">Выберите тариф</h1>
+            <p class="subtitle">Изменить можно в любой момент</p>
+
+            <div class="glass-card eco-banner">
+                💡 Водители BIRGE зарабатывают на 41% больше чем на Yandex Go благодаря подписке вместо комиссии
+            </div>
+
+            <!-- СТАРТЕР -->
+            <div class="glass-card tier-card">
+                <div class="t-row">
+                    <div class="t-title">Стартер</div>
+                    <div class="t-price">4 900₸ / мес</div>
+                </div>
+                <div class="t-sub">Для новых водителей</div>
+                <div class="features">
+                    <div class="feat">✓ До 30 коридоров в месяц</div>
+                    <div class="feat">✓ Стандартная поддержка</div>
+                    <div class="feat">✓ Гарантия дохода 90 дней 🎁</div>
+                    <div class="feat-gray">✗ Приоритет в назначении</div>
+                </div>
+                <button class="btn-outline">Выбрать Стартер</button>
+            </div>
+
+            <!-- ПРОФЕССИОНАЛ -->
+            <div class="pro-wrapper">
+                <div class="pro-badge">⭐ Популярный выбор</div>
+                <div class="glass-card tier-card tier-pro" style="margin-bottom: 0;">
+                    <div class="t-row">
+                        <div class="t-title">Профессионал</div>
+                        <div class="t-price">8 900₸ / мес</div>
+                    </div>
+                    <div class="features">
+                        <div class="feat">✓ Безлимит коридоров</div>
+                        <div class="feat">✓ Высокий приоритет в час пик</div>
+                        <div class="feat">✓ Поддержка 24/7</div>
+                        <div class="feat">✓ Статистика и аналитика</div>
+                        <div class="feat">✓ Скидка 10% на следующий месяц</div>
+                    </div>
+                    <button class="btn-pro">Выбрать Профессионал</button>
+                </div>
+            </div>
+
+            <!-- ПРЕМИУМ -->
+            <div class="glass-card tier-card" style="margin-top: 10px;">
+                <div class="t-row">
+                    <div class="t-title">Премиум</div>
+                    <div class="t-price">14 900₸ / мес</div>
+                </div>
+                <div class="features">
+                    <div class="feat">✓ Всё из Профессионала</div>
+                    <div class="feat">✓ Персональный менеджер</div>
+                    <div class="feat">✓ Эксклюзивные маршруты</div>
+                    <div class="feat">✓ Приоритет #1 в назначении</div>
+                </div>
+                <button class="btn-outline">Выбрать Премиум</button>
+            </div>
+
+            <a href="#" class="compare-link">Сравнить тарифы подробно →</a>
+        </main>
+
+        <div class="bottom-cta">
+            <button class="btn-primary" onclick="window.location.href='dashboard.html'">Начать работу →</button>
+        </div>
+    </div>
+</body>
+</html>

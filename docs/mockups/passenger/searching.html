@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE — AI Поиск</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --success: #10B981;
+            --error: #EF4444;
+            --divider: rgba(14,165,233,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            background: #DBEAFE;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .screen {
+            width: 393px;
+            height: 100vh;
+            position: relative;
+            background: transparent;
+        }
+
+        /* LAYER 1: MAP */
+        .map-layer {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            height: 100vh;
+            z-index: 0;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        /* LAYER 2: TOP BAR */
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 10;
+            padding: 59px 16px 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mode-switcher {
+            display: inline-flex;
+            padding: 4px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+        }
+
+        .mode-btn {
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+        }
+
+        .mode-btn.inactive {
+            background: transparent;
+            color: var(--text-gray);
+        }
+
+        /* LAYER 3: AI ANIMATION */
+        .ai-animation-container {
+            position: fixed;
+            top: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px;
+            height: 200px;
+            z-index: 5;
+        }
+
+        .avatar {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        @keyframes moveA {
+            0%   { transform: translate(0, -50%); opacity: 0.3; }
+            50%  { transform: translate(80px, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(0, -50%); opacity: 0.3; }
+        }
+
+        @keyframes moveM {
+            0%   { transform: translate(0,0); opacity: 0.3; }
+            50%  { transform: translate(-70px, 30px) scale(1.1); opacity: 1; }
+            100% { transform: translate(0,0); opacity: 0.3; }
+        }
+
+        @keyframes moveD {
+            0%   { transform: translate(0,0); opacity: 0.3; }
+            50%  { transform: translate(-20px,-60px) scale(1.1); opacity: 1; }
+            100% { transform: translate(0,0); opacity: 0.3; }
+        }
+
+        .avatar-a { left: 0; top: 50%; background: #EDE9FE; color: #5B21B6; animation: moveA 2s ease-in-out infinite; }
+        .avatar-m { right: 0; top: 20%; background: #D1FAE5; color: #065F46; animation: moveM 2s ease-in-out infinite; animation-delay: 0.4s; }
+        .avatar-d { right: 20%; bottom: 0; background: #FEF3C7; color: #92400E; animation: moveD 2s ease-in-out infinite; animation-delay: 0.8s; }
+
+        @keyframes pulse {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            to { transform: translate(-50%, -50%) scale(1.4); opacity: 0.6; }
+        }
+
+        .central-pulse {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 24px;
+            height: 24px;
+            background: var(--blue);
+            border: 3px solid white;
+            border-radius: 50%;
+            animation: pulse 1s infinite alternate;
+            z-index: 2;
+        }
+
+        /* LAYER 4: BOTTOM SHEET */
+        .glass-sheet {
+            position: fixed;
+            bottom: 0;
+            width: 393px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px 28px 0 0;
+            padding-bottom: 34px;
+            box-shadow: 0 -8px 32px rgba(14,165,233,0.08);
+            z-index: 20;
+        }
+
+        .drag-handle { width: 36px; height: 4px; background: rgba(0,0,0,0.15); border-radius: 2px; margin: 12px auto 0; }
+
+        .ai-badge {
+            margin: 14px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue-dark);
+        }
+
+        .sheet-title { font-size: 22px; font-weight: 700; text-align: center; margin: 8px 20px 0; }
+        .sheet-subtitle { font-size: 14px; color: var(--text-gray); text-align: center; margin-top: 4px; }
+
+        .steps-container { margin: 16px 20px 0; }
+        
+        .step-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+        
+        .step-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bg-success { background: #D1FAE5; color: var(--success); font-size: 13px; }
+        .bg-active { background: var(--blue-light); }
+        .bg-pending { background: #F1F5F9; color: var(--text-light); font-size: 11px; font-weight: 700; }
+
+        .step-text { font-size: 14px; flex: 1; }
+        .step-text.done { color: var(--success); font-weight: 700; }
+        .step-text.active { color: var(--blue); font-weight: 700; }
+        .step-text.pending { color: var(--text-light); }
+
+        .step-time { font-size: 12px; color: var(--text-light); }
+
+        .step-divider {
+            width: 1px;
+            height: 8px;
+            border-left: 1px dashed rgba(14,165,233,0.2);
+            margin-left: 11px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--blue);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .counter-card {
+            margin: 14px 20px 0;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .counter-label { font-size: 13px; color: var(--text-gray); }
+        .counter-val { font-size: 13px; color: var(--blue); font-weight: 700; }
+
+        .divider { height: 1px; background: var(--divider); margin: 14px 20px; }
+
+        .btn-cancel {
+            margin: 0 20px;
+            height: 48px;
+            width: calc(100% - 40px);
+            border-radius: 14px;
+            border: 1.5px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+            background: transparent;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cancel:active { transform: scale(0.98); background: rgba(239, 68, 68, 0.05); }
+
+    /* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="screen">
+        <!-- LAYER 1: MAP -->
+        <div class="map-layer">
+            <div class="grid-overlay"></div>
+            <svg width="393" height="100%" style="position:absolute; inset:0;">
+                <line x1="0" y1="45%" x2="100%" y2="45%" stroke="#CBD5E1" stroke-width="6" />
+                <line x1="0" y1="10%" x2="100%" y2="80%" stroke="#CBD5E1" stroke-width="6" />
+                
+                <!-- Pickup Pin -->
+                <circle cx="118" cy="384" r="14" fill="#0EA5E9" stroke="white" stroke-width="3" />
+                <circle cx="118" cy="384" r="6" fill="white" />
+            </svg>
+        </div>
+
+        <!-- LAYER 2: TOP BAR -->
+        <div class="glass-nav">
+            <div class="mode-switcher">
+                <button class="mode-btn active">🤖 AI Коридор</button>
+                <button class="mode-btn inactive">🚗 Такси</button>
+            </div>
+        </div>
+
+        <!-- LAYER 3: AI ANIMATION -->
+        <div class="ai-animation-container">
+            <div class="central-pulse"></div>
+            <div class="avatar avatar-a">А</div>
+            <div class="avatar avatar-m">М</div>
+            <div class="avatar avatar-d">Д</div>
+        </div>
+
+        <!-- LAYER 4: BOTTOM SHEET -->
+        <div class="glass-sheet">
+            <div class="drag-handle"></div>
+
+            <div class="ai-badge">
+                <span>✨</span>
+                <span>AI режим · Коридор</span>
+            </div>
+
+            <h2 class="sheet-title">AI подбирает попутчиков...</h2>
+            <p class="sheet-subtitle">Алатау → Есентай · 07:30</p>
+
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step-row">
+                    <div class="step-circle bg-success">✅</div>
+                    <div class="step-text done">Ваш маршрут определён</div>
+                    <div class="step-time">· 07:28</div>
+                </div>
+                <div class="step-divider"></div>
+
+                <!-- Step 2 -->
+                <div class="step-row">
+                    <div class="step-circle bg-active">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="step-text active">Ищем попутчиков...</div>
+                    <div class="step-time">~1 мин</div>
+                </div>
+                <div class="step-divider"></div>
+
+                <!-- Step 3 -->
+                <div class="step-row">
+                    <div class="step-circle bg-pending">3</div>
+                    <div class="step-text pending">Подбираем водителя</div>
+                </div>
+            </div>
+
+            <!-- Counter -->
+            <div class="counter-card">
+                <span class="counter-label">⏱ Обычное время поиска</span>
+                <span class="counter-val">~1–2 мин</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <button class="btn-cancel" onclick="window.location.href='P-04-home.html'">Отменить поиск</button>
+        </div>
+    </div>
+
+    <script>
+    // ─── BIRGE Prototype Navigation ───
+    document.addEventListener('DOMContentLoaded', () => {
+      // Auto transition to active ride
+      setTimeout(() => {
+        window.location.href = 'active-ride.html';
+      }, 3000);
+    });
+    </script>
+</body>
+</html>

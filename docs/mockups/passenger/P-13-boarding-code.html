@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Boarding Code</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --text-light: #94A3B8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #0C1A2E 0%, #0D2040 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: white;
+            padding: 80px 24px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-label {
+            font-size: 13px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .code-row {
+            margin-top: 16px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .code-box {
+            width: 72px;
+            height: 72px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(14,165,233,0.4);
+            border-radius: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .code-hint {
+            font-size: 15px;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .glass-card-dark {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            padding: 16px 20px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .ride-card {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+
+        .btn-hide {
+            margin-top: auto;
+            width: 100%;
+            height: 50px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            background: transparent;
+            color: var(--text-light);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            padding-top: 0; /* Align text properly */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-hide:active {
+            background: rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="section-label">КОД ПОСАДКИ</div>
+
+    <div class="code-row">
+        <div class="code-box">4</div>
+        <div class="code-box">2</div>
+        <div class="code-box">7</div>
+    </div>
+
+    <p class="code-hint">Назовите этот код водителю при посадке</p>
+
+    <div class="glass-card-dark" style="margin-top: 32px;">
+        <div class="avatar">АБ</div>
+        <div style="flex: 1;">
+            <div style="font-size: 17px; font-weight: 700;">Асан Бекович</div>
+            <div style="font-size: 13px; color: var(--text-light); margin-top: 2px;">⭐ 4.9 · Chevrolet Nexia · 123 ABC 02</div>
+        </div>
+    </div>
+
+    <div class="ride-card">
+        <div style="font-size: 15px; font-weight: 700;">Алатау → Есентай</div>
+        <div style="font-size: 13px; color: var(--text-light); margin-top: 4px;">07:30 · 890₸ · 3 попутчика</div>
+    </div>
+
+    <div style="width: 100%; padding-top: 32px; margin-top: auto;">
+        <button class="btn-hide" onclick="window.history.back()">Скрыть код</button>
+    </div>
+
+</body>
+</html>

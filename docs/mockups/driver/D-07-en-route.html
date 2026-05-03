@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - En Route</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --green: #10B981;
+            --red: #EF4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            width: 393px; margin: 0 auto; min-height: 100vh;
+            position: relative; overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .map-container {
+            position: fixed; inset: 0; z-index: 0;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+        }
+        .map-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+        .car-marker {
+            position: absolute;
+            width: 40px; height: 40px;
+            background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            left: 15%; top: 60%;
+        }
+
+        .top-status-pill {
+            position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
+            z-index: 10; white-space: nowrap;
+            background: rgba(12,26,46,0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 100px;
+            padding: 8px 20px; color: white;
+            font-size: 14px; font-weight: bold;
+        }
+
+        .bottom-sheet {
+            position: fixed; bottom: 0; width: 393px; z-index: 10;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-bottom: none;
+            border-radius: 28px 28px 0 0;
+            padding-bottom: 34px;
+            box-shadow: 0 -8px 40px rgba(14,165,233,0.1);
+        }
+
+        .drag-handle {
+            width: 36px; height: 4px;
+            background: rgba(0,0,0,0.12);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        .pickup-block {
+            padding: 14px 20px;
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 14px 16px; margin: 0 20px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .section-label {
+            font-size: 11px; color: var(--text-light); text-transform: uppercase;
+            font-weight: 600; margin-bottom: 10px; letter-spacing: 0.5px;
+        }
+
+        .passenger-row {
+            display: flex; align-items: center; gap: 10px; padding: 6px 0;
+            border-bottom: 1px solid var(--divider);
+        }
+        .passenger-row:last-child { border-bottom: none; }
+
+        .avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: bold; color: white;
+            flex-shrink: 0;
+        }
+
+        .eta-block {
+            padding: 0 20px; margin-top: 14px;
+            display: flex; justify-content: space-between;
+        }
+
+        .btn-primary {
+            margin: 14px 20px; width: calc(100% - 40px); height: 52px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white; border: none; border-radius: 16px;
+            font-size: 17px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            .map-container { background: linear-gradient(160deg, #0D1F3C, #0A2040); }
+            .bottom-sheet { background: rgba(13,31,60,0.92); border-color: rgba(255,255,255,0.08); }
+            .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .car-marker { background: #1A2332; }
+            .pickup-block .icon-call { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="map-container">
+        <div class="map-grid"></div>
+        <svg class="map-svg">
+            <line x1="0" y1="45%" x2="100%" y2="45%" stroke="#CBD5E1" stroke-width="7" opacity="0.4"/>
+            <line x1="10%" y1="0" x2="90%" y2="100%" stroke="#CBD5E1" stroke-width="7" opacity="0.3"/>
+            <!-- Highlighted Route (Passenger's route) -->
+            <path d="M 25% 70% Q 50% 45% 80% 25%" stroke="var(--blue)" stroke-width="4" fill="none" style="filter: drop-shadow(0 2px 4px rgba(14,165,233,0.3));" />
+            <!-- Pickup -->
+            <circle cx="25%" cy="70%" r="10" fill="var(--green)" stroke="white" stroke-width="3" />
+            <!-- Destination -->
+            <circle cx="80%" cy="25%" r="10" fill="var(--red)" stroke="white" stroke-width="3" />
+        </svg>
+        <div class="car-marker">🚗</div>
+    </div>
+
+    <div class="top-status-pill">🚗 Еду к точке посадки · 4 мин</div>
+
+    <div class="bottom-sheet">
+        <div class="drag-handle"></div>
+        
+        <div class="pickup-block">
+            <div style="width:40px;height:40px;background:rgba(16,185,129,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📍</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+                <div style="font-weight:700;font-size:17px;color:var(--text);">Алатау, пр. Аль-Фараби 21</div>
+                <div style="font-size:13px;color:var(--text-gray);">Точка посадки · 4 мин · 1.2 км</div>
+            </div>
+            <div class="glass-card icon-call" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;padding:0;margin:0;flex-shrink:0;">📞</div>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label">ПАССАЖИРЫ</div>
+            <div class="passenger-row">
+                <div class="avatar" style="background:#EDE9FE;color:#7C3AED;">А</div>
+                <div style="font-weight:700;font-size:14px;color:var(--text);flex:1;">Айгерим С.</div>
+                <div style="font-size:13px;color:var(--text-light);">Подъезд 2</div>
+            </div>
+            <div class="passenger-row">
+                <div class="avatar" style="background:#D1FAE5;color:#065F46;">М</div>
+                <div style="font-size:14px;color:var(--text);flex:1;">Мади К.</div>
+                <div style="font-size:13px;color:var(--text-light);">Там же</div>
+            </div>
+            <div class="passenger-row">
+                <div class="avatar" style="background:#FEF3C7;color:#92400E;">Д</div>
+                <div style="font-size:14px;color:var(--text);flex:1;">Динара Б.</div>
+                <div style="font-size:13px;color:var(--text-light);">+50м</div>
+            </div>
+            <div class="passenger-row">
+                <div class="avatar" style="background:#DBEAFE;color:#1E3A8A;">А</div>
+                <div style="font-size:14px;color:var(--text);flex:1;">Алия М.</div>
+                <div style="font-size:13px;color:var(--text-light);">+100м</div>
+            </div>
+        </div>
+
+        <div class="eta-block">
+            <div style="display:flex;flex-direction:column;gap:2px;">
+                <div style="font-size:13px;color:var(--text-gray);">До точки</div>
+                <div style="font-weight:700;font-size:20px;color:var(--text);">4 минуты</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:2px;text-align:right;">
+                <div style="font-size:13px;color:var(--text-gray);">07:22</div>
+                <div style="font-size:13px;color:var(--text-light);">Ожидаемое</div>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="window.location.href='D-08-arrived.html'">Я на месте</button>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Drive — Настройки</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 100px;
+        }
+
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            padding: 59px 20px 12px;
+            background: rgba(240, 249, 255, 0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .nav-back { font-size: 15px; color: var(--blue); cursor: pointer; text-decoration: none; }
+        .nav-title { font-size: 17px; font-weight: 700; color: var(--text); }
+
+        .content { margin-top: 100px; padding: 0 20px; }
+
+        .section-label { font-size: 11px; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; font-weight: 600; margin-top: 24px; }
+        .section-label:first-child { margin-top: 0; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+            border-radius: 18px;
+            padding: 0 16px;
+        }
+
+        .row {
+            padding: 14px 0;
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid var(--divider);
+        }
+        .row:last-child { border-bottom: none; }
+
+        .row-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+        .row-label { flex: 1; font-size: 15px; color: var(--text); }
+        .row-value { font-size: 14px; color: var(--text-gray); }
+
+        .toggle { width: 44px; height: 24px; border-radius: 100px; position: relative; cursor: pointer; flex-shrink: 0; transition: background .2s; }
+        .toggle.on { background: var(--blue); }
+        .toggle.off { background: #E2E8F0; }
+        .toggle::after { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: left .2s; }
+        .toggle.on::after { left: 22px; }
+        .toggle.off::after { left: 2px; }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-nav { background: rgba(10, 22, 40, 0.88); }
+            .glass-card { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.1); }
+            .toggle.off { background: #334155; }
+        }
+    </style>
+</head>
+<body>
+    <header class="glass-nav">
+        <a href="D-15-driver-profile.html" class="nav-back">← Назад</a>
+        <div class="nav-title">Настройки</div>
+        <div style="width: 50px;"></div>
+    </header>
+
+    <main class="content">
+        <div class="section-label">ПОЕЗДКИ</div>
+        <div class="glass-card">
+            <div class="row">
+                <span class="row-icon">📍</span>
+                <span class="row-label">Радиус поиска</span>
+                <span class="row-value">3 км ›</span>
+            </div>
+            <div class="row">
+                <span class="row-icon">🚕</span>
+                <span class="row-label">Типы заказов</span>
+                <span class="row-value">Все ›</span>
+            </div>
+            <div class="row">
+                <span class="row-icon">⚡</span>
+                <span class="row-label">Автоматическое принятие</span>
+                <div class="toggle off"></div>
+            </div>
+            <div class="row">
+                <span class="row-icon">🔔</span>
+                <span class="row-label">Уведомления о заказах</span>
+                <div class="toggle on"></div>
+            </div>
+        </div>
+
+        <div class="section-label">КОРИДОРЫ</div>
+        <div class="glass-card">
+            <div class="row">
+                <span class="row-icon">🛣</span>
+                <span class="row-label">Мои коридоры</span>
+                <span class="row-value">2 активных ›</span>
+            </div>
+            <div class="row">
+                <span class="row-icon">✉️</span>
+                <span class="row-label">Уведомления коридоров</span>
+                <div class="toggle on"></div>
+            </div>
+            <div class="row">
+                <span class="row-icon">⏰</span>
+                <span class="row-label">Напоминание перед отправлением</span>
+                <span class="row-value">За 30 мин ›</span>
+            </div>
+        </div>
+
+        <div class="section-label">АККАУНТ</div>
+        <div class="glass-card">
+            <div class="row">
+                <span class="row-icon">🌐</span>
+                <span class="row-label">Язык</span>
+                <span class="row-value">Русский ›</span>
+            </div>
+            <div class="row">
+                <span class="row-icon">💬</span>
+                <span class="row-label">Поддержка</span>
+                <span class="row-value">›</span>
+            </div>
+            <div class="row">
+                <span class="row-icon">ℹ️</span>
+                <span class="row-label">О приложении</span>
+                <span class="row-value">BIRGE Drive 2.0.1 ›</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.querySelectorAll('.toggle').forEach(t => {
+            t.addEventListener('click', () => {
+                t.classList.toggle('on');
+                t.classList.toggle('off');
+            });
+        });
+    </script>
+</body>
+</html>

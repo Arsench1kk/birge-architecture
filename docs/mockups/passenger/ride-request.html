@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE — Выбор поездки</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            background: #000;
+        }
+
+        .screen {
+            width: 393px;
+            height: 852px;
+            margin: 0 auto;
+            position: relative;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        /* СЛОЙ 1 — КАРТА */
+        .map-layer {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 393px;
+            height: 100vh;
+            z-index: 0;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+        }
+
+        .map-layer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        /* СЛОЙ 2 — NAV BAR */
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 393px;
+            z-index: 10;
+            padding: 59px 20px 12px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(14,165,233,0.12);
+        }
+
+        .nav-back {
+            color: var(--blue);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            position: absolute;
+            left: 20px;
+        }
+
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        /* СЛОЙ 3 — ПЕРЕКЛЮЧАТЕЛЬ ТАРИФОВ */
+        .tab-selector {
+            position: fixed;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: calc(393px - 32px);
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 4px;
+            display: flex;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08);
+            box-sizing: border-box;
+        }
+
+        .tab-btn {
+            flex: 1;
+            height: 40px;
+            border: none;
+            background: transparent;
+            color: var(--text-gray);
+            font-size: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(14,165,233,0.35);
+        }
+
+        /* СЛОЙ 4 — BOTTOM SHEET */
+        .glass-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 393px;
+            z-index: 20;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px 28px 0 0;
+            padding-bottom: 34px;
+            max-height: 520px;
+            box-shadow: 0 -8px 40px rgba(14,165,233,0.1);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drag-handle {
+            width: 36px;
+            height: 4px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 2px;
+            margin: 12px auto 0;
+            flex-shrink: 0;
+        }
+
+        .sheet-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            scrollbar-width: none;
+        }
+        .sheet-scroll::-webkit-scrollbar { display: none; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* GLASS CARD UTILS */
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+            border-radius: 18px;
+            box-sizing: border-box;
+        }
+
+        /* AI BANNER */
+        .ai-banner {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(14,165,233,0.06);
+            border: 1px solid rgba(14,165,233,0.2);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-banner-text { font-size: 13px; color: var(--blue-dark); font-weight: 700; }
+
+        /* CORRIDOR CARDS */
+        .corridor-card {
+            padding: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .corridor-card.active {
+            border: 2px solid var(--blue);
+            background: rgba(14,165,233,0.04);
+        }
+        .corridor-card.inactive {
+            padding: 14px 16px;
+            border-radius: 16px;
+            opacity: 0.75;
+            margin-bottom: 14px;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--blue-dark);
+            font-weight: 600;
+            background: var(--blue-light);
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+
+        .pill-green {
+            display: inline-block;
+            font-size: 12px;
+            color: #065F46;
+            font-weight: 700;
+            background: #D1FAE5;
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+
+        .row-flex-between { display: flex; align-items: center; justify-content: space-between; }
+        .row-flex { display: flex; align-items: center; gap: 8px; }
+        
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+        .dash-line { border-left: 2px dashed var(--blue); height: 12px; margin-left: 3px; opacity: 0.5; }
+        
+        .loc-text-main { font-size: 15px; font-weight: 700; }
+        .loc-text-sub { font-size: 15px; }
+
+        .stats-row {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(14,165,233,0.15);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .stat-item { font-size: 13px; color: var(--text-gray); }
+        .stat-val-blue { color: var(--blue); font-weight: 700; }
+        .stat-price { font-size: 13px; font-weight: 700; color: var(--text); }
+
+        .avatars-row { display: flex; align-items: center; }
+        .avatar {
+            width: 28px; height: 28px; border-radius: 50%; border: 2px solid white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: var(--text);
+            margin-left: -8px;
+        }
+        .avatar:first-child { margin-left: 0; }
+        .av-purple { background: #EDE9FE; color: #5B21B6; }
+        .av-green { background: #D1FAE5; color: #065F46; }
+        .av-yellow { background: #FEF3C7; color: #92400E; }
+        .av-more { font-size: 13px; color: var(--text-gray); margin-left: 8px; }
+
+        .link-blue { font-size: 13px; color: var(--blue); font-weight: 700; cursor: pointer; }
+        .view-all { font-size: 14px; color: var(--blue); text-align: center; display: block; text-decoration: none; font-weight: 500; }
+
+        /* COST SECTION */
+        .cost-section {
+            margin-top: 4px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(14,165,233,0.12);
+        }
+        .price-display { display: flex; align-items: baseline; }
+        .price-main { font-size: 28px; font-weight: 700; color: var(--text); }
+        .price-sub { font-size: 14px; color: var(--text-gray); margin-left: 6px; }
+
+        .btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; border: none; border-radius: 16px;
+            font-size: 17px; font-weight: 600; cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; height: 56px; box-shadow: 0 4px 20px rgba(14,165,233,0.35); }
+        .btn-ghost { background: transparent; color: var(--text-gray); height: 44px; margin-top: 8px; font-weight: 500; font-size: 15px; }
+
+        /* OTHER TABS */
+        .service-card {
+            padding: 16px; border-radius: 18px; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .service-icon {
+            width: 44px; height: 44px; border-radius: 50%; background: var(--blue-light);
+            display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+        }
+        .s-title { font-size: 16px; font-weight: 700; }
+        .s-desc { font-size: 13px; color: var(--text-gray); margin-top: 2px; }
+        .s-price { font-size: 16px; font-weight: 700; color: var(--text); }
+
+        .surge-banner {
+            padding: 10px 14px; border-radius: 12px; background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.2); margin-bottom: 12px;
+            font-size: 13px; color: #92400E; font-weight: 700;
+        }
+
+        .info-card {
+            padding: 12px 14px; border-radius: 14px; border-left: 3px solid var(--blue);
+            background: rgba(255,255,255,0.72); box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+            font-size: 13px; color: var(--text-gray); line-height: 1.5; margin-bottom: 12px;
+        }
+    /* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="screen">
+        <!-- СЛОЙ 1 — КАРТА -->
+        <div class="map-layer">
+            <svg width="100%" height="100%" style="position: absolute; inset: 0;">
+                <!-- Дороги -->
+                <line x1="0" y1="45%" x2="100%" y2="45%" stroke="#CBD5E1" stroke-width="8" opacity="0.5" />
+                <line x1="10%" y1="0" x2="90%" y2="100%" stroke="#CBD5E1" stroke-width="6" opacity="0.4" />
+                
+                <!-- Маршрут -->
+                <path d="M 60 600 Q 200 400 340 200" fill="none" stroke="#0EA5E9" stroke-width="5" style="filter: drop-shadow(0 0 8px rgba(14,165,233,0.5));" />
+                
+                <!-- Пин отправления -->
+                <g transform="translate(60, 600)">
+                    <circle r="10" fill="#0EA5E9" stroke="white" stroke-width="3" />
+                    <text x="0" y="4" fill="white" font-size="11" font-weight="bold" text-anchor="middle">A</text>
+                </g>
+                
+                <!-- Пин назначения -->
+                <g transform="translate(340, 200)">
+                    <circle r="10" fill="#EF4444" stroke="white" stroke-width="3" />
+                    <text x="0" y="4" fill="white" font-size="11" font-weight="bold" text-anchor="middle">B</text>
+                </g>
+            </svg>
+        </div>
+
+        <!-- СЛОЙ 2 — NAV BAR -->
+        <div class="glass-nav">
+            <a href="index.html" class="nav-back">← Назад</a>
+            <div class="nav-title">Выбор поездки</div>
+        </div>
+
+        <!-- СЛОЙ 3 — ПЕРЕКЛЮЧАТЕЛЬ ТАРИФОВ -->
+        <div class="tab-selector">
+            <button class="tab-btn active" data-tab="tab-corridor">🛣 Коридор</button>
+            <button class="tab-btn" data-tab="tab-taxi">🚗 Такси</button>
+            <button class="tab-btn" data-tab="tab-share">👥 Попутка</button>
+        </div>
+
+        <!-- СЛОЙ 4 — BOTTOM SHEET -->
+        <div class="glass-sheet">
+            <div class="drag-handle"></div>
+            <div class="sheet-scroll">
+                
+                <!-- Вкладка КОРИДОР -->
+                <div id="tab-corridor" class="tab-content active">
+                    <div class="ai-banner">
+                        <span>✨</span>
+                        <span class="ai-banner-text">AI нашёл 2 коридора по вашему маршруту</span>
+                    </div>
+
+                    <!-- Карточка коридора 1 -->
+                    <div class="glass-card corridor-card active">
+                        <div class="row-flex-between">
+                            <div class="ai-badge">98% совпадение</div>
+                            <div class="pill-green">1 место</div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="row-flex">
+                                <div class="dot"></div>
+                                <div class="loc-text-main">Алатау, пр. Аль-Фараби</div>
+                            </div>
+                            <div class="dash-line"></div>
+                            <div class="row-flex">
+                                <div class="dot"></div>
+                                <div class="loc-text-sub">Есентай Парк, 77/8</div>
+                            </div>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat-item">⏰ 07:30</div>
+                            <div class="stat-item">👥 <span class="stat-val-blue">3</span>/4</div>
+                            <div class="stat-price">💰 890₸</div>
+                            <div class="stat-item">~35 мин</div>
+                        </div>
+                        <div class="row-flex-between" style="margin-top: 10px;">
+                            <div class="avatars-row">
+                                <div class="avatar av-purple">А</div>
+                                <div class="avatar av-green">М</div>
+                                <div class="avatar av-yellow">Д</div>
+                                <div class="av-more">+1</div>
+                            </div>
+                            <div class="link-blue">Подробнее →</div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка коридора 2 -->
+                    <div class="glass-card corridor-card inactive">
+                        <div class="ai-badge">87% совпадение</div>
+                        <div class="loc-text-main" style="margin-top: 8px;">Орбита → Достык</div>
+                        <div class="stat-item" style="margin-top: 6px;">08:00 · 👥 2/4 · 750₸ · ~28 мин</div>
+                        <div class="avatars-row" style="margin-top: 6px;">
+                            <div class="avatar av-purple">Д</div>
+                            <div class="avatar av-green">С</div>
+                            <div class="av-more">+2 места</div>
+                        </div>
+                    </div>
+
+                    <a href="P-06a-corridor-list.html" class="view-all">Смотреть все коридоры →</a>
+
+                    <!-- Cost Section -->
+                    <div class="cost-section">
+                        <div class="row-flex-between">
+                            <div class="price-display">
+                                <span class="price-main">890₸</span>
+                                <span class="price-sub">/ поездка</span>
+                            </div>
+                            <div class="pill-green">🎁 Первая бесплатно</div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 12px;" onclick="window.location.href='searching.html'">Подписаться на коридор</button>
+                        <button class="btn btn-ghost" onclick="window.location.href='searching.html'">Попробовать бесплатно (1 поездка)</button>
+                    </div>
+                </div>
+
+                <!-- Вкладка ТАКСИ -->
+                <div id="tab-taxi" class="tab-content">
+                    <div class="glass-card service-card">
+                        <div class="service-icon">🚗</div>
+                        <div style="flex: 1;">
+                            <div class="s-title">Такси для вас</div>
+                            <div class="s-desc">Личная поездка · ~4 мин</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="s-price">от 1 200₸</div>
+                            <div class="s-desc">~4 мин</div>
+                        </div>
+                    </div>
+
+                    <div class="surge-banner">
+                        ⚡ Повышенный спрос · тариф +20%
+                    </div>
+
+                    <div class="cost-section">
+                        <div class="price-display">
+                            <span class="price-main">1 200₸</span>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 12px;" onclick="window.location.href='searching.html'">Вызвать такси · от 1 200₸</button>
+                    </div>
+                </div>
+
+                <!-- Вкладка ПОПУТКА -->
+                <div id="tab-share" class="tab-content">
+                    <div class="glass-card service-card">
+                        <div class="service-icon">👥</div>
+                        <div style="flex: 1;">
+                            <div class="s-title">Попутчик едет рядом</div>
+                            <div class="s-desc">Разделите стоимость · ~600₸</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="s-price">~600₸</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        Маршрут может немного отличаться. Вы едете с 1–2 попутчиками в одном направлении.
+                    </div>
+
+                    <div style="text-align: center;">
+                        <div class="pill-green" style="margin-bottom: 12px;">Сэкономьте до 50%</div>
+                    </div>
+
+                    <div class="cost-section">
+                        <div class="price-display">
+                            <span class="price-main">600₸</span>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 12px;" onclick="window.location.href='searching.html'">Найти попутчика · ~600₸</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.getAttribute('data-tab');
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // ─── BIRGE Prototype Navigation ───
+        document.addEventListener('DOMContentLoaded', () => {
+          function addClickByText(text, href) {
+            const all = document.querySelectorAll('button, a, [role="button"], .link-blue');
+            all.forEach(el => {
+              if (el.textContent.trim().includes(text)) {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  window.location.href = href;
+                });
+              }
+            });
+          }
+          addClickByText('Найти коридор', 'searching.html');
+          addClickByText('Вызвать такси', 'searching.html');
+          addClickByText('Найти попутчика', 'searching.html');
+          addClickByText('Подробнее', 'P-06b-corridor-detail.html');
+          addClickByText('←', 'P-04-home.html');
+        });
+    </script>
+</body>
+</html>

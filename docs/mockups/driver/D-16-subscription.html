@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Drive — Подписка</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --error: #EF4444;
+            --success: #10B981;
+            --divider: rgba(14,165,233,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 34px;
+        }
+
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            padding: 59px 20px 12px;
+            background: rgba(240, 249, 255, 0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .nav-back { font-size: 15px; color: var(--blue); cursor: pointer; text-decoration: none; }
+        .nav-title { font-size: 17px; font-weight: 700; color: var(--text); }
+
+        .content { margin-top: 100px; padding: 0 0 40px; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+            border-radius: 20px;
+        }
+
+        .current-tariff {
+            margin: 0 20px 20px; padding: 24px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(2, 132, 199, 0.03));
+            border: 2px solid var(--blue);
+        }
+
+        .label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+
+        .tariff-header { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 8px; }
+        .tariff-name { font-size: 22px; font-weight: 700; color: var(--text); }
+        .tariff-price { font-size: 15px; color: var(--text-gray); margin-top: 4px; }
+        .status-pill {
+            padding: 4px 12px; border-radius: 100px; background: rgba(16, 185, 129, 0.1);
+            color: #059669; font-size: 12px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .divider { height: 1px; background: var(--divider); margin: 16px 0; }
+
+        .tariff-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .stat-val { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 4px; }
+
+        .features-card { padding: 16px; margin: 12px 20px; border-radius: 18px; }
+        .feature-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: var(--text); }
+        .check { color: var(--success); font-weight: bold; }
+
+        .other-tariffs { padding: 0 20px; margin-top: 24px; }
+        .tariff-item { padding: 14px 16px; border-radius: 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .tariff-info { font-weight: 700; font-size: 15px; }
+
+        .btn { border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-small { height: 36px; padding: 0 16px; }
+        .btn-outline { background: transparent; border: 1.5px solid var(--blue); color: var(--blue); }
+        .btn-primary { background: var(--blue); border: none; color: white; }
+
+        .btn-danger-outline {
+            width: calc(100% - 40px); margin: 16px 20px 8px; height: 44px;
+            background: transparent; border: 1.5px solid rgba(239, 68, 68, 0.3);
+            color: var(--error); border-radius: 12px; font-size: 15px; font-weight: 700;
+        }
+
+        .footer-note { font-size: 13px; color: var(--text-light); text-align: center; margin-bottom: 40px; }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-nav { background: rgba(10, 22, 40, 0.88); }
+            .glass-card { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.1); }
+            .tariff-name { color: white; }
+        }
+    </style>
+</head>
+<body>
+    <header class="glass-nav">
+        <a href="D-15-driver-profile.html" class="nav-back">← Назад</a>
+        <div class="nav-title">Подписка</div>
+        <div style="width: 50px;"></div>
+    </header>
+
+    <main class="content">
+        <div class="glass-card current-tariff">
+            <div class="label">ТЕКУЩИЙ ТАРИФ</div>
+            <div class="tariff-header">
+                <div>
+                    <div class="tariff-name">Профессионал ⭐</div>
+                    <div class="tariff-price">8 900₸ / месяц</div>
+                </div>
+                <div class="status-pill">Активен</div>
+            </div>
+            <div class="divider"></div>
+            <div class="tariff-stats">
+                <div>
+                    <div class="label">Следующий платёж</div>
+                    <div class="stat-val">1 июня 2026</div>
+                </div>
+                <div>
+                    <div class="label">Осталось дней</div>
+                    <div class="stat-val">28</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card features-card">
+            <div class="label">ЧТО ВКЛЮЧЕНО</div>
+            <div class="feature-row"><span class="check">✓</span> Комиссия сервиса 0%</div>
+            <div class="feature-row"><span class="check">✓</span> Безлимитные поездки по городу</div>
+            <div class="feature-row"><span class="check">✓</span> Приоритет в поиске заказов</div>
+            <div class="feature-row"><span class="check">✓</span> Доступ к AI-коридорам</div>
+            <div class="feature-row"><span class="check">✓</span> Детальная статистика доходов</div>
+        </div>
+
+        <div class="other-tariffs">
+            <div class="label">ДРУГИЕ ТАРИФЫ</div>
+            <div class="glass-card tariff-item">
+                <div class="tariff-info">Стартер · 4 900₸/мес</div>
+                <button class="btn btn-small btn-outline">Понизить</button>
+            </div>
+            <div class="glass-card tariff-item">
+                <div class="tariff-info">Премиум · 14 900₸/мес</div>
+                <button class="btn btn-small btn-primary">Повысить</button>
+            </div>
+        </div>
+
+        <button class="btn-danger-outline">Отменить подписку</button>
+        <p class="footer-note">Подписка отменяется в конце периода</p>
+    </main>
+</body>
+</html>

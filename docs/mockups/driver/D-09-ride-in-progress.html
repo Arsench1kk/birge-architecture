@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - Ride in Progress</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --green: #10B981;
+            --red: #EF4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            width: 393px; margin: 0 auto; min-height: 100vh;
+            position: relative; overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .map-container {
+            position: fixed; inset: 0; z-index: 0;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+        }
+        .map-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+        .car-marker {
+            position: absolute;
+            width: 40px; height: 40px;
+            background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            left: 55%; top: 40%;
+        }
+
+        .top-status-pill {
+            position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
+            z-index: 10; white-space: nowrap;
+            background: rgba(14,165,233,0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 100px;
+            padding: 8px 20px; color: white;
+            font-size: 14px; font-weight: bold;
+        }
+
+        .bottom-sheet {
+            position: fixed; bottom: 0; width: 393px; z-index: 10;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-bottom: none;
+            border-radius: 28px 28px 0 0;
+            padding-bottom: 34px;
+            box-shadow: 0 -8px 40px rgba(14,165,233,0.1);
+        }
+
+        .drag-handle {
+            width: 36px; height: 4px;
+            background: rgba(0,0,0,0.12);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        .progress-section { padding: 14px 20px; }
+        
+        .progress-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+
+        .progress-bar {
+            margin-top: 10px; height: 6px;
+            background: #E0F2FE; border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; width: 55%;
+            background: linear-gradient(90deg, #0EA5E9, #10B981);
+            border-radius: 3px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 14px 16px; margin: 12px 20px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .section-label {
+            font-size: 11px; color: var(--text-light); text-transform: uppercase;
+            font-weight: 600; margin-bottom: 10px; letter-spacing: 0.5px;
+        }
+
+        .avatar-group { display: flex; align-items: center; }
+        .avatar-group .avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: bold; border: 2px solid white;
+            margin-left: -8px;
+        }
+        .avatar-group .avatar:first-child { margin-left: 0; }
+
+        .pill-green {
+            background: rgba(16,185,129,0.1); color: #059669;
+            padding: 4px 10px; border-radius: 100px; font-size: 12px; font-weight: 700;
+        }
+
+        .nav-card {
+            background: rgba(14,165,233,0.06); border: 1px solid rgba(14,165,233,0.2);
+            border-radius: 16px; padding: 14px 16px; margin: 0 20px;
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .earnings-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            padding: 0 20px; margin-top: 14px;
+        }
+        .earnings-card {
+            background: rgba(255,255,255,0.72);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 14px; padding: 10px 12px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .btn-danger {
+            margin: 14px 20px 0; width: calc(100% - 40px); height: 44px;
+            background: transparent; border: 1.5px solid rgba(239,68,68,0.25);
+            color: var(--red); border-radius: 14px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            .map-container { background: linear-gradient(160deg, #0D1F3C, #0A2040); }
+            .bottom-sheet { background: rgba(13,31,60,0.92); border-color: rgba(255,255,255,0.08); }
+            .glass-card, .earnings-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .nav-card { background: rgba(14,165,233,0.08); border-color: rgba(14,165,233,0.2); }
+            .car-marker { background: #1A2332; }
+            .progress-bar { background: rgba(14,165,233,0.1); }
+            .avatar-group .avatar { border-color: #1A2332; }
+            .pill-green { border: 1px solid rgba(16,185,129,0.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="map-container">
+        <div class="map-grid"></div>
+        <svg class="map-svg">
+            <line x1="0" y1="45%" x2="100%" y2="45%" stroke="#CBD5E1" stroke-width="7" opacity="0.4"/>
+            <line x1="10%" y1="0" x2="90%" y2="100%" stroke="#CBD5E1" stroke-width="7" opacity="0.3"/>
+            <!-- Highlighted Route -->
+            <path d="M 25% 70% Q 50% 45% 80% 25%" stroke="var(--blue)" stroke-width="4" fill="none" style="filter: drop-shadow(0 2px 4px rgba(14,165,233,0.3));" />
+            <!-- Pickup -->
+            <circle cx="25%" cy="70%" r="10" fill="var(--green)" stroke="white" stroke-width="3" />
+            <!-- Destination -->
+            <circle cx="80%" cy="25%" r="10" fill="var(--red)" stroke="white" stroke-width="3" />
+        </svg>
+        <div class="car-marker">🚗</div>
+    </div>
+
+    <div class="top-status-pill">🛣 В пути · Есентай · ~28 мин</div>
+
+    <div class="bottom-sheet">
+        <div class="drag-handle"></div>
+        
+        <div class="progress-section">
+            <div class="progress-header">
+                <div>
+                    <div style="font-size:13px;color:var(--text-gray);">До назначения</div>
+                    <div style="font-weight:700;font-size:22px;color:var(--text);">~28 мин</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:13px;color:var(--text-gray);">Есентай Парк</div>
+                    <div style="font-size:13px;color:var(--text-light);">8.4 км</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-label">ПАССАЖИРЫ В САЛОНЕ</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div class="avatar-group">
+                    <div class="avatar" style="background:#EDE9FE;color:#7C3AED;">А</div>
+                    <div class="avatar" style="background:#D1FAE5;color:#065F46;">М</div>
+                    <div class="avatar" style="background:#FEF3C7;color:#92400E;">Д</div>
+                    <div class="avatar" style="background:#DBEAFE;color:#1E3A8A;">А</div>
+                </div>
+                <div style="font-weight:700;font-size:14px;color:var(--text-gray);">4 / 4</div>
+                <div class="pill-green">Полный</div>
+            </div>
+        </div>
+
+        <div class="nav-card">
+            <div style="font-size:24px;">🧭</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+                <div style="font-weight:700;font-size:14px;color:var(--text);">Следуйте по маршруту</div>
+                <div style="font-size:13px;color:var(--text-gray);">Через 400м — повернуть направо</div>
+            </div>
+        </div>
+
+        <div class="earnings-grid">
+            <div class="earnings-card">
+                <div style="font-size:11px;color:var(--text-light);">За поездку</div>
+                <div style="font-weight:700;font-size:18px;color:var(--blue);margin-top:4px;">890₸</div>
+            </div>
+            <div class="earnings-card">
+                <div style="font-size:11px;color:var(--text-light);">Текущий</div>
+                <div style="font-weight:700;font-size:18px;color:var(--text);margin-top:4px;">3 400₸</div>
+            </div>
+        </div>
+
+        <button class="btn-danger" onclick="window.location.href='dashboard.html'">Завершить поездку</button>
+    </div>
+
+</body>
+</html>

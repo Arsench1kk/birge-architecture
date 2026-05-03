@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIRGE — Home</title>
+<style>
+/* ── DESIGN TOKENS (from birge-v2.css) ── */
+:root {
+  --blue:        #0EA5E9;
+  --blue-dark:   #0284C7;
+  --blue-light:  #E0F2FE;
+  --bg:          #F0F9FF;
+  --white:       #FFFFFF;
+  --text:        #0C1A2E;
+  --text-gray:   #64748B;
+  --text-light:  #94A3B8;
+  --success:     #10B981;
+  --warning:     #F59E0B;
+  --error:       #EF4444;
+  --divider:     rgba(14,165,233,0.12);
+  --radius-card: 20px;
+  --radius-btn:  16px;
+  --radius-pill: 100px;
+  --shadow-card: 0 8px 32px rgba(14,165,233,0.08),
+                 inset 0 1px 0 rgba(255,255,255,0.8);
+  --shadow-btn:  0 4px 20px rgba(14,165,233,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ── SCREEN CONTAINER ── */
+.screen {
+  width: 393px; height: 852px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   LAYER 1 — MAP
+   ══════════════════════════════════════ */
+.map {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(170deg, #DBEAFE 0%, #E0F2FE 50%, #EFF6FF 100%);
+}
+.map-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(14,165,233,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14,165,233,0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.map-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+
+/* Passenger avatars on map */
+.map-avatar {
+  position: absolute;
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white;
+  border: 2px solid white;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+  z-index: 2;
+}
+.map-avatar.av-blue   { background: #0EA5E9; left: 38%; top: 28%; }
+.map-avatar.av-purple { background: #7C3AED; left: 52%; top: 38%; }
+.map-avatar.av-green  { background: #10B981; left: 66%; top: 24%; }
+
+/* User location pulsing dot */
+.user-loc {
+  position: absolute; left: 28%; top: 44%; z-index: 3;
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.user-loc-pulse {
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  background: rgba(14,165,233,0.18);
+  animation: loc-pulse 2s ease-out infinite;
+}
+.user-loc-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #0EA5E9;
+  border: 2.5px solid white;
+  box-shadow: 0 2px 8px rgba(14,165,233,0.5);
+  position: relative; z-index: 1;
+}
+@keyframes loc-pulse {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* ══════════════════════════════════════
+   LAYER 2 — TOP OVERLAYS
+   ══════════════════════════════════════ */
+.top-overlays {
+  position: absolute; top: 0; left: 0; right: 0;
+  z-index: 10;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* Search bar */
+.search-bar {
+  margin: 59px 16px 0;
+  width: calc(100% - 32px);
+  padding: 12px 16px;
+  border-radius: 18px;
+  display: flex; align-items: center; gap: 10px;
+  /* glass-card */
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: var(--shadow-card);
+}
+.search-icon { font-size: 16px; color: var(--text-light); flex-shrink: 0; }
+.search-input {
+  border: none; background: transparent; font-size: 16px;
+  color: var(--text); outline: none; flex: 1;
+}
+.search-input::placeholder { color: var(--text-light); }
+.search-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+
+/* AI notification pill */
+.ai-pill {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600; color: var(--blue-dark);
+  /* glass-card */
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(14,165,233,0.15);
+  box-shadow: 0 4px 16px rgba(14,165,233,0.25);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+
+/* ══════════════════════════════════════
+   LAYER 3 — BOTTOM SHEET
+   ══════════════════════════════════════ */
+.bottom-sheet {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 20;
+  /* glass-sheet */
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-bottom: none;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -8px 40px rgba(14,165,233,0.10);
+  padding-bottom: 0;
+}
+
+/* Drag handle */
+.drag-handle {
+  width: 36px; height: 4px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 2px;
+  margin: 12px auto 16px;
+}
+
+/* ── Section 1: AI Corridors ── */
+.section-label-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+}
+.section-title { font-size: 16px; font-weight: 700; }
+.section-link  { font-size: 14px; font-weight: 500; color: var(--blue); cursor: pointer; }
+
+.corridor-scroll {
+  display: flex; gap: 12px;
+  padding: 12px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.corridor-scroll::-webkit-scrollbar { display: none; }
+
+/* Corridor card */
+.corridor-card {
+  width: 220px; flex-shrink: 0;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.corridor-card:active { transform: scale(0.97); }
+
+.ai-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 100px;
+  background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+  border: 1px solid rgba(14,165,233,0.3);
+  font-size: 12px; font-weight: 600; color: var(--blue-dark);
+}
+.corridor-route {
+  font-size: 16px; font-weight: 700; margin-top: 8px; color: var(--text);
+}
+.corridor-time {
+  font-size: 13px; color: var(--text-gray); margin-top: 2px;
+}
+.corridor-divider {
+  height: 1px; background: var(--divider); margin: 10px 0;
+}
+.corridor-stats {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text-gray);
+}
+.corridor-stats .blue { color: var(--blue); font-weight: 600; }
+.corridor-stats .bold { font-weight: 700; color: var(--text); }
+.stat-sep { color: var(--divider); }
+
+.avatars-row {
+  display: flex; align-items: center; gap: -4px; margin-top: 10px;
+}
+.mini-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  border: 2px solid white;
+  margin-right: -6px;
+}
+.mini-av-blue   { background: #0EA5E9; }
+.mini-av-purple { background: #7C3AED; }
+.mini-av-green  { background: #10B981; }
+.mini-av-orange { background: #F59E0B; }
+.avatar-plus {
+  font-size: 12px; color: var(--text-gray); font-weight: 500;
+  margin-left: 10px;
+}
+
+/* ── Divider ── */
+.sheet-divider {
+  height: 1px; background: var(--divider);
+  margin: 4px 20px;
+}
+
+/* ── Section 2: Quick Taxi ── */
+.quick-section { padding: 12px 20px; }
+.quick-card {
+  padding: 14px 16px; border-radius: 16px;
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.quick-card:active { transform: scale(0.97); }
+.quick-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--blue-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.quick-text { flex: 1; }
+.quick-title { font-size: 15px; font-weight: 700; }
+.quick-sub   { font-size: 13px; color: var(--text-gray); margin-top: 1px; }
+.quick-arrow { font-size: 18px; color: var(--text-light); }
+
+/* ── Tab Bar ── */
+.tab-bar {
+  display: flex; align-items: center;
+  padding: 10px 0 34px;
+  border-top: 1px solid var(--divider);
+  margin-top: 8px;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+  cursor: pointer;
+}
+.tab-icon { font-size: 20px; }
+.tab-label { font-size: 10px; font-weight: 500; color: var(--text-light); }
+.tab-item.active .tab-label { color: var(--blue); }
+.tab-item.active .tab-icon  { color: var(--blue); }
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- ═══ LAYER 1 — MAP ═══ -->
+  <div class="map">
+    <div class="map-grid"></div>
+
+    <svg class="map-svg" viewBox="0 0 393 852" preserveAspectRatio="none">
+      <!-- Roads -->
+      <line x1="0" y1="383" x2="393" y2="383"
+            stroke="#CBD5E1" stroke-width="8" opacity="0.6"/>
+      <line x1="0" y1="255" x2="393" y2="600"
+            stroke="#CBD5E1" stroke-width="8" opacity="0.6"/>
+      <line x1="137" y1="0" x2="137" y2="520"
+            stroke="#CBD5E1" stroke-width="6" opacity="0.4"/>
+
+      <!-- Corridor Route A (primary, glowing) -->
+      <path d="M 30,200 C 100,260 220,310 320,400"
+            stroke="#0EA5E9" stroke-width="4" fill="none"
+            stroke-linecap="round"
+            filter="url(#glow)"/>
+
+      <!-- Corridor Route B (secondary) -->
+      <path d="M 20,350 C 120,280 260,220 370,180"
+            stroke="#0284C7" stroke-width="3" fill="none"
+            stroke-linecap="round" opacity="0.7"/>
+
+      <defs>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Passenger avatars on Route A -->
+    <div class="map-avatar av-blue">А</div>
+    <div class="map-avatar av-purple">М</div>
+    <div class="map-avatar av-green">Д</div>
+
+    <!-- User location -->
+    <div class="user-loc">
+      <div class="user-loc-pulse"></div>
+      <div class="user-loc-dot"></div>
+    </div>
+  </div>
+
+  <!-- ═══ LAYER 2 — TOP OVERLAYS ═══ -->
+  <div class="top-overlays">
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <div class="search-icon">&#128269;</div>
+      <input type="text" class="search-input" placeholder="Куда едем?">
+      <div class="search-avatar">А</div>
+    </div>
+
+    <!-- AI notification pill -->
+    <div class="ai-pill">
+      &#10024; AI нашёл 3 коридора рядом с вами
+    </div>
+
+  </div>
+
+  <!-- ═══ LAYER 3 — BOTTOM SHEET ═══ -->
+  <div class="bottom-sheet">
+    <div class="drag-handle"></div>
+
+    <!-- Section 1 — AI Corridors -->
+    <div class="section-label-row">
+      <div class="section-title">&#129302; Подобрано для вас</div>
+      <div class="section-link">Смотреть все &#8594;</div>
+    </div>
+
+    <div class="corridor-scroll">
+
+      <!-- CARD 1 -->
+      <div class="corridor-card">
+        <div class="ai-badge">&#10024; 98% совпадение</div>
+        <div class="corridor-route">Алатау → Есентай</div>
+        <div class="corridor-time">07:30 утром</div>
+        <div class="corridor-divider"></div>
+        <div class="corridor-stats">
+          <span class="blue">&#128101; 3/4</span>
+          <span class="stat-sep">&middot;</span>
+          <span class="bold">&#128176; 890&#8376;</span>
+          <span class="stat-sep">&middot;</span>
+          <span>35 мин</span>
+        </div>
+        <div class="avatars-row">
+          <div class="mini-avatar mini-av-blue">А</div>
+          <div class="mini-avatar mini-av-purple">М</div>
+          <div class="mini-avatar mini-av-green">Д</div>
+          <span class="avatar-plus">+1</span>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="corridor-card">
+        <div class="ai-badge">&#10024; 87% совпадение</div>
+        <div class="corridor-route">Бостандық → Алмалы</div>
+        <div class="corridor-time">08:00 утром</div>
+        <div class="corridor-divider"></div>
+        <div class="corridor-stats">
+          <span class="blue">&#128101; 2/4</span>
+          <span class="stat-sep">&middot;</span>
+          <span class="bold">&#128176; 750&#8376;</span>
+          <span class="stat-sep">&middot;</span>
+          <span>28 мин</span>
+        </div>
+        <div class="avatars-row">
+          <div class="mini-avatar mini-av-orange">К</div>
+          <div class="mini-avatar mini-av-blue">Н</div>
+          <span class="avatar-plus">+2</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Divider -->
+    <div class="sheet-divider"></div>
+
+    <!-- Section 2 — Quick taxi -->
+    <div class="quick-section">
+      <div class="quick-card">
+        <div class="quick-icon">&#128663;</div>
+        <div class="quick-text">
+          <div class="quick-title">Вызвать такси</div>
+          <div class="quick-sub">Стандарт &middot; ~4 мин &middot; от 900&#8376;</div>
+        </div>
+        <div class="quick-arrow">&#8594;</div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <div class="tab-item active">
+        <div class="tab-icon">&#128506;</div>
+        <div class="tab-label">Главная</div>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">&#128663;</div>
+        <div class="tab-label">Поездки</div>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">&#128179;</div>
+        <div class="tab-label">Подписка</div>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">&#128100;</div>
+        <div class="tab-label">Профиль</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// ─── BIRGE Prototype Navigation ───
+document.addEventListener('DOMContentLoaded', () => {
+
+  function addClickByText(text, href) {
+    const all = document.querySelectorAll('button, a, [role="button"], div, span');
+    all.forEach(el => {
+      if (el.textContent.trim().includes(text)) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = href;
+        });
+      }
+    });
+  }
+
+  // Quick Taxi / any CTA
+  addClickByText('Вызвать такси', 'ride-request.html');
+  addClickByText('Смотреть все', 'P-06a-corridor-list.html');
+
+  // Corridor cards
+  const corridorCards = document.querySelectorAll('.corridor-card');
+  corridorCards.forEach(card => {
+    card.addEventListener('click', () => {
+      window.location.href = 'P-06a-corridor-list.html';
+    });
+  });
+
+  // Tab bar
+  addClickByText('Главная', 'P-04-home.html');
+  addClickByText('Поездки', 'P-14-rides-history.html');
+  addClickByText('Подписка', 'P-17-subscriptions.html');
+  addClickByText('Профиль', 'P-19-profile.html');
+
+});
+</script>
+</body>
+</html>

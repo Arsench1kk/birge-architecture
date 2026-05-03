@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE — Как работает AI</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --white: #FFFFFF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --divider: rgba(14,165,233,0.12);
+            --radius-card: 20px;
+            --radius-btn: 16px;
+            --radius-pill: 100px;
+            --shadow-card: 0 8px 32px rgba(14,165,233,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+            --shadow-btn: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            min-height: 100vh;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .screen {
+            width: 393px;
+            margin: 0 auto;
+            position: relative;
+            background: #fff;
+            min-height: 852px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar { display: none; }
+
+        /* HEADER */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            padding: 59px 20px 12px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--divider);
+            display: flex;
+            align-items: center;
+        }
+        .back-btn { font-size: 15px; color: var(--blue); font-weight: 500; text-decoration: none; position: absolute; left: 20px; }
+        .header-title { flex: 1; text-align: center; font-size: 17px; font-weight: 700; }
+
+        /* CONTENT */
+        .content { padding: 100px 20px 40px; }
+
+        /* HERO SECTION */
+        .hero-card {
+            padding: 28px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(2,132,199,0.04));
+            border: 1.5px solid rgba(14,165,233,0.2);
+            backdrop-filter: blur(24px);
+            box-shadow: var(--shadow-card);
+            text-align: center;
+        }
+
+        .ai-icon-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .outer-ring {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(14,165,233,0.3);
+            border-radius: 50%;
+            position: absolute;
+            animation: pulse-ring 2s infinite;
+        }
+
+        .inner-circle {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: var(--shadow-btn);
+            z-index: 1;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.15); opacity: 0; }
+        }
+
+        .hero-title { font-size: 20px; font-weight: 700; margin-top: 16px; }
+        .hero-sub { font-size: 15px; color: var(--text-gray); margin-top: 8px; line-height: 1.5; }
+
+        /* GLASS CARD COMMON */
+        .glass-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* STEP CARDS */
+        .step-card { padding: 18px; border-radius: 18px; margin-bottom: 12px; }
+        .step-header { display: flex; align-items: center; }
+        .step-badge {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-title { font-size: 16px; font-weight: 700; margin-left: 12px; }
+        .step-body { font-size: 14px; color: var(--text-gray); margin-top: 10px; margin-left: 44px; line-height: 1.5; }
+
+        /* STEP VISUALS */
+        .visual-container { margin-top: 10px; margin-left: 44px; }
+        
+        .mini-route-chip {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(14,165,233,0.2);
+            font-size: 13px;
+            color: var(--blue-dark);
+            font-weight: 600;
+        }
+
+        .stats-row { display: flex; gap: 16px; margin-top: 10px; }
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-val { font-size: 18px; font-weight: 700; color: var(--blue); }
+        .stat-label { font-size: 12px; color: var(--text-gray); }
+
+        .mini-corridor-card {
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .mini-avatars { display: flex; gap: 4px; margin-top: 6px; }
+        .avatar {
+            width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #fff;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff;
+        }
+        .av1 { background: var(--blue); }
+        .av2 { background: #7C3AED; }
+        .av3 { background: #10B981; }
+
+        .comparison-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+        .text-gray { color: var(--text-gray); }
+        .text-blue { color: var(--blue); font-weight: 700; }
+        .text-green { color: var(--success); font-weight: 700; }
+        .strikethrough { text-decoration: line-through; }
+
+        /* PRIVACY CARD */
+        .privacy-card {
+            padding: 16px;
+            border-radius: 16px;
+            margin-top: 4px;
+            border-left: 3px solid var(--success);
+            background: rgba(16,185,129,0.04);
+            border-top: 1px solid rgba(255,255,255,0.6);
+            border-right: 1px solid rgba(255,255,255,0.6);
+            border-bottom: 1px solid rgba(255,255,255,0.6);
+        }
+        .privacy-title { font-size: 15px; font-weight: 700; color: var(--success); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+
+        /* BUTTONS */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 56px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary {
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            color: #fff;
+            box-shadow: var(--shadow-btn);
+            margin-top: 24px;
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-gray);
+            margin-top: 8px;
+        }
+    
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="screen">
+        <header class="header">
+            <a href="P-21-settings.html" class="back-btn">← Назад</a>
+            <h1 class="header-title">Как работает AI</h1>
+        </header>
+
+        <main class="content">
+            <!-- HERO SECTION -->
+            <section class="hero-card">
+                <div class="ai-icon-container">
+                    <div class="outer-ring"></div>
+                    <div class="inner-circle">🤖</div>
+                </div>
+                <h2 class="hero-title">Искусственный интеллект BIRGE</h2>
+                <p class="hero-sub">Подбирает попутчиков автоматически на основе ваших поездок</p>
+            </section>
+
+            <!-- STEPS SECTION -->
+            
+            <!-- STEP 1 -->
+            <div class="step-card glass-card">
+                <div class="step-header">
+                    <div class="step-badge">1</div>
+                    <h3 class="step-title">Вы указываете маршруты</h3>
+                </div>
+                <p class="step-body">
+                    Во время регистрации вы добавляете регулярные поездки — откуда, куда, в какое время и в какие дни.
+                </p>
+                <div class="visual-container">
+                    <div class="mini-route-chip">🏠 Алатау → 💼 Есентай · 07:30 · Пн-Пт</div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step-card glass-card">
+                <div class="step-header">
+                    <div class="step-badge">2</div>
+                    <h3 class="step-title">AI анализирует похожих людей</h3>
+                </div>
+                <p class="step-body">
+                    Алгоритм DBSCAN находит пользователей с похожими маршрутами в радиусе 500 метров и ±15 минут от вашего времени.
+                </p>
+                <div class="visual-container stats-row">
+                    <div class="stat-item">
+                        <span class="stat-val">500м</span>
+                        <span class="stat-label">радиус</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val">±15 мин</span>
+                        <span class="stat-label">время</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val">847</span>
+                        <span class="stat-label">анализов</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="step-card glass-card">
+                <div class="step-header">
+                    <div class="step-badge">3</div>
+                    <h3 class="step-title">Создаётся коридор</h3>
+                </div>
+                <p class="step-body">
+                    AI группирует похожих пользователей и предлагает общий маршрут с 2–4 остановками.
+                </p>
+                <div class="visual-container">
+                    <div class="mini-corridor-card glass-card">
+                        <div style="font-weight: 600; color: var(--text);">Алатау → Есентай · 3 попутчика · 890₸</div>
+                        <div class="mini-avatars">
+                            <div class="avatar av1">А</div>
+                            <div class="avatar av2">М</div>
+                            <div class="avatar av3">Д</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="step-card glass-card">
+                <div class="step-header">
+                    <div class="step-badge">4</div>
+                    <h3 class="step-title">Вы экономите до 52%</h3>
+                </div>
+                <p class="step-body">
+                    Вместо такси для одного — совместная поездка с фиксированной ценой и знакомыми попутчиками.
+                </p>
+                <div class="visual-container">
+                    <div class="comparison-row">
+                        <span class="text-gray">Обычное такси</span>
+                        <span class="text-gray strikethrough">1 850₸</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span class="text-blue">Коридор BIRGE</span>
+                        <span class="text-blue">890₸</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span class="text-green">Экономия</span>
+                        <span class="text-green">960₸ (52%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRIVACY CARD -->
+            <div class="privacy-card">
+                <div class="privacy-title">🔒 Ваши данные в безопасности</div>
+                <p class="step-body" style="margin-left: 0; margin-top: 0;">
+                    AI не передаёт ваш точный адрес другим пользователям. Другие видят только район и точку посадки.
+                </p>
+            </div>
+
+            <button class="btn btn-primary" id="try-corridors-btn">Попробовать коридоры</button>
+            <button class="btn btn-ghost" id="go-back-btn">Вернуться назад</button>
+        </main>
+    </div>
+
+    <script>
+    // ─── BIRGE Prototype Navigation ───
+    document.addEventListener('DOMContentLoaded', () => {
+      const backButtons = document.querySelectorAll('.back-btn, #go-back-btn');
+      backButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = 'P-22-privacy-settings.html';
+        });
+      });
+
+      const tryBtn = document.getElementById('try-corridors-btn');
+      if (tryBtn) {
+        tryBtn.addEventListener('click', () => {
+          window.location.href = 'P-06a-corridor-list.html';
+        });
+      }
+    });
+    </script>
+</body>
+</html>

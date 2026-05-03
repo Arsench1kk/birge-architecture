@@ -1,0 +1,134 @@
+:root {
+  /* Colors - Light Mode */
+  --color-brand-primary: #0D9E92;
+  --color-brand-subtle: #E6F7F5;
+  --color-background: #FFFFFF;
+  --color-surface-primary: #F8F9FA;
+  --color-surface-secondary: #F1F3F5;
+  --color-surface-elevated: #FFFFFF;
+  --color-text-primary: #212529;
+  --color-text-secondary: #868E96;
+  --color-text-tertiary: #ADB5BD;
+  --color-text-on-brand: #FFFFFF;
+  --color-success: #0D9E92;
+  --color-warning: #F08C00;
+  --color-danger: #E03131;
+  --color-border-default: #E9ECEF;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Border radius */
+  --radius-xs: 6px;
+  --radius-s: 10px;
+  --radius-m: 14px;
+  --radius-l: 20px;
+  --radius-xl: 28px;
+  --radius-full: 999px;
+
+  /* Shadows */
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-2: 0 4px 12px rgba(0,0,0,0.10);
+  --shadow-3: 0 8px 24px rgba(0,0,0,0.14);
+  --shadow-4: 0 16px 48px rgba(0,0,0,0.20);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Colors - Dark Mode */
+    --color-brand-primary: #1AB5A8;
+    --color-brand-subtle: #023430;
+    --color-background: #0D0D0D;
+    --color-surface-primary: #212529;
+    --color-surface-secondary: #343A40;
+    --color-surface-elevated: #343A40;
+    --color-text-primary: #F8F9FA;
+    --color-text-secondary: #ADB5BD;
+    --color-text-tertiary: #868E96;
+    --color-text-on-brand: #FFFFFF;
+    --color-success: #1AB5A8;
+    --color-warning: #FFA94D;
+    --color-danger: #F03E3E;
+    --color-border-default: #495057;
+  }
+}
+
+/* Global Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility classes */
+.iphone-frame {
+  width: 393px;
+  min-height: 852px;
+  margin: 0 auto;
+  background: var(--color-background);
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  border: 12px solid #000;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.safe-top {
+  padding-top: 59px;
+}
+
+.safe-bottom {
+  padding-bottom: 34px;
+}
+
+.content-margin {
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-1);
+  padding: 20px;
+}
+
+.btn-primary {
+  background: var(--color-brand-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  height: 54px;
+  width: 100%;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 200ms;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+}

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Active Ride</title>
+    <link rel="stylesheet" href="../tokens.css">
+    <style>
+        /* Map Background Layer */
+        .map-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #B3E8E3, #E6F7F5);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .map-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+        }
+
+        /* Pin */
+        .pin {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pin-destination {
+            top: 30%;
+            left: 75%;
+        }
+
+        /* Animated Car and Route */
+        .route-path {
+            stroke-dasharray: 8 8;
+            stroke: var(--color-brand-primary);
+            stroke-width: 4;
+            fill: none;
+            opacity: 0.8;
+        }
+
+        .car-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Drive animation translates from start to end */
+            animation: drive 10s linear infinite;
+        }
+
+        @keyframes drive {
+            0% {
+                transform: translate(50px, 600px) rotate(-35deg);
+            }
+            100% {
+                transform: translate(295px, 255px) rotate(-35deg);
+            }
+        }
+
+        .car-icon {
+            width: 32px;
+            height: 32px;
+            /* Center the icon on the path */
+            transform: translate(-50%, -50%);
+            fill: var(--color-brand-primary);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        /* Top Status Pill */
+        .top-status-pill {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-brand-primary);
+            color: var(--color-text-on-brand);
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: var(--shadow-2);
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        /* Bottom Sheet */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--color-surface-elevated);
+            border-radius: 28px 28px 0 0;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.10);
+            padding: 12px 16px 34px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .handle-bar {
+            width: 36px;
+            height: 4px;
+            background: var(--color-border-default);
+            border-radius: var(--radius-full);
+            margin: 0 auto 16px;
+        }
+
+        /* Driver Card Section */
+        .driver-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .driver-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-border-default);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-secondary);
+        }
+
+        .driver-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-grow: 1;
+            margin: 0 12px;
+        }
+
+        .driver-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .driver-meta {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+
+        .driver-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1.5px solid var(--color-border-default);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--color-text-primary);
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--color-surface-secondary);
+        }
+
+        /* Vehicle Plate */
+        .vehicle-plate-container {
+            margin-top: 12px;
+            margin-left: 60px; /* Align with text, offset by avatar width + margin */
+        }
+
+        .vehicle-plate {
+            display: inline-block;
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            background: var(--color-surface-secondary);
+            padding: 4px 12px;
+            border-radius: var(--radius-s);
+            letter-spacing: 2px;
+            border: 1px solid var(--color-border-default);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--color-border-default);
+            margin: 20px 0;
+            border: none;
+        }
+
+        /* Boarding Code Section */
+        .boarding-code-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .boarding-label {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .boarding-code {
+            font-family: monospace;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--color-brand-primary);
+            letter-spacing: 8px;
+            margin: 8px 0;
+            line-height: 1;
+        }
+
+        .boarding-subtext {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+
+        /* Cancel Link */
+        .cancel-link {
+            text-align: center;
+            color: var(--color-danger);
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 24px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+    
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="iphone-frame">
+        
+        <!-- 1. MAP BACKGROUND -->
+        <div class="map-layer">
+            <svg class="map-lines" viewBox="0 0 393 852" preserveAspectRatio="none">
+                <!-- Decorative roads -->
+                <path d="M -50 200 Q 150 250 200 400 T 450 600" fill="none" stroke="var(--color-brand-primary)" stroke-width="8" />
+                <path d="M 100 -50 Q 150 300 50 500 T 300 900" fill="none" stroke="var(--color-brand-primary)" stroke-width="6" />
+                
+                <!-- Route line for active ride -->
+                <!-- Car animates from (50, 600) to Destination Pin (295, 255) -->
+                <path class="route-path" d="M 50 600 L 295 255" />
+            </svg>
+
+            <!-- Animated Car -->
+            <div class="car-container">
+                <!-- Simple top-down car vector -->
+                <svg class="car-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.5 5H6.5C5.1 5 4 6.1 4 7.5v9C4 17.9 5.1 19 6.5 19h11c1.4 0 2.5-1.1 2.5-2.5v-9C20 6.1 18.9 5 17.5 5zm-1 2c.6 0 1 .4 1 1s-.4 1-1 1H7.5c-.6 0-1-.4-1-1s.4-1 1-1h9z"/>
+                </svg>
+            </div>
+
+            <!-- Destination Pin -->
+            <div class="pin pin-destination">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 28C16 28 26 19.3333 26 12C26 6.47715 21.5228 2 16 2C10.4772 2 6 6.47715 6 12C6 19.3333 16 28 16 28Z" fill="var(--color-danger)"/>
+                    <circle cx="16" cy="12" r="4" fill="white"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 2. TOP STATUS PILL -->
+        <div class="top-status-pill">В пути &middot; 12 мин</div>
+
+        <!-- 3. BOTTOM SHEET -->
+        <div class="bottom-sheet">
+            <div class="handle-bar"></div>
+            
+            <!-- Driver Card -->
+            <div class="driver-row">
+                <div class="driver-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="driver-info">
+                    <span class="driver-name">Асан Бекович</span>
+                    <span class="driver-meta">&#11088; 4.9 &middot; Chevrolet Nexia</span>
+                </div>
+                <div class="driver-actions">
+                    <button class="action-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                    </button>
+                    <button class="action-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vehicle Plate -->
+            <div class="vehicle-plate-container">
+                <div class="vehicle-plate">777 ABA 02</div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Boarding Code Section -->
+            <div class="boarding-code-section">
+                <span class="boarding-label">Код посадки</span>
+                <span class="boarding-code">4 &middot; 2 &middot; 7</span>
+                <span class="boarding-subtext">Назовите водителю</span>
+            </div>
+
+            <!-- Cancel Link -->
+            <a href="#" class="cancel-link">Отменить поездку</a>
+
+            <!-- Demo Complete Button -->
+            <button id="complete-btn" style="margin-top: 16px; width: 100%; height: 44px; border-radius: 12px; border: none; background: #10B981; color: white; font-weight: 700; cursor: pointer;">Завершить поездку (Демо)</button>
+        </div>
+
+    </div>
+
+    <script>
+    // ─── BIRGE Prototype Navigation ───
+    document.addEventListener('DOMContentLoaded', () => {
+      const completeBtn = document.getElementById('complete-btn');
+      if (completeBtn) {
+        completeBtn.addEventListener('click', () => {
+          window.location.href = 'P-12-ride-complete.html';
+        });
+      }
+    });
+    </script>
+</body>
+</html>

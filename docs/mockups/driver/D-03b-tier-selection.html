@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver — Тариф (4/4)</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --success: #10B981;
+            --divider: rgba(14,165,233,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            min-height: 100vh;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .screen {
+            width: 393px;
+            position: relative;
+            background: transparent;
+        }
+
+        /* HEADER */
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            background: rgba(240, 249, 255, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--divider);
+            padding: 59px 20px 0;
+        }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            padding-bottom: 12px;
+            position: relative;
+        }
+        
+        .nav-back { color: var(--blue); font-size: 15px; text-decoration: none; font-weight: 500; }
+        .nav-title { 
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .progress-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0 12px;
+        }
+        .progress-label { font-size: 12px; color: var(--text-gray); }
+        .progress-done { font-size: 12px; color: var(--success); font-weight: 700; }
+
+        .progress-bar { width: 100%; height: 4px; background: #E0F2FE; border-radius: 2px; position: relative; margin-bottom: 12px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #0EA5E9, #10B981); border-radius: 2px; }
+
+        /* SCROLL CONTENT */
+        .content { margin-top: 130px; padding: 20px; padding-bottom: 120px; }
+
+        .title { font-size: 28px; font-weight: 700; color: var(--text); }
+        .subtitle { font-size: 15px; color: var(--text-gray); margin-top: 6px; }
+
+        /* GLASS CARD */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+            border-radius: 18px;
+            width: 100%;
+        }
+
+        /* SAVING BANNER */
+        .saving-banner {
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: rgba(14, 165, 233, 0.06);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            margin: 16px 0 20px;
+            font-size: 13px;
+            color: var(--blue-dark);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* TIER CARDS */
+        .tier-card { padding: 18px; margin-bottom: 10px; border: 1.5px solid rgba(14, 165, 233, 0.15); }
+        
+        .tier-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .tier-name { font-size: 20px; font-weight: 700; color: var(--text); }
+        .tier-price { font-size: 14px; color: var(--text-gray); font-weight: 500; }
+        .tier-sub { font-size: 13px; color: var(--text-gray); margin-top: 2px; }
+
+        .feature-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .feature-item { font-size: 14px; color: var(--text); display: flex; align-items: flex-start; gap: 6px; }
+        .feature-item.muted { color: var(--text-light); }
+
+        .btn-tier {
+            margin-top: 14px;
+            height: 44px;
+            width: 100%;
+            border-radius: 12px;
+            border: 1.5px solid var(--blue);
+            background: transparent;
+            color: var(--blue);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        /* PROFESSIONAL TIER */
+        .pro-wrapper { position: relative; margin-bottom: 10px; padding-top: 14px; }
+        .popular-badge {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            padding: 4px 18px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            white-space: nowrap;
+            z-index: 2;
+        }
+
+        .tier-card.pro {
+            border: 2px solid var(--blue);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(2, 132, 199, 0.03));
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .compare-link { font-size: 14px; color: var(--blue); text-align: center; margin-top: 12px; display: block; cursor: pointer; font-weight: 500; }
+
+        /* BOTTOM CTA */
+        .bottom-cta {
+            position: fixed;
+            bottom: 0;
+            width: 393px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--divider);
+            padding: 16px 20px 40px;
+        }
+
+        .btn-full {
+            width: 100%;
+            height: 56px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.35);
+            font-family: inherit;
+        }
+        
+        .btn-full:active, .btn-tier:active { transform: scale(0.98); opacity: 0.8; }
+    
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="screen">
+        <!-- HEADER -->
+        <header class="glass-nav">
+            <div class="nav-row">
+                <a href="#" class="nav-back">← Назад</a>
+                <div class="nav-title">Регистрация</div>
+            </div>
+            <div class="progress-row">
+                <span class="progress-label">Шаг 4 из 4</span>
+                <span class="progress-done">Готово! 🎉</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </header>
+
+        <!-- CONTENT -->
+        <main class="content">
+            <h1 class="title">Выберите тариф</h1>
+            <p class="subtitle">Изменить можно в любой момент</p>
+
+            <!-- ECONOMY BANNER -->
+            <div class="saving-banner">
+                💡 Водители BIRGE зарабатывают на 41% больше чем на Yandex Go благодаря подписке вместо комиссии
+            </div>
+
+            <!-- STARTER -->
+            <div class="glass-card tier-card">
+                <div class="tier-header">
+                    <span class="tier-name">Стартер</span>
+                    <span class="tier-price">4 900₸/мес</span>
+                </div>
+                <p class="tier-sub">Для новых водителей</p>
+                <div class="feature-list">
+                    <div class="feature-item">✓ До 30 коридоров в месяц</div>
+                    <div class="feature-item">✓ Стандартная поддержка</div>
+                    <div class="feature-item">✓ Гарантия дохода 90 дней 🎁</div>
+                    <div class="feature-item muted">✗ Приоритет в назначении</div>
+                </div>
+                <button class="btn-tier">Выбрать Стартер</button>
+            </div>
+
+            <!-- PROFESSIONAL -->
+            <div class="pro-wrapper">
+                <div class="popular-badge">⭐ Популярный выбор</div>
+                <div class="glass-card tier-card pro">
+                    <div class="tier-header">
+                        <span class="tier-name">Профессионал</span>
+                        <span class="tier-price">8 900₸/мес</span>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item"><b>✓ Безлимит коридоров</b></div>
+                        <div class="feature-item">✓ Высокий приоритет в час пик</div>
+                        <div class="feature-item">✓ Поддержка 24/7</div>
+                        <div class="feature-item">✓ Статистика и аналитика</div>
+                        <div class="feature-item">✓ Скидка 10% на следующий месяц</div>
+                    </div>
+                    <button class="btn-tier btn-primary">Выбрать Профессионал</button>
+                </div>
+            </div>
+
+            <!-- PREMIUM -->
+            <div class="glass-card tier-card">
+                <div class="tier-header">
+                    <span class="tier-name">Премиум</span>
+                    <span class="tier-price">14 900₸/мес</span>
+                </div>
+                <div class="feature-list">
+                    <div class="feature-item">✓ Всё из Профессионала</div>
+                    <div class="feature-item">✓ Персональный менеджер</div>
+                    <div class="feature-item">✓ Эксклюзивные маршруты</div>
+                    <div class="feature-item">✓ Приоритет #1 в назначении</div>
+                </div>
+                <button class="btn-tier">Выбрать Премиум</button>
+            </div>
+
+            <a class="compare-link">Сравнить тарифы подробно →</a>
+        </main>
+
+        <!-- BOTTOM CTA -->
+        <div class="bottom-cta">
+            <button class="btn-full" id="start-btn">Начать работу →</button>
+        </div>
+    </div>
+
+    <script>
+      // ─── BIRGE Prototype Navigation ───
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('start-btn');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            window.location.href = 'D-03c-registration-review.html';
+          });
+        }
+        const backBtn = document.querySelector('.nav-back');
+        if (backBtn) {
+          backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'D-03b-documents.html';
+          });
+        }
+      });
+    </script>
+</body>
+</html>

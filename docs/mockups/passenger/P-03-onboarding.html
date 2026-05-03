@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Onboarding</title>
+    <link rel="stylesheet" href="../tokens.css">
+    <style>
+        .iphone-frame {
+            background: var(--color-background);
+            position: relative;
+        }
+
+        /* 2. ILLUSTRATION AREA */
+        .illustration-area {
+            height: 320px;
+            background: var(--color-brand-subtle);
+            border-radius: 0 0 32px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration-svg {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* 3. CONTENT */
+        .content {
+            padding: 32px 16px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Step Dots */
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-border-default);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 24px;
+            background: var(--color-brand-primary);
+            border-radius: var(--radius-full);
+        }
+
+        /* Text Content */
+        .onboarding-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin: 24px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .onboarding-text {
+            font-size: 17px;
+            color: var(--color-text-secondary);
+            margin: 12px 0 0 0;
+            line-height: 1.4;
+        }
+
+        /* 4. BUTTONS */
+        .buttons-area {
+            position: absolute;
+            bottom: 34px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-skip {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+    
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%);
+    color: #F0F9FF;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+  }
+  .glass-nav {
+    background: rgba(10,22,40,0.88) !important;
+    border-bottom-color: rgba(14,165,233,0.08) !important;
+  }
+  .glass-sheet {
+    background: rgba(13,31,60,0.92) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  .glass-tabbar {
+    background: rgba(10,22,40,0.90) !important;
+    border-top-color: rgba(14,165,233,0.08) !important;
+  }
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(14,165,233,0.2) !important;
+    color: #F0F9FF !important;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #64748B !important;
+  }
+
+  /* Явные инлайн-цвета — переопределить */
+  [style*="color: #0C1A2E"],
+  [style*="color:#0C1A2E"] { color: #F0F9FF !important; }
+
+  [style*="background: #F1F5F9"],
+  [style*="background:#F1F5F9"],
+  [style*="background: rgba(241,245,249"],
+  [style*="background:rgba(241,245,249"] {
+    background: rgba(255,255,255,0.06) !important;
+  }
+
+  [style*="background: white"],
+  [style*="background:white"],
+  [style*="background: #fff"],
+  [style*="background:#fff"],
+  [style*="background: #ffffff"],
+  [style*="background:#ffffff"] {
+    background: #1A2332 !important;
+  }
+
+  /* Bottom CTA bars */
+  [style*="background: rgba(255,255,255,0.88)"],
+  [style*="background:rgba(255,255,255,0.88)"] {
+    background: rgba(10,22,40,0.92) !important;
+  }
+
+  /* Карта */
+  [style*="background: linear-gradient(160deg, #DBEAFE"],
+  [style*="background:linear-gradient(160deg,#DBEAFE"] {
+    background: linear-gradient(160deg, #0D1F3C, #0A2040) !important;
+  }
+}
+</style>
+</head>
+<body>
+    <div class="iphone-frame">
+        
+        <!-- 2. ILLUSTRATION AREA -->
+        <div class="illustration-area">
+            <svg class="illustration-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Simple road perspective -->
+                <polygon points="60,200 140,200 110,130 90,130" fill="#FFFFFF" opacity="0.6"/>
+                <!-- Dashed center line -->
+                <line x1="100" y1="130" x2="100" y2="200" stroke="var(--color-brand-primary)" stroke-width="2" stroke-dasharray="6 6" opacity="0.4"/>
+                
+                <!-- Minimal Teal Car -->
+                <path d="M 85 165 L 115 165 L 125 185 L 75 185 Z" fill="var(--color-brand-primary)"/>
+                <rect x="82" y="150" width="36" height="15" rx="4" fill="var(--color-brand-primary)"/>
+                <!-- Windows -->
+                <path d="M 86 153 L 114 153 L 112 165 L 88 165 Z" fill="#FFFFFF" opacity="0.5"/>
+                <!-- Wheels -->
+                <rect x="73" y="175" width="8" height="14" rx="2" fill="#212529"/>
+                <rect x="119" y="175" width="8" height="14" rx="2" fill="#212529"/>
+
+                <!-- Map Pin Above Car -->
+                <g transform="translate(100, 100)">
+                    <path d="M 0 -35 C 10 -35 18 -27 18 -17 C 18 -5 0 10 0 10 C 0 10 -18 -5 -18 -17 C -18 -27 -10 -35 0 -35 Z" fill="var(--color-brand-primary)"/>
+                    <circle cx="0" cy="-17" r="6" fill="#FFFFFF"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 3. CONTENT -->
+        <div class="content">
+            <!-- Step Dots -->
+            <div class="dots-container">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <h1 class="onboarding-title">Экономия до 40%</h1>
+            <p class="onboarding-text">Фиксированные маршруты &mdash; меньше пробок, меньше цена. Никаких сюрпризов.</p>
+        </div>
+
+        <!-- 4. BUTTONS -->
+        <div class="buttons-area">
+            <button class="btn-primary">Далее</button>
+            <a href="#" class="btn-skip">Пропустить</a>
+        </div>
+
+    </div>
+</body>
+</html>

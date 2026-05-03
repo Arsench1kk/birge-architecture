@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Passenger - Ride Detail</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            background: rgba(240,249,255,0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            padding: 59px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            font-size: 15px;
+            color: var(--blue);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .mini-map {
+            margin: 100px 20px 0;
+            height: 140px;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--divider);
+        }
+
+        .map-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .map-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-pill {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(12,26,46,0.75);
+            color: white;
+            border-radius: 100px;
+            padding: 4px 12px 6px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08);
+            margin: 12px 20px;
+            padding: 20px;
+        }
+
+        .price-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .date-text {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 14px 0;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .stat-val {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .avatar-circle {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rating-pill {
+            background: rgba(16,185,129,0.1);
+            color: #059669;
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 100px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .route-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .vline {
+            width: 2px;
+            height: 10px;
+            border-left: 2px dashed var(--blue);
+            margin: 6px 0 6px 4px;
+        }
+
+        .btn-outline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 48px;
+            border: 1.5px solid var(--blue);
+            border-radius: 16px;
+            background: transparent;
+            color: var(--blue);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-nav { background: rgba(10,22,40,0.88); }
+            .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .stat-val { color: var(--text); }
+            .nav-title { color: var(--text); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <a href="P-14-rides-history.html" class="nav-btn">← Назад</a>
+        <div class="nav-title">Поездка</div>
+        <div class="nav-btn">Чек ›</div>
+    </nav>
+
+    <div class="mini-map">
+        <div class="map-grid"></div>
+        <svg class="map-svg">
+            <path d="M 40 70 L 180 70 L 320 40" stroke="var(--blue)" stroke-width="3" fill="none" stroke-dasharray="6,4" />
+            <circle cx="40" cy="70" r="6" fill="var(--blue)" stroke="white" stroke-width="2" />
+            <circle cx="320" cy="40" r="6" fill="#EF4444" stroke="white" stroke-width="2" />
+        </svg>
+        <div class="map-pill">🗺 Алатау → Есентай · 6.2 км</div>
+    </div>
+
+    <div class="glass-card">
+        <div class="price-text">850 ₸</div>
+        <div class="date-text">2 мая 2026 · 07:30 – 07:48</div>
+        <div class="divider"></div>
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-val">18 мин</div>
+                <div class="stat-lbl">Время</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">6.2 км</div>
+                <div class="stat-lbl">Дистанция</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val" style="color: var(--blue);">3</div>
+                <div class="stat-lbl">Попутчики</div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div style="display: flex; align-items: center; font-size: 14px;">
+            <span style="flex: 1;">💳 Kaspi Pay</span>
+            <span style="color: var(--text-gray);">•••• 4782</span>
+        </div>
+    </div>
+
+    <div class="glass-card" style="margin-top: 0;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="avatar-circle">АБ</div>
+            <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 16px;">Асан Бекович</div>
+                <div style="font-size: 13px; color: var(--text-gray); margin-top: 2px;">⭐ 4.9 · Chevrolet Nexia · Белый</div>
+            </div>
+            <div class="rating-pill">5.0 ★</div>
+        </div>
+    </div>
+
+    <div class="glass-card" style="margin-top: 0;">
+        <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">МАРШРУТ</div>
+        <div class="route-row">
+            <div class="dot" style="background: var(--blue);"></div>
+            <div style="font-size: 14px; font-weight: 700;">Алатау, пр. Аль-Фараби 21</div>
+        </div>
+        <div class="vline"></div>
+        <div class="route-row">
+            <div class="dot" style="background: #EF4444;"></div>
+            <div style="font-size: 14px; color: var(--text-gray);">Есентай Парк, 77/8</div>
+        </div>
+    </div>
+
+    <div style="padding: 16px 20px 40px;">
+        <a href="P-16-report-issue.html" class="btn-outline">Сообщить о проблеме</a>
+    </div>
+
+</body>
+</html>

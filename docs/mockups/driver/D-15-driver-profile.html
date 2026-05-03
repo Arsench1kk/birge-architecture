@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Drive — Профиль</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --error: #EF4444;
+            --divider: rgba(14,165,233,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 34px;
+        }
+
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            width: 393px;
+            z-index: 100;
+            padding: 59px 20px 12px;
+            background: rgba(240, 249, 255, 0.88);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-bottom: 1px solid var(--divider);
+            text-align: center;
+        }
+
+        .nav-title { font-size: 17px; font-weight: 700; color: var(--text); }
+
+        .content { margin-top: 100px; padding: 0 20px 120px; }
+
+        .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; text-align: center; }
+        .avatar {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 12px;
+            color: white; font-size: 28px; font-weight: 700;
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
+        }
+
+        .user-name { font-size: 24px; font-weight: 700; color: var(--text); }
+        .user-phone { font-size: 15px; color: var(--text-gray); margin-top: 4px; }
+        .rating-row { margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 15px; }
+        .rating-val { color: #F59E0B; font-weight: 700; }
+        .rating-sep { color: var(--text-light); }
+        .rating-trips { font-size: 14px; color: var(--text-gray); }
+
+        .tariff-badge {
+            margin-top: 10px;
+            display: inline-flex;
+            padding: 6px 16px;
+            border-radius: 100px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            font-size: 13px; color: var(--blue-dark); font-weight: 700;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+            border-radius: 18px;
+            width: 100%;
+        }
+
+        .stats-card {
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            margin-bottom: 20px;
+        }
+        .stat-item { text-align: center; padding: 4px 0; }
+        .stat-item:not(:last-child) { border-right: 1px solid rgba(14, 165, 233, 0.15); }
+        .stat-val { font-size: 18px; font-weight: 700; color: var(--text); }
+        .stat-label { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
+
+        .section-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+
+        .car-card { padding: 16px 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .car-icon { font-size: 28px; }
+        .car-info { flex: 1; }
+        .car-name { font-size: 16px; font-weight: 700; color: var(--text); }
+        .car-desc { font-size: 13px; color: var(--text-gray); margin-top: 2px; }
+        .edit-link { font-size: 14px; color: var(--blue); cursor: pointer; }
+
+        .menu-card { padding: 0 16px; margin-bottom: 12px; }
+        .menu-row {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--divider);
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer;
+        }
+        .menu-row:last-child { border-bottom: none; }
+        .menu-icon { font-size: 20px; flex-shrink: 0; }
+        .menu-text { flex: 1; font-size: 15px; color: var(--text); }
+        .chevron { color: var(--text-light); font-size: 18px; }
+
+        .btn-logout { padding: 16px; text-align: center; cursor: pointer; font-size: 16px; font-weight: 500; color: var(--error); margin-top: 8px; }
+
+        .tab-bar {
+            position: fixed; bottom: 0; width: 393px; z-index: 100;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(30px);
+            border-top: 1px solid rgba(14, 165, 233, 0.1);
+            padding: 8px 0 34px;
+            display: flex;
+        }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-light); font-size: 10px; font-weight: 500; }
+        .tab-item.active { color: var(--blue); }
+        .tab-icon { font-size: 22px; }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14, 165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-nav, .tab-bar { background: rgba(10, 22, 40, 0.88); }
+            .glass-card { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.1); }
+        }
+    </style>
+</head>
+<body>
+    <header class="glass-nav">
+        <div class="nav-title">Профиль</div>
+    </header>
+
+    <main class="content">
+        <div class="profile-header">
+            <div class="avatar">АБ</div>
+            <div class="user-name">Асан Бекович</div>
+            <div class="user-phone">+7 701 234 56 78</div>
+            <div class="rating-row">
+                <span class="rating-val">⭐ 4.9</span>
+                <span class="rating-sep">·</span>
+                <span class="rating-trips">234 поездки</span>
+            </div>
+            <div class="tariff-badge">💳 Профессионал</div>
+        </div>
+
+        <div class="glass-card stats-card">
+            <div class="stat-item">
+                <div class="stat-val">234</div>
+                <div class="stat-label">поездок</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">41 200₸</div>
+                <div class="stat-label">этот мес</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">4.9</div>
+                <div class="stat-label">рейтинг</div>
+            </div>
+        </div>
+
+        <div class="section-label">Мой автомобиль</div>
+        <div class="glass-card car-card">
+            <div class="car-icon">🚗</div>
+            <div class="car-info">
+                <div class="car-name">Toyota Camry 2018</div>
+                <div class="car-desc">Белый · 123 ABC 02 · 4 места</div>
+            </div>
+            <div class="edit-link">Изменить ›</div>
+        </div>
+
+        <div class="section-label">Меню</div>
+        <div class="glass-card menu-card">
+            <div class="menu-row" onclick="window.location.href='D-12-earnings.html'">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Статистика</span>
+                <span class="chevron">›</span>
+            </div>
+            <div class="menu-row" onclick="window.location.href='D-16-subscription.html'">
+                <span class="menu-icon">💳</span>
+                <span class="menu-text">Управление подпиской</span>
+                <span class="chevron">›</span>
+            </div>
+            <div class="menu-row">
+                <span class="menu-icon">📄</span>
+                <span class="menu-text">Мои документы</span>
+                <span class="chevron">›</span>
+            </div>
+            <div class="menu-row">
+                <span class="menu-icon">🔔</span>
+                <span class="menu-text">Уведомления</span>
+                <span class="chevron">›</span>
+            </div>
+            <div class="menu-row" onclick="window.location.href='D-17-settings.html'">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">Настройки</span>
+                <span class="chevron">›</span>
+            </div>
+        </div>
+
+        <div class="glass-card btn-logout">Выйти</div>
+    </main>
+
+    <nav class="tab-bar">
+        <div class="tab-item" onclick="window.location.href='dashboard.html'">
+            <span class="tab-icon">🗺</span>
+            <span>Карта</span>
+        </div>
+        <div class="tab-item" onclick="window.location.href='D-12-earnings.html'">
+            <span class="tab-icon">💰</span>
+            <span>Заработок</span>
+        </div>
+        <div class="tab-item active">
+            <span class="tab-icon">👤</span>
+            <span>Профиль</span>
+        </div>
+    </nav>
+</body>
+</html>

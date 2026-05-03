@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Mockup V3</title>
+    <style>
+    body {
+        background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #ffffff 100%);
+        padding: 40px;
+        font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        color: #0C1A2E;
+        min-height: 100vh;
+    }
+
+    .hub-title {
+        color: #0EA5E9;
+        margin: 0 0 8px 0;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .hub-subtitle {
+        color: #64748B;
+        margin: 0 0 24px 0;
+        font-size: 15px;
+    }
+
+    .counters {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748B;
+    }
+    .counters span {
+        background: rgba(14,165,233,0.1);
+        padding: 4px 12px;
+        border-radius: 100px;
+        color: #0EA5E9;
+    }
+
+    .legend {
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 32px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 13px;
+        background: rgba(255,255,255,0.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot-green { color: #10B981; font-size: 16px; }
+    .legend-dot-blue { color: #0EA5E9; font-size: 16px; }
+    .legend-dot-gray { color: #94A3B8; font-size: 16px; }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        max-width: 1000px;
+    }
+
+    .column-title {
+        margin: 0 0 20px 0;
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .link-card {
+        display: block;
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1.5px solid rgba(14,165,233,0.15);
+        margin-bottom: 10px;
+        background: rgba(255,255,255,0.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        cursor: pointer;
+        text-decoration: none;
+        color: #0C1A2E;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .link-card:hover {
+        border-color: #0EA5E9;
+        box-shadow: 0 4px 16px rgba(14,165,233,0.15);
+        transform: translateY(-1px);
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-path {
+        font-size: 12px;
+        color: #94A3B8;
+        margin-top: 6px;
+        font-family: monospace;
+    }
+
+    .card-desc {
+        font-size: 13px;
+        color: #64748B;
+        margin-top: 6px;
+    }
+
+    .tag-new {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 100px;
+        background: rgba(16,185,129,0.12);
+        color: #059669;
+        border: 1px solid rgba(16,185,129,0.25);
+        font-size: 10px;
+        font-weight: bold;
+        margin-left: 6px;
+        vertical-align: middle;
+    }
+
+    .tag-updated {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 100px;
+        background: rgba(14,165,233,0.12);
+        color: #0284C7;
+        border: 1px solid rgba(14,165,233,0.25);
+        font-size: 10px;
+        font-weight: bold;
+        margin-left: 6px;
+        vertical-align: middle;
+    }
+    
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ── Dark Mode ── */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(160deg, #0A1628, #0D1F3C 40%, #111827);
+        color: #F0F9FF;
+      }
+      .header {
+        background: rgba(10,22,40,0.95);
+        border-bottom-color: rgba(14,165,233,0.1);
+      }
+      .column-header {
+        background: rgba(14,165,233,0.1);
+        border-color: rgba(14,165,233,0.2);
+      }
+      .link-card {
+        background: rgba(255,255,255,0.04);
+        border-color: rgba(255,255,255,0.08);
+      }
+      .link-card:hover {
+        background: rgba(14,165,233,0.1);
+        border-color: rgba(14,165,233,0.3);
+      }
+      .card-title { color: #F0F9FF; }
+      .card-path { color: #64748B; }
+      .card-desc { color: #94A3B8; }
+      .section-label { color: #94A3B8; }
+      .legend {
+          background: rgba(255,255,255,0.06);
+          border-color: rgba(255,255,255,0.1);
+      }
+      .counters span {
+          background: rgba(14,165,233,0.2);
+          color: #38BDF8;
+      }
+      .hub-subtitle { color: #94A3B8; }
+    }
+    </style>
+</head>
+<body>
+
+    <h1 class="hub-title">BIRGE Mockup V3</h1>
+    <p class="hub-subtitle">Passenger &middot; Driver &middot; Prototype Flow &middot; Dark Mode</p>
+
+    <div class="counters">
+        <span>Пассажир: 30</span>
+        <span>Водитель: 22</span>
+        <span>Всего: 52</span>
+    </div>
+
+    <div class="legend glass-card">
+        <div class="legend-item"><span class="legend-dot-green">●</span> Новый экран V3</div>
+        <div class="legend-item"><span class="legend-dot-blue">●</span> Обновлён в V3</div>
+        <div class="legend-item"><span class="legend-dot-gray">●</span> Из V2 (без изменений)</div>
+        <div class="legend-item">🔗 Prototype flow: экраны кликабельны</div>
+        <div class="legend-item">🌙 Dark mode: поддерживается</div>
+    </div>
+
+    <div class="grid">
+        <!-- Passenger Column -->
+        <div>
+            <h3 class="column-title">&#128188; Passenger</h3>
+
+            <a href="passenger/P-00-splash.html" target="_blank" class="link-card">
+                <div class="card-title">P-00 &middot; Splash</div>
+                <div class="card-path">passenger/P-00-splash.html</div>
+            </a>
+            
+            <a href="passenger/P-01-phone.html" target="_blank" class="link-card">
+                <div class="card-title">P-01 &middot; Phone Entry</div>
+                <div class="card-path">passenger/P-01-phone.html</div>
+            </a>
+            
+            <a href="passenger/P-02-otp.html" target="_blank" class="link-card">
+                <div class="card-title">P-02 &middot; OTP</div>
+                <div class="card-path">passenger/P-02-otp.html</div>
+            </a>
+            
+            <a href="passenger/P-03a-commute-step1.html" target="_blank" class="link-card">
+                <div class="card-title">P-03 &middot; Onboarding Wizard (Step 1/5)</div>
+                <div class="card-path">passenger/P-03a-commute-step1.html</div>
+            </a>
+
+            <a href="passenger/P-03b-commute-step2.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">P-03b &middot; Commute Step 2/5</div>
+                <div class="card-path">passenger/P-03b-commute-step2.html</div>
+            </a>
+
+            <a href="passenger/P-03c-commute-step3.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">P-03c &middot; Commute Step 3/5</div>
+                <div class="card-path">passenger/P-03c-commute-step3.html</div>
+            </a>
+
+            <a href="passenger/P-03d-commute-step4.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">P-03d &middot; Commute Step 4/5</div>
+                <div class="card-path">passenger/P-03d-commute-step4.html</div>
+            </a>
+
+            <a href="passenger/P-03e-commute-step5.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">P-03e &middot; Commute Step 5/5</div>
+                <div class="card-path">passenger/P-03e-commute-step5.html</div>
+            </a>
+            
+            <a href="passenger/P-04-home.html" target="_blank" class="link-card">
+                <div class="card-title">P-04 &middot; Home</div>
+                <div class="card-path">passenger/P-04-home.html</div>
+            </a>
+            
+            <a href="passenger/P-05-search.html" target="_blank" class="link-card">
+                <div class="card-title">P-05 &middot; Search</div>
+                <div class="card-path">passenger/P-05-search.html</div>
+            </a>
+
+            <a href="passenger/P-06a-corridor-list.html" target="_blank" class="link-card">
+                <div class="card-title">P-06a &middot; Corridor List <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">passenger/P-06a-corridor-list.html</div>
+            </a>
+
+            <a href="passenger/P-06b-corridor-detail.html" target="_blank" class="link-card">
+                <div class="card-title">P-06b &middot; Corridor Detail <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">passenger/P-06b-corridor-detail.html</div>
+            </a>
+            
+            <a href="passenger/ride-request.html" target="_blank" class="link-card">
+                <div class="card-title">P-06 &middot; Ride Request <span class="tag-updated">ОБНОВЛЁН</span></div>
+                <div class="card-path">passenger/ride-request.html</div>
+            </a>
+            
+            <a href="passenger/searching.html" target="_blank" class="link-card">
+                <div class="card-title">P-07 &middot; Searching <span class="tag-updated">ОБНОВЛЁН</span></div>
+                <div class="card-path">passenger/searching.html</div>
+            </a>
+            
+            <a href="passenger/active-ride.html" target="_blank" class="link-card">
+                <div class="card-title">P-08 &middot; Active Ride</div>
+                <div class="card-path">passenger/active-ride.html</div>
+            </a>
+            
+            <a href="passenger/P-09-driver-en-route.html" target="_blank" class="link-card">
+                <div class="card-title">P-09 &middot; Driver En Route</div>
+                <div class="card-path">passenger/P-09-driver-en-route.html</div>
+            </a>
+            
+            <a href="passenger/P-10-driver-arrived.html" target="_blank" class="link-card">
+                <div class="card-title">P-10 &middot; Driver Arrived</div>
+                <div class="card-path">passenger/P-10-driver-arrived.html</div>
+            </a>
+            
+            <a href="passenger/P-11-ride-in-progress.html" target="_blank" class="link-card">
+                <div class="card-title">P-11 &middot; Ride In Progress</div>
+                <div class="card-path">passenger/P-11-ride-in-progress.html</div>
+            </a>
+            
+            <a href="passenger/P-12-ride-complete.html" target="_blank" class="link-card">
+                <div class="card-title">P-12 &middot; Ride Complete</div>
+                <div class="card-path">passenger/P-12-ride-complete.html</div>
+            </a>
+            
+            <a href="passenger/P-13-boarding-code.html" target="_blank" class="link-card">
+                <div class="card-title">P-13 &middot; Boarding Code</div>
+                <div class="card-path">passenger/P-13-boarding-code.html</div>
+            </a>
+            
+            <a href="passenger/P-14-rides-history.html" target="_blank" class="link-card">
+                <div class="card-title">P-14 &middot; Rides History <span class="tag-updated">ОБНОВЛЁН</span></div>
+                <div class="card-path">passenger/P-14-rides-history.html</div>
+            </a>
+            
+            <a href="passenger/P-15-ride-detail.html" target="_blank" class="link-card">
+                <div class="card-title">P-15 &middot; Ride Detail</div>
+                <div class="card-path">passenger/P-15-ride-detail.html</div>
+            </a>
+
+            <a href="passenger/P-16-report-issue.html" target="_blank" class="link-card">
+                <div class="card-title">P-16 &middot; Report Issue <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-desc">Форма жалобы на поездку</div>
+                <div class="card-path">passenger/P-16-report-issue.html</div>
+            </a>
+            
+            <a href="passenger/P-17-subscriptions.html" target="_blank" class="link-card">
+                <div class="card-title">P-17 &middot; Subscriptions</div>
+                <div class="card-path">passenger/P-17-subscriptions.html</div>
+            </a>
+            
+            <a href="passenger/P-18-subscription-detail.html" target="_blank" class="link-card">
+                <div class="card-title">P-18 &middot; Subscription Detail</div>
+                <div class="card-path">passenger/P-18-subscription-detail.html</div>
+            </a>
+            
+            <a href="passenger/P-19-profile.html" target="_blank" class="link-card">
+                <div class="card-title">P-19 &middot; Profile <span class="tag-updated">ОБНОВЛЁН</span></div>
+                <div class="card-path">passenger/P-19-profile.html</div>
+            </a>
+            
+            <a href="passenger/P-20-edit-profile.html" target="_blank" class="link-card">
+                <div class="card-title">P-20 &middot; Edit Profile</div>
+                <div class="card-path">passenger/P-20-edit-profile.html</div>
+            </a>
+            
+            <a href="passenger/P-21-settings.html" target="_blank" class="link-card">
+                <div class="card-title">P-21 &middot; Settings</div>
+                <div class="card-path">passenger/P-21-settings.html</div>
+            </a>
+
+            <a href="passenger/P-22-privacy-settings.html" target="_blank" class="link-card">
+                <div class="card-title">P-22 &middot; Privacy Settings <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">passenger/P-22-privacy-settings.html</div>
+            </a>
+
+            <a href="passenger/P-23-ai-explanation.html" target="_blank" class="link-card">
+                <div class="card-title">P-23 &middot; AI Explanation <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">passenger/P-23-ai-explanation.html</div>
+            </a>
+        </div>
+
+        <!-- Driver Column -->
+        <div>
+            <h3 class="column-title">&#128663; Driver</h3>
+
+            <a href="driver/D-00-splash.html" target="_blank" class="link-card">
+                <div class="card-title">D-00 &middot; Splash</div>
+                <div class="card-path">driver/D-00-splash.html</div>
+            </a>
+            
+            <a href="driver/D-01-phone.html" target="_blank" class="link-card">
+                <div class="card-title">D-01 &middot; Phone Entry</div>
+                <div class="card-path">driver/D-01-phone.html</div>
+            </a>
+            
+            <a href="driver/D-02-otp.html" target="_blank" class="link-card">
+                <div class="card-title">D-02 &middot; OTP</div>
+                <div class="card-path">driver/D-02-otp.html</div>
+            </a>
+            
+            <a href="driver/D-03-registration.html" target="_blank" class="link-card">
+                <div class="card-title">D-03 &middot; Registration Step 1 (личные данные) <span class="tag-updated">ОБНОВЛЁН</span></div>
+                <div class="card-path">driver/D-03-registration.html</div>
+            </a>
+
+            <a href="driver/D-03a-vehicle.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">D-03a &middot; Vehicle Info <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">driver/D-03a-vehicle.html</div>
+            </a>
+
+            <a href="driver/D-03b-documents.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">D-03b &middot; Documents <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">driver/D-03b-documents.html</div>
+            </a>
+            
+            <a href="driver/D-03c-tier-selection.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">D-03c &middot; Tier Selection Step 4 <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">driver/D-03c-tier-selection.html</div>
+            </a>
+
+            <a href="driver/D-03c-registration-review.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">D-03c &middot; Registration Review <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">driver/D-03c-registration-review.html</div>
+            </a>
+            
+            <a href="driver/dashboard.html" target="_blank" class="link-card">
+                <div class="card-title">D-04 &middot; Dashboard (offline)</div>
+                <div class="card-path">driver/dashboard.html</div>
+            </a>
+
+            <a href="driver/D-05-online-waiting.html" target="_blank" class="link-card" style="margin-left:16px;border-left:3px solid #0EA5E9;">
+                <div class="card-title">D-05 &middot; Online Waiting <span class="tag-new">НОВЫЙ</span></div>
+                <div class="card-path">driver/D-05-online-waiting.html</div>
+            </a>
+            
+            <a href="driver/offer.html" target="_blank" class="link-card">
+                <div class="card-title">D-06 &middot; Incoming Offer</div>
+                <div class="card-path">driver/offer.html</div>
+            </a>
+            
+            <a href="driver/D-07-en-route.html" target="_blank" class="link-card">
+                <div class="card-title">D-07 &middot; En Route to Pickup</div>
+                <div class="card-path">driver/D-07-en-route.html</div>
+            </a>
+            
+            <a href="driver/D-08-arrived.html" target="_blank" class="link-card">
+                <div class="card-title">D-08 &middot; Arrived at Pickup</div>
+                <div class="card-path">driver/D-08-arrived.html</div>
+            </a>
+            
+            <a href="driver/D-09-ride-in-progress.html" target="_blank" class="link-card">
+                <div class="card-title">D-09 &middot; Ride In Progress</div>
+                <div class="card-path">driver/D-09-ride-in-progress.html</div>
+            </a>
+            
+            <a href="driver/D-10-ride-complete.html" target="_blank" class="link-card">
+                <div class="card-title">D-10 &middot; Ride Complete</div>
+                <div class="card-path">driver/D-10-ride-complete.html</div>
+            </a>
+            
+            <a href="driver/D-11-manifest.html" target="_blank" class="link-card">
+                <div class="card-title">D-11 &middot; Corridor Manifest</div>
+                <div class="card-path">driver/D-11-manifest.html</div>
+            </a>
+            
+            <a href="driver/D-12-earnings.html" target="_blank" class="link-card">
+                <div class="card-title">D-12 &middot; Earnings</div>
+                <div class="card-path">driver/D-12-earnings.html</div>
+            </a>
+            
+            <a href="driver/D-13-earnings-detail.html" target="_blank" class="link-card">
+                <div class="card-title">D-13 &middot; Earnings Day Detail</div>
+                <div class="card-path">driver/D-13-earnings-detail.html</div>
+            </a>
+            
+            <a href="driver/D-14-payout.html" target="_blank" class="link-card">
+                <div class="card-title">D-14 &middot; Payout</div>
+                <div class="card-path">driver/D-14-payout.html</div>
+            </a>
+            
+            <a href="driver/D-15-driver-profile.html" target="_blank" class="link-card">
+                <div class="card-title">D-15 &middot; Driver Profile</div>
+                <div class="card-path">driver/D-15-driver-profile.html</div>
+            </a>
+            
+            <a href="driver/D-16-subscription.html" target="_blank" class="link-card">
+                <div class="card-title">D-16 &middot; Subscription Management</div>
+                <div class="card-path">driver/D-16-subscription.html</div>
+            </a>
+            
+            <a href="driver/D-17-settings.html" target="_blank" class="link-card">
+                <div class="card-title">D-17 &middot; Settings</div>
+                <div class="card-path">driver/D-17-settings.html</div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

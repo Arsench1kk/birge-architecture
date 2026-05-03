@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - Offer</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --green: #10B981;
+            --red: #EF4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            width: 393px; margin: 0 auto; min-height: 100vh;
+            position: relative; overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .map-container {
+            position: fixed; inset: 0; z-index: 0;
+            background: linear-gradient(160deg, #DBEAFE, #E0F2FE);
+        }
+        .map-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(14,165,233,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,165,233,0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        
+        .car-marker {
+            position: absolute;
+            width: 40px; height: 40px;
+            background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            left: 50%; top: 80%; /* 200, 700 scaled approx */
+        }
+
+        @keyframes pulseAlert {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.04); }
+        }
+
+        .top-alert {
+            position: fixed; top: 59px; left: 50%; transform: translateX(-50%);
+            z-index: 10; white-space: nowrap;
+            background: rgba(14,165,233,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 100px;
+            padding: 8px 20px; color: white;
+            font-size: 14px; font-weight: bold;
+            animation: pulseAlert 0.8s infinite alternate;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.3);
+        }
+
+        @keyframes fadeTimer {
+            0% { border-color: var(--blue); }
+            100% { border-color: var(--red); color: var(--red); }
+        }
+
+        .timer-circle {
+            position: fixed; top: 120px; left: 50%; transform: translateX(-50%);
+            z-index: 10;
+            width: 50px; height: 50px;
+            background: white;
+            border: 3px solid var(--blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: bold; color: var(--blue);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: fadeTimer 15s linear forwards;
+        }
+
+        .bottom-sheet {
+            position: fixed; bottom: 0; width: 393px; z-index: 10;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-bottom: none;
+            border-radius: 28px 28px 0 0;
+            padding-bottom: 34px;
+            box-shadow: 0 -8px 40px rgba(14,165,233,0.1);
+        }
+
+        .drag-handle {
+            width: 36px; height: 4px;
+            background: rgba(0,0,0,0.12);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        .header-row {
+            padding: 14px 20px 0;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+            border: 1px solid rgba(14,165,233,0.3);
+            color: var(--blue-dark);
+            padding: 4px 10px; border-radius: 100px;
+            font-size: 12px; font-weight: 600;
+        }
+
+        .route-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px);
+            border: 1.5px solid rgba(14,165,233,0.2);
+            border-radius: 18px;
+            padding: 16px; margin: 12px 20px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .route-row { display: flex; align-items: center; gap: 8px; }
+        .route-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .route-line { width: 2px; height: 10px; border-left: 2px dashed rgba(14,165,233,0.3); margin-left: 4px; margin-top: 6px; margin-bottom: 6px; }
+
+        .details-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 14px;
+            padding: 12px 14px;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.05);
+        }
+
+        .passengers-section { padding: 0 20px; margin-top: 14px; }
+        .section-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; letter-spacing: 0.5px; }
+
+        .avatar-group { display: flex; align-items: center; }
+        .avatar-group .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: bold; border: 2px solid white;
+            margin-left: -8px;
+        }
+        .avatar-group .avatar:first-child { margin-left: 0; }
+
+        .actions-section {
+            padding: 12px 20px 0; display: flex; flex-direction: column; gap: 8px;
+        }
+
+        .btn-primary {
+            height: 56px; border: none; border-radius: 16px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white; font-size: 17px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+        }
+
+        .btn-ghost-danger {
+            height: 44px; border: 1.5px solid rgba(239,68,68,0.3); border-radius: 12px;
+            background: transparent; color: var(--red); font-size: 15px; font-weight: 700; cursor: pointer;
+        }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            .map-container { background: linear-gradient(160deg, #0D1F3C, #0A2040); }
+            .bottom-sheet { background: rgba(13,31,60,0.92); border-color: rgba(255,255,255,0.08); }
+            .glass-card, .route-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .car-marker { background: #1A2332; }
+            .timer-circle { background: #1A2332; }
+            .avatar-group .avatar { border-color: #1A2332; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="map-container">
+        <div class="map-grid"></div>
+        <svg class="map-svg">
+            <line x1="0" y1="45%" x2="100%" y2="45%" stroke="#CBD5E1" stroke-width="7" opacity="0.4"/>
+            <line x1="10%" y1="0" x2="90%" y2="100%" stroke="#CBD5E1" stroke-width="7" opacity="0.3"/>
+            <!-- Highlighted Route -->
+            <path d="M 25% 70% Q 50% 45% 80% 25%" stroke="var(--blue)" stroke-width="5" fill="none" style="filter: drop-shadow(0 0 10px rgba(14,165,233,0.5));" />
+            <!-- Pickup -->
+            <circle cx="25%" cy="70%" r="10" fill="var(--green)" stroke="white" stroke-width="3" />
+            <!-- Destination -->
+            <circle cx="80%" cy="25%" r="10" fill="var(--red)" stroke="white" stroke-width="3" />
+        </svg>
+        <div class="car-marker">🚗</div>
+    </div>
+
+    <div class="top-alert">🔔 Новый заказ</div>
+    <div class="timer-circle" id="timer">15</div>
+
+    <div class="bottom-sheet">
+        <div class="drag-handle"></div>
+        
+        <div class="header-row">
+            <div class="ai-badge">98% совпадение</div>
+            <div style="font-weight:700;font-size:20px;color:var(--text);flex:1;">Новый заказ</div>
+            <div style="font-weight:700;font-size:16px;color:var(--red);" id="timer-text">15 с</div>
+        </div>
+
+        <div class="route-card">
+            <div class="route-row">
+                <div class="route-dot" style="background: var(--green);"></div>
+                <div style="font-weight:700;font-size:15px;color:var(--text);flex:1;">Алатау, пр. Аль-Фараби 21</div>
+            </div>
+            <div class="route-line"></div>
+            <div class="route-row">
+                <div class="route-dot" style="background: var(--red);"></div>
+                <div style="font-size:15px;color:var(--text-gray);flex:1;">Есентай Парк, 77/8</div>
+            </div>
+        </div>
+
+        <div class="details-grid">
+            <div class="glass-card">
+                <div style="font-size:12px;color:var(--text-light);">До точки</div>
+                <div style="font-weight:700;font-size:15px;color:var(--text);margin-top:4px;">4 мин · 1.2 км</div>
+            </div>
+            <div class="glass-card">
+                <div style="font-size:12px;color:var(--text-light);">Поездка</div>
+                <div style="font-weight:700;font-size:15px;color:var(--text);margin-top:4px;">35 мин · 8.4 км</div>
+            </div>
+            <div class="glass-card">
+                <div style="font-size:12px;color:var(--text-light);">Заработок</div>
+                <div style="font-weight:700;font-size:15px;color:var(--blue);margin-top:4px;">890₸</div>
+            </div>
+            <div class="glass-card">
+                <div style="font-size:12px;color:var(--text-light);">Попутчики</div>
+                <div style="font-weight:700;font-size:15px;color:var(--text);margin-top:4px;">4 чел</div>
+            </div>
+        </div>
+
+        <div class="passengers-section">
+            <div class="section-label">ПАССАЖИРЫ</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div class="avatar-group">
+                    <div class="avatar" style="background:#EDE9FE;color:#7C3AED;">А</div>
+                    <div class="avatar" style="background:#D1FAE5;color:#065F46;">М</div>
+                    <div class="avatar" style="background:#FEF3C7;color:#92400E;">Д</div>
+                    <div class="avatar" style="background:#F1F5F9;color:#64748B;">К</div>
+                </div>
+                <div style="font-size:13px;color:var(--text-gray);">4 попутчика</div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <button class="btn-primary" onclick="window.location.href='D-07-en-route.html'">Принять заказ</button>
+            <button class="btn-ghost-danger" onclick="window.location.href='D-05-online-waiting.html'">Пропустить</button>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 15;
+        const timerCircle = document.getElementById('timer');
+        const timerText = document.getElementById('timer-text');
+        
+        const interval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft < 0) {
+                clearInterval(interval);
+                window.location.href = 'D-05-online-waiting.html';
+                return;
+            }
+            timerCircle.textContent = timeLeft;
+            timerText.textContent = timeLeft + ' с';
+        }, 1000);
+    </script>
+</body>
+</html>

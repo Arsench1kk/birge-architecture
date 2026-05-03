@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRGE Driver - Ride Complete</title>
+    <style>
+        :root {
+            --blue: #0EA5E9;
+            --blue-dark: #0284C7;
+            --blue-light: #E0F2FE;
+            --bg: #F0F9FF;
+            --text: #0C1A2E;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --divider: rgba(14,165,233,0.12);
+            --success: #10B981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(160deg, #E0F2FE 0%, #F0F9FF 40%, #fff 100%);
+            width: 393px;
+            margin: 0 auto;
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        .success-section {
+            padding: 59px 20px 0;
+            text-align: center;
+        }
+
+        @keyframes checkScale {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(16,185,129,0.3);
+            animation: checkScale 0.4s ease-out forwards;
+        }
+
+        .checkmark-icon {
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 16px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-top: 6px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(14,165,233,0.08);
+            padding: 20px;
+        }
+
+        .earnings-card {
+            margin: 20px 20px;
+        }
+
+        .earnings-val {
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-top: 4px;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 16px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 4px 0;
+        }
+        .stat-item:not(:last-child) {
+            border-right: 1px solid rgba(14,165,233,0.1);
+        }
+
+        .stat-val {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .rating-card {
+            margin: 0 20px;
+        }
+
+        .passenger-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(14,165,233,0.1);
+        }
+        .passenger-row:last-child { border-bottom: none; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .stars {
+            font-size: 14px;
+            letter-spacing: -2px;
+        }
+
+        .btn {
+            width: calc(100% - 40px);
+            margin: 0 20px;
+            height: 52px;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0EA5E9, #0284C7);
+            color: white;
+            box-shadow: 0 4px 20px rgba(14,165,233,0.35);
+            margin-top: 20px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-gray);
+            font-weight: 400;
+            height: 40px;
+            margin-top: 8px;
+            margin-bottom: 40px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0A1628;
+                --text: #F0F9FF;
+                --text-gray: #94A3B8;
+                --text-light: #64748B;
+                --divider: rgba(14,165,233,0.08);
+            }
+            body { background: linear-gradient(160deg, #0A1628 0%, #0D1F3C 40%, #111827 100%); }
+            .glass-card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+            .stat-item:not(:last-child) { border-color: rgba(255,255,255,0.05); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-section">
+        <div class="checkmark-circle">
+            <span class="checkmark-icon">✓</span>
+        </div>
+        <h1 class="title">Поездка завершена</h1>
+        <p class="subtitle">Отличная работа!</p>
+    </div>
+
+    <div class="glass-card earnings-card">
+        <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;">ВЫ ЗАРАБОТАЛИ</div>
+        <div class="earnings-val">890₸</div>
+        <div style="font-size: 13px; color: var(--text-gray); margin-top: 4px;">За эту поездку</div>
+
+        <div class="divider"></div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-val">18 мин</div>
+                <div class="stat-lbl">Время</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">6.2 км</div>
+                <div class="stat-lbl">Расстояние</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">4 чел</div>
+                <div class="stat-lbl">Пассажиры</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 14px; color: var(--text-gray);">Сегодня итого</span>
+            <span style="font-size: 15px; font-weight: 700;">3 400₸ · 4 поездки</span>
+        </div>
+    </div>
+
+    <div class="glass-card rating-card">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Оцените пассажиров</h3>
+        
+        <div class="passenger-row">
+            <div class="avatar" style="background: #EDE9FE; color: #7C3AED;">АС</div>
+            <div style="flex: 1; font-size: 14px; font-weight: 700;">Айгерим С.</div>
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+        </div>
+        <div class="passenger-row">
+            <div class="avatar" style="background: #D1FAE5; color: #065F46;">МК</div>
+            <div style="flex: 1; font-size: 14px; font-weight: 700;">Мади К.</div>
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+        </div>
+        <div class="passenger-row">
+            <div class="avatar" style="background: #FEF3C7; color: #92400E;">ДБ</div>
+            <div style="flex: 1; font-size: 14px; font-weight: 700;">Динара Б.</div>
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+        </div>
+        <div class="passenger-row">
+            <div class="avatar" style="background: #FEE2E2; color: #B91C1C;">АМ</div>
+            <div style="flex: 1; font-size: 14px; font-weight: 700;">Алия М.</div>
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Готово</button>
+    <button class="btn btn-ghost" onclick="window.location.href='dashboard.html'">Следующая поездка</button>
+
+</body>
+</html>
