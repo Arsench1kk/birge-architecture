@@ -80,6 +80,9 @@ sprint: 1
 - Stabilized live Passenger search / BIRGEDrive offers path: WebSocket handler registration now stays on socket event loop, broadcasts send through each socket loop, driver offer decisions persist accepted/declined state, offers are limited to fresh unassigned requests, decline hides offers per driver, and Passenger search accepts canonical `driver_accepted` events.
 - Verification passed: Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build/test, `BIRGEDrive` build, Docker `compose build/up`, live OTP/ride/offers/decline/accept smoke, and raw WebSocket `101 Switching Protocols` smoke.
 - Pushed app commit `eddea55d fix(driver): stabilize manual onboarding checks`.
+- Fixed WebSocket connection bug: `LiveWebSocketActor` was yielding `.connected` immediately after `URLSessionWebSocketTask.resume()`, before the HTTP upgrade completed. If the handshake failed (bad JWT, 403, ride not found), the receive loop would error instantly, yielding `.disconnected` and showing the red "Нет соединения" banner to the passenger before the connection was ever truly established. Fixes: (1) `.connected` is now deferred until the first successful message is received; (2) `.disconnected` events are only yielded to UI if the connection was previously confirmed; (3) max retries increased 3→5, ping interval 5s→10s, backoff capped at 30s; (4) `SearchingFeature` now explicitly handles backend `{"type":"connected"}` and `{"type":"subscribed"}` control frames instead of trying to parse them as ride events; (5) comprehensive `os.log` debug logging added to both `LiveWebSocketActor` and `SearchingFeature` for live debugging.
+- Fixed passenger WebSocket expired-token loop found in Docker logs (`JWTKit error: exp claim verification failed`). REST refresh was updating the in-memory `AccessTokenStore`, but WebSocket still read the old `birge_access_token` keychain value. `TokenRefreshClient`/`TokenRefreshTransport` now keep the legacy keychain access token in sync, and `SearchingFeature`/`RideFeature` proactively call `APIClient.refreshAccessToken()` before opening `/ws/ride/:rideId?token=...`, falling back to keychain only if refresh is unavailable.
+- Verification: BIRGEPassenger build passes, BIRGEDrive build passes, all `BIRGEPassengerTests` pass (SearchingFeatureTests, RideFeatureTests, OTPFeatureTests, WebSocketClientTests, etc.).
 
 ### Verification
 - ✅ `git diff --check` passed in app repo.
@@ -111,6 +114,8 @@ sprint: 1
 - ✅ Passenger OTP request/verify returns `200 OK` with `userId`; duplicate driver phone returns `409 Phone already registered`; `BIRGEPassenger` and `BIRGEDrive` builds pass after live auth response fixes.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver location crash guard and onboarding completion gate fix.
 - ✅ Vapor `swift build`/`swift test`, Passenger build/test, Drive build, Docker build/up, live ride offer decline/accept smoke, and raw WebSocket `101 Switching Protocols` pass after live ride search stability fix.
+- ✅ `BIRGEPassenger` build passes, `BIRGEDrive` build passes, and all `BIRGEPassengerTests` pass after WebSocket connection bug fix (deferred `.connected`, control message handling, debug logging).
+- ✅ `BIRGEPassenger` build, `BIRGEDrive` build, and full `BIRGEPassengerTests` pass after WebSocket access-token refresh synchronization.
 
 ### Next best steps
 1. Manually run Passenger and Drive against the live backend and verify the full UI scenario: passenger creates ride, driver declines, another driver accepts, passenger moves to offer/ride screen.
