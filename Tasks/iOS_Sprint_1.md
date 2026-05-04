@@ -134,6 +134,13 @@ Implementation note (2026-05-02):
 
 ## 🟡 Ready to Start
 
+
+### [IOS-FUTURE-001] Per-user onboarding routing after OTP
+- Status: PLANNED
+- Ref: [[Future_Demo_Stability_and_Onboarding]]
+- Goal: after OTP, route fresh passenger/driver accounts into the correct onboarding based on backend user state; completed users skip onboarding.
+- Demo priority: show passenger commute answers and driver profile setup as real data, not shared local-only flags.
+
 ### [IOS-018] Driver App RideFeature
 - [x] Driver registration onboarding D-03 personal/vehicle/documents/tier flow
 - [x] Driver D-05 online waiting and offer UI polish in `DriverAppView`

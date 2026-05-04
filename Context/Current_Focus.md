@@ -118,13 +118,16 @@ sprint: 1
 - ✅ `BIRGEPassenger` build, `BIRGEDrive` build, and full `BIRGEPassengerTests` pass after WebSocket access-token refresh synchronization.
 
 ### Next best steps
-1. Manually run Passenger and Drive against the live backend and verify the full UI scenario: passenger creates ride, driver declines, another driver accepts, passenger moves to offer/ride screen.
-2. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
-3. Add persisted named pickup/destination inputs beyond current fixed coordinates.
-4. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
+1. Future planned: per-user onboarding state after OTP; see [[Tasks/Future_Demo_Stability_and_Onboarding]].
+2. Reminder: live-flow findings from the defense review are already fixed; only revisit them if a regression appears.
+3. Manually run Passenger and Drive against the live backend and verify the full UI scenario: passenger creates ride, driver declines, another driver accepts, passenger moves to offer/ride screen.
+4. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
+5. Add persisted named pickup/destination inputs beyond current fixed coordinates.
+6. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.
 
 ### Agent reminder
 Before continuing iOS UI work, always read [[docs/CLAUDE_for_mockups]] and the relevant HTML mockup. The mockup gives the product idea; SwiftUI implementation should improve it with native Liquid Glass and SF Symbols.
+For onboarding/auth work, first read [[Tasks/Future_Demo_Stability_and_Onboarding]] so per-user onboarding state stays backend-driven and demo-visible.
 
 
 ## ▶ Цель: Sprint 1 stabilization for demo + auth loop

@@ -13,6 +13,13 @@ last_updated: 2026-05-04
 
 ## 🟡 Ready to Start
 
+
+### [BE-FUTURE-001] Auth onboarding state contract
+- Status: PLANNED
+- Ref: [[Future_Demo_Stability_and_Onboarding]]
+- Goal: expose canonical per-user onboarding status in OTP/auth responses and persist passenger/driver completion data.
+- Demo priority: new phone numbers should map to distinct users and Demo Hub should show where onboarding/profile data is stored.
+
 ### [BE-V002] Auth hardening
 - Remove OTP logging
 - Phone normalization to E.164
