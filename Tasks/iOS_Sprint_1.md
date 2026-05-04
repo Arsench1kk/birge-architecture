@@ -13,6 +13,12 @@ last_updated: 2026-05-04
 
 ## 🔴 In Progress
 
+### [IOS-UI-RESCUE-001] UI + Navigation Rescue Lane
+- Status: ACTIVE
+- Ref: [[Tasks/UI_Navigation_Rescue_Audit]]
+- Goal: pause feature expansion and rescue view quality, routing, native SwiftUI composition, Liquid Glass consistency, and visual QA.
+- Priority order: navigation vocabulary/root routing, shared BIRGECore component kit, DriverAppView extraction, Passenger ride flow polish, Home/Demo/Onboarding cleanup.
+
 ### [UI-001] Passenger Liquid Glass Mockup Implementation
 - [x] Add shared Liquid Glass design components in BIRGECore
 - [x] Use native `.glassEffect` on iOS 26+ with `.ultraThinMaterial` fallback

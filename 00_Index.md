@@ -1,6 +1,6 @@
 ---
 version: v5.1
-last_updated: 2026-05-02
+last_updated: 2026-05-04
 ---
 
 # BIRGE Vault — Index
@@ -57,6 +57,7 @@ last_updated: 2026-05-02
 | File | Domain | Sprint |
 |---|---|---|
 | [[Tasks/iOS_Sprint_1]] | iOS | Sprint 1 |
+| [[Tasks/UI_Navigation_Rescue_Audit]] | iOS/UI | Active rescue audit |
 | [[Tasks/Backend_Sprint_1]] | Backend | Sprint 1 |
 
 ---
