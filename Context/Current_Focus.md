@@ -77,6 +77,8 @@ sprint: 1
 - Fixed live auth manual testing blockers: iOS decodes backend `userId`, unauthenticated 401/409 responses preserve Vapor reason messages, and driver registration now returns `409 Phone already registered` instead of a Postgres duplicate-key 500.
 - Pushed app commit `f9485d50 fix(auth): align live login responses`.
 - Stabilized BIRGEDrive manual QA: location tracking no longer enables background updates unless `UIBackgroundModes` actually contains `location`, preventing the simulator abort; driver registration completion now requires real profile fields so new driver accounts see personal/vehicle/documents/tier onboarding.
+- Stabilized live Passenger search / BIRGEDrive offers path: WebSocket handler registration now stays on socket event loop, broadcasts send through each socket loop, driver offer decisions persist accepted/declined state, offers are limited to fresh unassigned requests, decline hides offers per driver, and Passenger search accepts canonical `driver_accepted` events.
+- Verification passed: Vapor `swift build`, Vapor `swift test`, `BIRGEPassenger` build/test, `BIRGEDrive` build, Docker `compose build/up`, live OTP/ride/offers/decline/accept smoke, and raw WebSocket `101 Switching Protocols` smoke.
 - Pushed app commit `eddea55d fix(driver): stabilize manual onboarding checks`.
 
 ### Verification
@@ -108,9 +110,10 @@ sprint: 1
 - ✅ Vapor `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local `POST /api/v1/auth/otp/request` return `200 OK` for the full live backend stack.
 - ✅ Passenger OTP request/verify returns `200 OK` with `userId`; duplicate driver phone returns `409 Phone already registered`; `BIRGEPassenger` and `BIRGEDrive` builds pass after live auth response fixes.
 - ✅ `BIRGEDrive` and `BIRGEPassenger` builds pass after driver location crash guard and onboarding completion gate fix.
+- ✅ Vapor `swift build`/`swift test`, Passenger build/test, Drive build, Docker build/up, live ride offer decline/accept smoke, and raw WebSocket `101 Switching Protocols` pass after live ride search stability fix.
 
 ### Next best steps
-1. Run Passenger and Drive in Simulator against the now-running live backend; use OTP from Vapor logs for passenger login and email register/login for driver.
+1. Manually run Passenger and Drive against the live backend and verify the full UI scenario: passenger creates ride, driver declines, another driver accepts, passenger moves to offer/ride screen.
 2. Replace current driver guidance placeholders with persisted route geometry / live MapKit directions.
 3. Add persisted named pickup/destination inputs beyond current fixed coordinates.
 4. Later: replace demo Kaspi deep link with real merchant API contract when credentials/spec are available.

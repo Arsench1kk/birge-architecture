@@ -49,8 +49,10 @@ last_updated: 2026-05-04
 - [x] Restore Docker Compose live backend stack for Simulator testing
 - [x] Fix live Passenger OTP decode and Driver duplicate-phone registration errors
 - [x] Fix BIRGEDrive simulator location crash and new-driver onboarding skip
+- [x] Stabilize live ride search, WebSocket connection, stale driver offers, and persisted driver decline behavior
 
 Implementation note (2026-05-04):
+- Live ride search stability — backend now persists driver ride decisions, filters offers to fresh unassigned requests with a 15-minute TTL, adds `POST /rides/:rideID/driver/decline`, keeps WebSocket registration/broadcast on socket event loops, BIRGEDrive decline calls the backend, and Passenger search accepts canonical `driver_accepted` events. Verified with Vapor build/test, Passenger build/test, Drive build, Docker build/up, live offer decline/accept smoke, and raw WebSocket 101 smoke.
 - `eddea55d` — BIRGEDrive manual QA is stabilized: location manager only enables background updates when runtime Info.plist has `UIBackgroundModes=location`, and registration completion now depends on filled core profile fields instead of the initial `pending` KYC status.
 - `f9485d50` — Live auth manual testing is unblocked: `APIAuthResponse` accepts backend `userId`, Vapor `reason` errors surface in iOS, unauthenticated 401/409 responses keep backend messages, and driver registration checks phone uniqueness before insert.
 - `ef003825` — Docker live backend stack is restored: Dockerfile uses Swift 6.0, Kaspi HMAC imports `swift-crypto` instead of macOS-only `CryptoKit`, Postgres configuration compiles in Linux release, `.dockerignore` prevents copying `.build`, and Compose keeps Postgres/Redis internal to avoid local port conflicts.
@@ -95,6 +97,7 @@ Implementation note (2026-05-03):
 - Full live backend verification passes: `swift build`, `swift build -c release`, `docker compose build vapor`, `docker compose up -d postgres redis vapor`, and local OTP request returns `200 OK` on `localhost:8080`.
 - Live auth verification passes: OTP request/verify returns `200 OK` with `userId`, duplicate driver phone returns `409 Phone already registered`, and both Passenger/Drive builds pass.
 - Driver manual QA verification passes for build: location background guard compiles and new-driver onboarding gate is corrected.
+- Live ride search verification passes: Docker live stack runs, fresh offers appear, persisted decline hides the offer for the same driver, another driver can accept, accepted rides leave the offer list, and WebSocket upgrade no longer crashes Vapor.
 
 ### [IOS-017] API Client + Token Refresh
 - [x] `APIClient` TCA dependency: authenticated URLSession wrapper
