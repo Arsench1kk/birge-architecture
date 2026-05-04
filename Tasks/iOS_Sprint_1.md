@@ -153,6 +153,9 @@ Implementation note (2026-05-02):
 
 ## ✅ Done
 
+- [x] In-App Project Demo screen for defense: `ProjectDemoFeature/View`, Home debug entry point, live Demo API state/seed/reset integration, and reducer tests (2026-05-04)
+- [x] Demo stability fixes: configurable API/WebSocket base URL, RideFeature ignores backend control frames, OfferFound decline/expiry calls backend cancel, BIRGEDrive uploads live GPS every 5 seconds while tracking (2026-05-04)
+
 - [x] IOS-001: Xcode Project Setup — `BIRGEPassenger` + `BIRGEDrive` targets, shared workspace, SPM wiring (2026-04-22)
 - [x] IOS-002: GRDB Setup in `BIRGECore` — `DatabaseManager`, `LocationRecord`, `LocationRepository`, in-memory tests (2026-05-02)
 - [x] IOS-003: OTP Auth screen — TCA Reducer + View + Mock flow (2026-04-23, updated 2026-04-27)

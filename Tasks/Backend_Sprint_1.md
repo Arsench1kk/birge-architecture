@@ -1,7 +1,7 @@
 ---
 sprint: 1
 status: active
-last_updated: 2026-05-02
+last_updated: 2026-05-04
 ---
 
 # Backend Sprint 1 — Foundation
@@ -46,6 +46,18 @@ last_updated: 2026-05-02
 ---
 
 ## ✅ Done
+
+### [BE-V007] Defense Demo API + ride offer stability
+- Status: DONE
+- Completed: 2026-05-04
+- Delivered:
+  - Dev-only JWT-protected `GET /api/v1/demo/state`, `POST /api/v1/demo/seed`, `POST /api/v1/demo/reset`
+  - Live table snapshots for users, rides, driver_profiles, corridors, corridor_bookings, passenger_subscriptions, payment_events, driver_location_records, driver_ride_decisions
+  - Redis OTP/session/blacklist summaries without secret values
+  - Deterministic AI corridor scoring explanation for defense demo
+  - `RidesService.driverAccept` row lock to avoid double accept races
+- Verification: `swift build` and `swift test` pass on 2026-05-04.
+
 
 ### [BE-V001] Fix Vapor build (JWT signer + Redis async) — Critical
 - Status: DONE

@@ -224,3 +224,12 @@ UI пассажира и водителя уже собран.
 - Vault настроен (v5.1)
 - BIRGE.code-workspace создан
 - RULES.md в корне проекта
+
+
+### Session summary (2026-05-04, in-app defense demo)
+- Task: In-App Demo Mode for project defense + live-flow stabilization.
+- Delivered: `ProjectDemoFeature/View` in `BIRGEPassenger` with Overview, Database, Live scenario, and AI tabs.
+- Backend: dev-only JWT-protected `/api/v1/demo/state`, `/api/v1/demo/seed`, `/api/v1/demo/reset` returning live Postgres table snapshots, Redis key summaries, and deterministic AI corridor scoring.
+- Stability: passenger/ride WebSocket control frames are ignored, OfferFound decline/expiry cancels backend ride, driver accept uses row lock, driver GPS sync runs every 5 seconds while tracking, API/WebSocket base URL is configurable through `BIRGE_API_BASE_URL`.
+- Verification: Vapor `swift build` and `swift test` pass; `BIRGEPassenger` and `BIRGEDrive` simulator builds pass; full `BIRGEPassengerTests` pass on iPhone 17 Pro with `-skipMacroValidation`.
+- Demo note: For physical iPhone, set `BIRGE_API_BASE_URL` to Mac LAN/tunnel URL; simulator default remains `http://localhost:8080/api/v1`.
