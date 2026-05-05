@@ -99,6 +99,26 @@ Remaining in P0 Design System Rescue:
 - Replace duplicate local field rows/info cards during onboarding and driver registration cleanup.
 - Keep future component additions split into small focused files instead of a single large design-system file.
 
+### 2026-05-05 — Driver Dashboard Extraction, First Slice
+Done:
+- Extracted view-only dashboard surfaces from `DriverAppView` without changing `DriverAppFeature` actions or live polling/accept/decline/lifecycle flow.
+- New files:
+  - `DriverDashboardSurfaces.swift` for map background, top bar, offline center, online waiting, and pulse animation.
+  - `DriverOnlineControlSheet.swift` for today corridor strip, earnings stats, and end-shift CTA.
+  - `DriverOfferViews.swift` for offer alert and offer bottom sheet.
+  - `DriverRidePrimitives.swift` for reusable driver route rows, metric tiles, and passenger avatar.
+- `DriverAppView.swift` reduced from 1155 lines to 634 lines.
+- App commit: `87a442bc refactor(driver): extract dashboard components`.
+
+Verified:
+- `git diff --check` passes.
+- `BIRGEDrive` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+
+Remaining in P0 Driver UI Rescue:
+- Extract active ride lifecycle/guidance/completed ride sheets next.
+- Add driver logout/account switching after introducing a real reducer action for token/session clearing.
+- Keep replacing duplicated route/metric/status UI with shared or driver-local primitives as files are split.
+
 ## P0: Design System Rescue
 ### Problems
 - `BIRGECore` has useful primitives (`liquidGlass`, `BIRGEPrimaryButton`, `BIRGEGlassSheet`), but screens still repeatedly rebuild their own cards, route rows, icon chips, map overlays, and status pills.
