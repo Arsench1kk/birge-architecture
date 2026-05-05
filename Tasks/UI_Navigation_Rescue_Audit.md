@@ -115,9 +115,29 @@ Verified:
 - `BIRGEDrive` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
 
 Remaining in P0 Driver UI Rescue:
-- Extract active ride lifecycle/guidance/completed ride sheets next.
 - Add driver logout/account switching after introducing a real reducer action for token/session clearing.
 - Keep replacing duplicated route/metric/status UI with shared or driver-local primitives as files are split.
+
+### 2026-05-05 — Driver Active Ride Extraction
+Done:
+- Extracted active ride lifecycle/guidance/completion UI from `DriverAppView` without changing `DriverAppFeature` actions or live accept/arrived/start/complete flow.
+- New files:
+  - `DriverActiveRideViews.swift` for active route status and the active ride bottom sheet.
+  - `DriverActiveRideDetails.swift` for navigation panel, route progress, passengers, boarding codes, and metric chips.
+  - `DriverCompletedRideSheet.swift` for completed ride summary actions.
+  - `DriverRideFormatting.swift` for status/action/phase/cue text, symbols, colors, and progress mapping.
+- `DriverAppView.swift` reduced from 634 lines to 160 lines.
+- App commit: `9a0d8905 refactor(driver): extract active ride surfaces`.
+
+Verified:
+- `git diff --check` passes.
+- `BIRGEDrive` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+- `BIRGEPassenger` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+
+Remaining in P0 Driver UI Rescue:
+- Add visible driver account/logout and session clearing.
+- Replace driver root booleans with a clear route/state vocabulary.
+- Start cleanup of `DriverAppFeature` comments/mock earnings so demo-only state is not confused with live flow.
 
 ## P0: Design System Rescue
 ### Problems
@@ -167,10 +187,10 @@ Split driver UI into dedicated views:
 - `DriverStatusComponents`
 
 First improvement path:
-1. Add visible driver account/logout menu.
-2. Extract components without changing behavior.
+1. Add visible driver account/logout menu and reducer-backed token/session clearing.
+2. Replace driver root booleans with explicit root state vocabulary.
 3. Replace fake map decoration with either real MapKit or a simpler native dashboard surface.
-4. Normalize active ride states and actions visually.
+4. Normalize remaining demo/mock wording around earnings and offer polling.
 5. Rebuild driver registration with native form-like composition while keeping Liquid Glass accents.
 
 ## P0: Passenger Ride Flow Rescue

@@ -18,7 +18,7 @@ last_updated: 2026-05-05
 - Ref: [[Tasks/UI_Navigation_Rescue_Audit]]
 - Goal: pause feature expansion and rescue view quality, routing, native SwiftUI composition, Liquid Glass consistency, and visual QA.
 - Priority order: navigation vocabulary/root routing, shared BIRGECore component kit, DriverAppView extraction, Passenger ride flow polish, Home/Demo/Onboarding cleanup.
-- Progress 2026-05-05: Passenger root state now uses `needsOnboarding`; `PassengerAppFeature` ride-flow stack mutations are named through helper methods and `RideFlowResetReason`; navigation reducer coverage added for root transitions, ride-flow resets, and logout delegation. Shared BIRGECore component kit first slice is in place. Driver dashboard/offer surfaces are now extracted from `DriverAppView`; next: active ride lifecycle extraction and real driver logout/session clearing path.
+- Progress 2026-05-05: Passenger root state now uses `needsOnboarding`; `PassengerAppFeature` ride-flow stack mutations are named through helper methods and `RideFlowResetReason`; navigation reducer coverage added for root transitions, ride-flow resets, and logout delegation. Shared BIRGECore component kit first slice is in place. Driver dashboard/offer and active ride lifecycle surfaces are now extracted from `DriverAppView`; next: real driver logout/session clearing path and driver root state cleanup.
 
 ### [UI-001] Passenger Liquid Glass Mockup Implementation
 - [x] Add shared Liquid Glass design components in BIRGECore
@@ -60,6 +60,7 @@ last_updated: 2026-05-05
 - [x] Fix Passenger WebSocket expired-token loop during live ride search
 
 Implementation note (2026-05-05):
+- `9a0d8905` — Continued Driver UI rescue extraction without changing live flow: active ride status/sheet, route guidance/details, passengers/boarding codes, completed ride summary, and ride formatting helpers moved out of `DriverAppView`. `DriverAppView.swift` is now 160 lines, down from 634 after the previous slice and 1155 at audit start. Verified with `git diff --check`, `BIRGEDrive` build-for-testing, and `BIRGEPassenger` build-for-testing on `generic/platform=iOS` with signing disabled.
 - `87a442bc` — Started Driver UI rescue extraction without changing live flow: `DriverMapBackgroundView`, `DriverTopBarView`, offline/online dashboard surfaces, online control sheet, offer alert/sheet, and route/metric primitives moved out of `DriverAppView`. `DriverAppView.swift` is now 634 lines, down from 1155. Verified with `git diff --check` and `BIRGEDrive` build-for-testing on `generic/platform=iOS` with signing disabled.
 - `5a4a24b5` — Shared BIRGECore UI component kit expanded with icon/toolbar/map buttons, text field/list rows, section headers, loading/empty/error states, and initial route/status/offer components. Passenger/Drive bridge aliases added, and `MyCorridorsView`, `ProfileView`, and `ProjectDemoView` now use the first shared primitives. Verified with `git diff --check`, `BIRGEPassenger` build-for-testing, and `BIRGEDrive` build-for-testing on `generic/platform=iOS` with signing disabled.
 
@@ -97,7 +98,7 @@ Implementation note (2026-05-03):
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `87a442bc`, `5a4a24b5`, `eddea55d`, `f9485d50`, `ef003825`, `5fa70d6a`, `5bf3fcc1`, `29903977`, `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `9a0d8905`, `87a442bc`, `5a4a24b5`, `eddea55d`, `f9485d50`, `ef003825`, `5fa70d6a`, `5bf3fcc1`, `29903977`, `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
 - Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - Full `BIRGEPassengerTests` pass with `-skipMacroValidation`; live OTP E2E stays opt-in via `RUN_LIVE_OTP_E2E=1`.
