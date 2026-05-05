@@ -27,8 +27,12 @@ Previous lane: Passenger Liquid Glass UI по итоговым mockups.
 - Continued Driver UI rescue by extracting active ride lifecycle surfaces from `DriverAppView` into `DriverActiveRideViews`, `DriverActiveRideDetails`, `DriverCompletedRideSheet`, and `DriverRideFormatting`.
 - `DriverAppView.swift` is now 160 lines; active ride actions still delegate to the existing `DriverAppFeature` actions, so live accept/arrived/start/complete flow is unchanged.
 - Pushed app commit `9a0d8905 refactor(driver): extract active ride surfaces`.
+- Added a visible BIRGEDrive account menu with destructive logout confirmation.
+- Replaced stored driver root booleans with explicit `DriverAppFeature.State.Root` cases: `auth`, `registration`, `dashboard`, and `activeRide`.
+- Driver logout now resets route/state, clears local access/refresh/user tokens through `TokenRefreshClient.clearTokens()`, clears dashboard/ride state, and stops/syncs driver location tracking without adding backend flow.
+- Pushed app commit `20ed72a1 refactor(driver): add account logout routing`.
 - Verification: `git diff --check` passed; `xcodebuild build-for-testing -quiet -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'generic/platform=iOS' -skipMacroValidation CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""` passed. Direct simulator test run is blocked locally because Xcode currently does not list a concrete iOS Simulator device.
-- Additional verification: `xcodebuild build-for-testing -quiet -project BIRGEPassenger.xcodeproj -scheme BIRGEDrive -destination 'generic/platform=iOS' -skipMacroValidation CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""` passed after the shared core bridge update, Driver dashboard extraction, and Driver active ride extraction.
+- Additional verification: `xcodebuild build-for-testing -quiet -project BIRGEPassenger.xcodeproj -scheme BIRGEDrive -destination 'generic/platform=iOS' -skipMacroValidation CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""` passed after the shared core bridge update, Driver dashboard extraction, Driver active ride extraction, and Driver logout/root routing cleanup.
 
 ### Active branch
 - App repo: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEApp`
@@ -141,7 +145,7 @@ Previous lane: Passenger Liquid Glass UI по итоговым mockups.
 - ✅ `BIRGEPassenger` build, `BIRGEDrive` build, and full `BIRGEPassengerTests` pass after WebSocket access-token refresh synchronization.
 
 ### Next best steps
-1. UI rescue next step: add a real driver account/logout path and start driver root state cleanup (`auth`, `registration`, `dashboard`, `activeRide`) now that `DriverAppView` is small enough to change safely; see [[Tasks/UI_Navigation_Rescue_Audit]].
+1. UI rescue next step: choose between Driver registration form rescue and Passenger ride flow rescue; Driver root/logout is now safe enough for demo QA. See [[Tasks/UI_Navigation_Rescue_Audit]].
 2. Future planned: per-user onboarding state after OTP; see [[Tasks/Future_Demo_Stability_and_Onboarding]].
 3. Reminder: live-flow findings from the defense review are already fixed; only revisit them if a regression appears.
 4. Manually run Passenger and Drive against the live backend and verify the full UI scenario: passenger creates ride, driver declines, another driver accepts, passenger moves to offer/ride screen.

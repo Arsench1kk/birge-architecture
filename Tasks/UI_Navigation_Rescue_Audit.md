@@ -139,6 +139,25 @@ Remaining in P0 Driver UI Rescue:
 - Replace driver root booleans with a clear route/state vocabulary.
 - Start cleanup of `DriverAppFeature` comments/mock earnings so demo-only state is not confused with live flow.
 
+### 2026-05-05 — Driver Account Logout + Root Routing
+Done:
+- Added a visible driver account menu in the dashboard top bar with SF Symbols and a destructive logout confirmation.
+- Logout now routes through `DriverAppFeature` actions instead of view-only state.
+- Replaced stored `isAuthenticated` / `isRegistrationComplete` booleans with explicit `DriverAppFeature.State.Root`: `auth`, `registration`, `dashboard`, and `activeRide`.
+- `BIRGEDriveApp` now switches on the root route vocabulary directly.
+- Logout clears local access/refresh/user tokens through `TokenRefreshClient.clearTokens()`, resets dashboard/registration/ride state, clears navigation path, and stops/syncs driver location tracking.
+- App commit: `20ed72a1 refactor(driver): add account logout routing`.
+
+Verified:
+- `git diff --check` passes.
+- `BIRGEDrive` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+- `BIRGEPassenger` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+
+Remaining in P0 Driver UI Rescue:
+- Start cleanup of `DriverAppFeature` mock/demo naming around earnings and offer polling.
+- Rebuild `DriverRegistrationView` into smaller native form steps.
+- Decide whether to introduce a dedicated `DriverProfile` screen later, or keep the lightweight account menu for demo.
+
 ## P0: Design System Rescue
 ### Problems
 - `BIRGECore` has useful primitives (`liquidGlass`, `BIRGEPrimaryButton`, `BIRGEGlassSheet`), but screens still repeatedly rebuild their own cards, route rows, icon chips, map overlays, and status pills.
@@ -187,11 +206,11 @@ Split driver UI into dedicated views:
 - `DriverStatusComponents`
 
 First improvement path:
-1. Add visible driver account/logout menu and reducer-backed token/session clearing.
-2. Replace driver root booleans with explicit root state vocabulary.
+1. Normalize remaining demo/mock wording around earnings and offer polling.
+2. Rebuild driver registration with native form-like composition while keeping Liquid Glass accents.
 3. Replace fake map decoration with either real MapKit or a simpler native dashboard surface.
-4. Normalize remaining demo/mock wording around earnings and offer polling.
-5. Rebuild driver registration with native form-like composition while keeping Liquid Glass accents.
+4. Decide whether the driver profile/settings mockups should become a real small screen after registration cleanup.
+5. Keep active ride and offer live flow behavior unchanged unless a stability bug appears.
 
 ## P0: Passenger Ride Flow Rescue
 ### Problems
