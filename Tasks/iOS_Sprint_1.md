@@ -18,7 +18,7 @@ last_updated: 2026-05-05
 - Ref: [[Tasks/UI_Navigation_Rescue_Audit]]
 - Goal: pause feature expansion and rescue view quality, routing, native SwiftUI composition, Liquid Glass consistency, and visual QA.
 - Priority order: navigation vocabulary/root routing, shared BIRGECore component kit, DriverAppView extraction, Passenger ride flow polish, Home/Demo/Onboarding cleanup.
-- Progress 2026-05-05: Passenger root state now uses `needsOnboarding`; `PassengerAppFeature` ride-flow stack mutations are named through helper methods and `RideFlowResetReason`; navigation reducer coverage added for root transitions, ride-flow resets, and logout delegation. Next: shared BIRGECore component kit.
+- Progress 2026-05-05: Passenger root state now uses `needsOnboarding`; `PassengerAppFeature` ride-flow stack mutations are named through helper methods and `RideFlowResetReason`; navigation reducer coverage added for root transitions, ride-flow resets, and logout delegation. Shared BIRGECore component kit first slice is now in place and smoke-used in low-risk Passenger views. Next: DriverAppView extraction using the shared kit.
 
 ### [UI-001] Passenger Liquid Glass Mockup Implementation
 - [x] Add shared Liquid Glass design components in BIRGECore
@@ -59,6 +59,9 @@ last_updated: 2026-05-05
 - [x] Stabilize live ride search, WebSocket connection, stale driver offers, and persisted driver decline behavior
 - [x] Fix Passenger WebSocket expired-token loop during live ride search
 
+Implementation note (2026-05-05):
+- `5a4a24b5` — Shared BIRGECore UI component kit expanded with icon/toolbar/map buttons, text field/list rows, section headers, loading/empty/error states, and initial route/status/offer components. Passenger/Drive bridge aliases added, and `MyCorridorsView`, `ProfileView`, and `ProjectDemoView` now use the first shared primitives. Verified with `git diff --check`, `BIRGEPassenger` build-for-testing, and `BIRGEDrive` build-for-testing on `generic/platform=iOS` with signing disabled.
+
 Implementation note (2026-05-04):
 - Passenger WebSocket auth stability — Docker logs showed `/ws/ride/:rideId` failing with expired JWT even after REST calls refreshed successfully. The refresh path now syncs the legacy keychain access token used by WebSocket, and `SearchingFeature`/`RideFeature` proactively refresh before opening ride sockets, with keychain fallback. Verified with Passenger build/test and Drive build.
 - Live ride search stability — backend now persists driver ride decisions, filters offers to fresh unassigned requests with a 15-minute TTL, adds `POST /rides/:rideID/driver/decline`, keeps WebSocket registration/broadcast on socket event loops, BIRGEDrive decline calls the backend, and Passenger search accepts canonical `driver_accepted` events. Verified with Vapor build/test, Passenger build/test, Drive build, Docker build/up, live offer decline/accept smoke, and raw WebSocket 101 smoke.
@@ -93,7 +96,7 @@ Implementation note (2026-05-03):
 - `2fd2a124` — Vapor `/api/v1/corridors` added, Passenger corridor screens now load/book through `APIClient`; iOS and Vapor builds pass.
 - `882230a1` — P-08 OfferFound confirmation flow added and pushed; build passes, focused tests blocked by known SwiftNavigation/CasePathsCore linker issue.
 - Active branch: `feature/passenger-liquid-glass-ui`
-- Pushed commits: `eddea55d`, `f9485d50`, `ef003825`, `5fa70d6a`, `5bf3fcc1`, `29903977`, `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
+- Pushed commits: `5a4a24b5`, `eddea55d`, `f9485d50`, `ef003825`, `5fa70d6a`, `5bf3fcc1`, `29903977`, `a12d75b6`, `be190fa7`, `c5012c77`, `85a66398`, `e778858b`, `079ac13a`, `136f91a0`, `d83fec67`, `98948bf4`, `061d6aaf`, `17d44560`, `ab5237fe`, `01955808`, `50c3915f`, `9f06a2a4`, `fe208327`, `da9001cf`, `e8a38820`, `cf9265e3`, `51a890d7`, `2fd2a124`, `882230a1`, `9a58800a`, `dcbdf02c`, `aa5e1da3`, `642f0127`, `6700e06c`, `6f074e02`, `55732eb7`, `f1150b11`, `a9d12867`
 - Build verification passes for `BIRGEPassenger` on installed `iPhone 17 Pro` simulator using `-skipMacroValidation` for CLI macro approval.
 - Focused `RideFeatureTests`, `OTPFeatureTests`, and `OTPFlowE2ETests` pass with `-skipMacroValidation`.
 - Full `BIRGEPassengerTests` pass with `-skipMacroValidation`; live OTP E2E stays opt-in via `RUN_LIVE_OTP_E2E=1`.

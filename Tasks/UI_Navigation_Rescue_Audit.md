@@ -81,6 +81,24 @@ Remaining in P0 Navigation Rescue:
 - Convert transient offer confirmation from push-style destination to an intentional sheet/overlay after UI rescue starts.
 - Add driver root state enum instead of `isAuthenticated` + `isRegistrationComplete` booleans.
 
+### 2026-05-05 — BIRGECore Component Kit, First Slice
+Done:
+- Added shared BIRGECore component files under `DesignSystem`: `BIRGEButtons`, `BIRGERows`, `BIRGEStateViews`, and `BIRGERideComponents`.
+- New reusable primitives include `BIRGEIconButton`, `BIRGEToolbarButton`, `BIRGETextFieldRow`, `BIRGEListRow`, `BIRGESectionHeader`, `BIRGEEmptyState`, `BIRGEErrorState`, `BIRGELoadingState`, `BIRGEMapOverlayButton`, `BIRGERouteSummaryCard`, `BIRGERideStatusSheet`, and `BIRGEOfferCard`.
+- Added Passenger and Drive bridge aliases so both apps can adopt the same component kit.
+- Smoke-used the kit in `MyCorridorsView`, `ProfileView`, and `ProjectDemoView` to replace local loading/empty/list/toolbar patterns without rewriting full screens.
+- App commit: `5a4a24b5 feat(core): expand shared UI component kit`.
+
+Verified:
+- `git diff --check` passes.
+- `BIRGEPassenger` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+- `BIRGEDrive` `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+
+Remaining in P0 Design System Rescue:
+- Use the new route/offer/status building blocks while extracting `DriverAppView`.
+- Replace duplicate local field rows/info cards during onboarding and driver registration cleanup.
+- Keep future component additions split into small focused files instead of a single large design-system file.
+
 ## P0: Design System Rescue
 ### Problems
 - `BIRGECore` has useful primitives (`liquidGlass`, `BIRGEPrimaryButton`, `BIRGEGlassSheet`), but screens still repeatedly rebuild their own cards, route rows, icon chips, map overlays, and status pills.
