@@ -64,6 +64,23 @@ This is the first structural fix. The UI cannot feel stable while routing is ad 
 - Add logout/root reset tests.
 - Add driver root state enum instead of controlling the root through multiple booleans.
 
+## Progress Log
+### 2026-05-05 — Passenger Navigation Vocabulary, First Slice
+Done:
+- Passenger root state now says `needsOnboarding` instead of generic `onboarding`.
+- `PassengerAppFeature` no longer performs raw ride-flow stack resets inline; push/pop/reset logic is gathered into named state helpers.
+- `RideFlowResetReason` makes passenger decline, offer expiry, search cancel, ride cancel, and completion dismissal explicit.
+- Added reducer coverage for root onboarding/auth transitions, logout reset, ride request back, search cancel, ride completion dismissal, and profile logout delegation.
+
+Verified:
+- `git diff --check` passes.
+- `xcodebuild build-for-testing` passes on `generic/platform=iOS` with signing disabled.
+
+Remaining in P0 Navigation Rescue:
+- Extract a real ride-flow coordinator instead of keeping helper methods inside `PassengerAppFeature`.
+- Convert transient offer confirmation from push-style destination to an intentional sheet/overlay after UI rescue starts.
+- Add driver root state enum instead of `isAuthenticated` + `isRegistrationComplete` booleans.
+
 ## P0: Design System Rescue
 ### Problems
 - `BIRGECore` has useful primitives (`liquidGlass`, `BIRGEPrimaryButton`, `BIRGEGlassSheet`), but screens still repeatedly rebuild their own cards, route rows, icon chips, map overlays, and status pills.

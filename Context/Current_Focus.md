@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-05-04
+last_updated: 2026-05-05
 sprint: 1
 ---
 
@@ -10,6 +10,15 @@ sprint: 1
 UI + Navigation Rescue is now the active lane. Pause new feature expansion unless it directly supports demo stability. First reference: [[Tasks/UI_Navigation_Rescue_Audit]].
 
 Previous lane: Passenger Liquid Glass UI по итоговым mockups.
+
+### Session summary (2026-05-05, UI + Navigation Rescue)
+- Started the rescue lane with Passenger root/navigation cleanup before visual rewrites.
+- Renamed Passenger root state `onboarding` -> `needsOnboarding` to match the planned root vocabulary.
+- Replaced anonymous `path.append/removeLast/removeAll` ride-flow mutations in `PassengerAppFeature` with named state helpers: `openRideRequest`, `startRideSearch`, `showOfferFound`, `showRideAfterOfferConfirmed`, `resetRideFlow`, and related browse destinations.
+- Added `RideFlowResetReason` so decline/expiry/cancel/completion resets are explicit and searchable.
+- Added `AppFeatureNavigationTests` for splash -> needs onboarding, onboarding -> OTP, and logout -> OTP session reset.
+- Expanded `PassengerAppFeatureTests` for ride request back, search cancel, ride completion dismissal, and profile logout delegation.
+- Verification: `git diff --check` passed; `xcodebuild build-for-testing -quiet -project BIRGEPassenger.xcodeproj -scheme BIRGEPassenger -destination 'generic/platform=iOS' -skipMacroValidation CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""` passed. Direct simulator test run is blocked locally because Xcode currently does not list a concrete iOS Simulator device.
 
 ### Active branch
 - App repo: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEApp`
@@ -122,7 +131,7 @@ Previous lane: Passenger Liquid Glass UI по итоговым mockups.
 - ✅ `BIRGEPassenger` build, `BIRGEDrive` build, and full `BIRGEPassengerTests` pass after WebSocket access-token refresh synchronization.
 
 ### Next best steps
-1. UI rescue priority order: navigation vocabulary, BIRGECore component kit, DriverAppView extraction, Passenger ride-flow polish; see [[Tasks/UI_Navigation_Rescue_Audit]].
+1. UI rescue next step: expand the shared BIRGECore component kit (`BIRGEIconButton`, toolbar buttons, list rows, loading/error/empty states), then start DriverAppView extraction; see [[Tasks/UI_Navigation_Rescue_Audit]].
 2. Future planned: per-user onboarding state after OTP; see [[Tasks/Future_Demo_Stability_and_Onboarding]].
 3. Reminder: live-flow findings from the defense review are already fixed; only revisit them if a regression appears.
 4. Manually run Passenger and Drive against the live backend and verify the full UI scenario: passenger creates ride, driver declines, another driver accepts, passenger moves to offer/ride screen.

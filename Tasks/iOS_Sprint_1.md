@@ -1,7 +1,7 @@
 ---
 sprint: 1
 status: active
-last_updated: 2026-05-04
+last_updated: 2026-05-05
 ---
 
 # iOS Sprint 1 — Foundation
@@ -18,6 +18,7 @@ last_updated: 2026-05-04
 - Ref: [[Tasks/UI_Navigation_Rescue_Audit]]
 - Goal: pause feature expansion and rescue view quality, routing, native SwiftUI composition, Liquid Glass consistency, and visual QA.
 - Priority order: navigation vocabulary/root routing, shared BIRGECore component kit, DriverAppView extraction, Passenger ride flow polish, Home/Demo/Onboarding cleanup.
+- Progress 2026-05-05: Passenger root state now uses `needsOnboarding`; `PassengerAppFeature` ride-flow stack mutations are named through helper methods and `RideFlowResetReason`; navigation reducer coverage added for root transitions, ride-flow resets, and logout delegation. Next: shared BIRGECore component kit.
 
 ### [UI-001] Passenger Liquid Glass Mockup Implementation
 - [x] Add shared Liquid Glass design components in BIRGECore
