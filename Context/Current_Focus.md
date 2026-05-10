@@ -1,15 +1,202 @@
 ---
-last_updated: 2026-05-05
-sprint: 1
+last_updated: 2026-05-10
+sprint: business_foundation_0
 ---
 
 # Current Focus — BIRGE
 
-## ▶ Цель сейчас: UI + Navigation Rescue
+## ▶ Цель сейчас: Business Foundation First
 
-UI + Navigation Rescue is now the active lane. Pause new feature expansion unless it directly supports demo stability. First reference: [[Tasks/UI_Navigation_Rescue_Audit]].
+Новый железный фундамент зафиксирован в [[Context/Universal_AI_Handoff_BIRGE]] v5.0:
+
+> BIRGE is not a taxi-first app. BIRGE is a transportation-as-a-subscription platform for recurring Almaty commuters.
+
+Главный wedge:
+
+```text
+Tier 3: subscription commute
+```
+
+Текущая задача — **сначала полностью определить бизнес/продуктовую логику**, потом возвращаться к UI mockups и только после этого менять iOS/backend.
+
+### What Changed (2026-05-07)
+
+- BIRGE repositioned from “taxi/ride-hailing app” to **subscription commute platform**.
+- On-demand ride is now fallback/acquisition only, not the core product.
+- Passenger’s primary action is monthly route declaration, not “call taxi”.
+- Driver monetization is fixed monthly subscription only: **zero per-ride commission ever**.
+- MVP corridor is hub-to-hub: one pickup node, one dropoff node, no intermediate stops.
+- First target corridor: Alatau City / Алатауский район -> Esentai / Al-Farabi, 07:15-08:30.
+- Current UI does not fully match the new product foundation; UI mockups should pause until business flows are defined.
+- Old self-filled survey data must not be used as real validation.
+
+### Current Business Docs
+
+- [[Business_Department/00_Business_Index]]
+- [[Business_Department/Product_Logic]]
+- [[Business_Department/Driver_Economics]]
+- [[Business_Department/Driver_Utilization_Risk]]
+- [[Business_Department/Legal_Compliance_Risk_Assessment]]
+- [[Business_Department/Business_Open_Questions]]
+- [[Tasks/Business_Sprint_0_Foundation]]
+- [[Tasks/Technical_Subscription_Pivot]]
+- [[Decisions/ADR-005_Subscription_Pivot]]
+
+### Technical Audit Update (2026-05-08)
+
+Claude Code produced [[Context/implementation_plan_]] after reading Dev Brain and app repo.
+
+Key findings:
+- 28 code review findings.
+- Critical mismatches: old passenger subscription tiers, taxi-first Home CTA, one-off ride model, missing recurring route/monthly plan models.
+- Reusable infrastructure is strong: auth, WebSocket, location, TCA, BIRGECore design system, ride FSM, Kaspi skeleton, Docker/CI.
+- App repo now has uncommitted Claude Code changes: `TODO(subscription-pivot)` markers in critical files and driver tier pricing fixed to 19k/28k/38k.
+- Business update after that: driver pricing now adds Peak Starter at 9,900 KZT, so app repo pricing must be reviewed again before committing implementation.
+
+Current technical task:
+
+```text
+Review and intentionally commit or clean Claude Code Phase 0 app repo changes before starting Phase 1.
+```
+
+### Open Design Mockup Checkpoint (2026-05-09)
+
+Passenger Open Design full-product pass is checkpointed:
+- `improved/passenger/index.html` now contains 78 screens.
+- Coverage includes registration, route setup, subscriptions, route management, ride-day lifecycle, edge cases, support/safety, proactive assistant states, and fallback taxi as a secondary flow.
+- Passenger mockup source of truth: [[docs/Passenger_Product_Mockup_Roadmap]].
+- UX designer feedback flagged the passenger mockups as visibly AI-generated: unclear click path, too much text, too many blocks.
+- Audit saved in [[docs/Passenger_UX_Cleanup_Audit]].
+- Cleanup prompt saved in [[Context/Open_Design_Passenger_UX_Cleanup_Prompt]].
+
+Decision update: do **not** rewrite passenger mockups now. They took significant effort and remain useful as a beautiful product coverage prototype. Treat passenger screens as visual-quality reference, not final UX. The main lesson is to avoid repeating the same density problem in the driver app.
+
+### Driver Business Logic Checkpoint (2026-05-09)
+
+Business Session 7 confirmed the driver-side foundation:
+- first driver persona: Серик, 32-42, full-time Almaty taxi driver, owns CNG car, values predictability over risky upside
+- minimum vehicle year for MVP mockups/business logic: 2000 or newer
+- driver subscription starts only when the first corridor becomes active
+- failed verification leads to correction/re-upload, not permanent rejection by default
+- passenger late cancellation/no-show consumes a ride/slot and should protect the driver
+- parallel work with Yandex/InDrive is allowed during launch
+- BIRGE driver MVP positioning: peak-hour income layer, not full-day Yandex replacement
+- Peak Starter confirmed as fourth driver plan at 9,900 KZT/month
+- legal consultation is still a blocker before real operations
+
+
+### Driver Open Design Mockup Checkpoint (2026-05-09)
+
+Driver Open Design full-product pass is checkpointed:
+- `improved/driver/index.html` now contains 47 screens, `D-00` through `D-46`.
+- Coverage includes driver onboarding, service zones, driver platform plans, verification, today/home, schedule, corridor operations, edge cases, earnings/payouts, support, safety, profile, settings, and privacy/data controls.
+- Driver mockup source of truth: [[docs/Driver_Product_Mockup_Roadmap]].
+- Open Design folder: `/Users/arsenabduhalyk/Projects/DesignLab/open-design/.od/projects/birge-legacy-mockups/improved/driver`.
+- Final polish pass added native row icons, circular driver avatars, profile destination `D-44-profile.html`, and bottom tab links for `Сегодня / График / Доход / Профиль`.
+- Driver plan screen now includes Peak Starter `9,900 KZT/month` plus Starter `19,000`, Professional `28,000`, and Premium `38,000`.
+- `D-06-service-area.html` now supports `Рядом с домом`, `точка выезда`, and `Не важно` so drivers can receive corridors near their morning starting point.
+- Passenger files were not intentionally changed during driver work.
+
+Decision update: driver mockups are ready as a product-coverage prototype. Do not keep prompting broad driver rewrites unless a specific visual/UX issue is found. Next passenger cleanup must be done in a separate working copy, not over `improved/passenger/`.
+
+### Legal / Compliance Checkpoint (2026-05-09)
+
+AI legal/compliance chat output was saved as [[Business_Department/Legal_Compliance_Risk_Assessment]].
+
+Treat it as a risk map, not legal advice.
+
+Top launch blockers before real passengers/drivers/payments:
+- register ИП or ТОО
+- consult licensed Kazakhstan transport lawyer on aggregator vs carrier/operator classification
+- solve insurance risk; standard ОГПО may not cover paid passenger transportation
+- draft public offer, refund/no-show policy, and passenger acceptance flow
+- prepare privacy policy, personal data consents, location consent, and data residency/localization review
+
+### Passenger Polished Open Design Checkpoint (2026-05-10)
+
+Passenger Open Design polished full-product pass is now checkpointed:
+- final working copy: `/Users/arsenabduhalyk/Projects/DesignLab/open-design/.od/projects/birge-legacy-mockups/improved/passenger-polished`
+- gallery: `improved/passenger-polished/index.html`
+- screen count preserved: 78 passenger screens
+- original `improved/passenger/` and legacy files were not the target of this final polish lane
+- checkpoint source of truth: [[docs/Passenger_Product_Mockup_Roadmap]]
+
+What changed in the final polish lane:
+- screens were improved in batches, not rewritten as a reduced MVP
+- the visual language moved away from generic card stacks toward concrete compositions: route canvases, subscription passes, ticket/receipt surfaces, account ledgers, timeline rails, native wheel picker, payment carousels, icon action rails, map/node canvases, and compact status strips
+- repeated UI problems were fixed: nested cards, unclear action hierarchy, meaningless badges, overexplaining copy, AI-looking reasoning sections, card/row monotony, edge padding regressions, off-center icons, tab/action alignment, and text collisions
+- payment language now supports Apple Pay, saved bank card, Kaspi, and card option where relevant; Kaspi is not forced during registration
+- first-route setup now follows the correct product logic: user enters/searches home/work address first, then BIRGE suggests nearby pickup/dropoff nodes
+- schedule selection now uses an iOS-style wheel time picker plus flexibility selector instead of an awkward custom slider
+- fallback taxi remains a secondary flow outside subscription
+
+Final design lesson for Open Design prompting:
+```text
+Do not ask Open Design to “make it beautiful” or only “remove cards”.
+Name the replacement composition explicitly: route canvas, ticket/pass, ledger, rail, picker, carousel, live activity surface, or native form.
+```
+
+Decision update: passenger polished mockups are ready as the current visual/product prototype for later SwiftUI mapping. Further Open Design work should be targeted QA only unless a specific product gap is found.
+
+### Swift Frontend Planning Checkpoint (2026-05-10)
+
+Frontend-only Swift transfer plan is now documented in [[Tasks/Swift_Frontend_Mockup_Implementation_Plan]].
+
+Prompt handoff for the separate prompt-writing chat is saved in [[Context/Swift_Frontend_Prompt_Architect_BIRGE]].
+
+New implementation direction:
+- build native SwiftUI/TCA frontend from the final Open Design mockups
+- keep backend, real payments, and real document upload out of this lane
+- centralize mock data in fixtures/dependencies instead of hardcoding inside SwiftUI views
+- replace token-only root routing with phone/profile-aware auth decisions
+- support `new phone -> registration`, `known complete phone -> main app`, and `known incomplete phone -> resume setup`
+- preserve both targets: `BIRGEPassenger` and `BIRGEDrive`
+- use Apple-native APIs first: SwiftUI, MapKit, CoreLocation, PhotosUI where needed, Keychain, UserNotifications, SF Symbols, Foundation formatters
+- add GitHub libraries only with explicit justification; current stack already has TCA, Dependencies, Concurrency Extras, and GRDB
+
+### Immediate Priority Order
+
+1. Treat passenger polished mockups as checkpointed; only targeted QA fixes unless a specific product gap is found.
+2. Treat driver mockups as checkpointed; only targeted QA fixes unless a specific product gap is found.
+3. Use [[Tasks/Swift_Frontend_Mockup_Implementation_Plan]] as the foundation for the frontend-only SwiftUI lane.
+4. Review/commit or clean Phase 0 technical pivot changes from Claude Code before implementing the new frontend lane.
+5. Add frontend mock environment/fixtures, then fix phone/profile-aware auth routing.
+6. Implement passenger and driver SwiftUI flows in small prompt batches, not broad rewrites.
+7. Define concrete KZT pricing for all three MVP passenger subscription tiers before real payment/backend wiring.
+8. Prepare real legal consultation packet using [[Business_Department/Legal_Compliance_Risk_Assessment]].
+9. Resume backend design for `RecurringRoute`, `MonthlyCommutePlan`, passenger subscription plans, and commute plan route linkage after frontend contracts stabilize.
+
+### Tech Lane Status
+
+UI + Navigation Rescue is not deleted. It is **paused as the primary lane** until the business/product flow is clear.
+
+Allowed tech work during this pause:
+- bug fixes
+- build/test stabilization
+- documentation cleanup
+- small safety improvements
+
+Avoid:
+- new product screens
+- major UI redesigns
+- new backend product features
+- anything that bakes in taxi-first assumptions
+
+---
+
+## Previous Tech Lane: UI + Navigation Rescue
+
+UI + Navigation Rescue was the previous active lane. Keep its notes for continuity, but do not expand UI/product scope until [[Tasks/Business_Sprint_0_Foundation]] produces the passenger and driver business flows. First reference for any resumed UI cleanup: [[Tasks/UI_Navigation_Rescue_Audit]].
 
 Previous lane: Passenger Liquid Glass UI по итоговым mockups.
+
+### Session summary (2026-05-05, Dev Brain Source of Truth Cleanup)
+- Promoted the Dev Brain source-of-truth rules into [[CLAUDE]] and [[00_Index]] with canonical paths, target names, and precedence order.
+- Updated current context files so iOS and Backend agent briefings match the live app repo: `BIRGEPassenger`, `BIRGEDrive`, `BIRGECore`, Swift Vapor `birge-vapor`, query-token ride WebSocket, and restored Docker/local backend status.
+- Cleaned stale architecture references that still used Go/internal snippets for JWT, rate limiting, ride status transitions, outbox polling, data pipeline, matching, Kaspi HMAC, and open-question impacts.
+- Updated [[docs/CLAUDE_for_mockups]] from old prompt-era status into current UI/mockup guidance for the active UI + Navigation Rescue lane.
+- Added [[Context/Universal_AI_Handoff_BIRGE]] as a self-contained handoff prompt for Claude, Gemini, ChatGPT, NotebookLM, or any AI chat without access to local files.
+- Verification: Dev Brain `git diff --check` passed and stale-reference search for known outdated terms returned clean for current source-of-truth files.
 
 ### Session summary (2026-05-05, UI + Navigation Rescue)
 - Started the rescue lane with Passenger root/navigation cleanup before visual rewrites.
