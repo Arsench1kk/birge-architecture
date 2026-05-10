@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-05
 phase: 1-2
 ---
 
@@ -22,7 +22,7 @@ Ride FSM transition
 outbox_events INSERT (same transaction as ride update)
         │
         ▼
-Go poller: SELECT unprocessed outbox_events
+Vapor background worker: SELECT unprocessed outbox_events
         │
         ▼
 PostgreSQL NOTIFY → broadcast to monolith consumers
@@ -37,7 +37,7 @@ PostgreSQL NOTIFY → broadcast to monolith consumers
 ### Phase 2 — Scale (Month 7–18)
 
 **Apache Kafka (KRaft mode)** replaces LISTEN/NOTIFY as the central nervous system:
-- Decouples [[Go Modular Monolith]] from downstream analytics consumers
+- Decouples the [[Swift Vapor Modular Monolith]] from downstream analytics consumers
 - No ZooKeeper dependency (KRaft = Kafka's built-in consensus)
 - Enables event replay for debugging and ML feature backfill
 

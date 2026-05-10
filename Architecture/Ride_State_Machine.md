@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-05
 phase: 1
 ---
 
@@ -75,41 +75,36 @@ Shared corridor assignments are highly concurrent: multiple passengers may attem
 - `pg_try_advisory_xact_lock` is non-blocking: returns `false` immediately if another process holds the lock
 - Significantly faster, no table-row blocking
 
-```go
-// internal/rides/repository.go
-func (r *Repository) UpdateStatus(ctx context.Context,
-    rideID uuid.UUID, from, to RideStatus, metadata JSONB) error {
+```swift
+// Sources/App/Modules/Rides/RidesService.swift
+func updateStatus(
+    rideID: UUID,
+    from expectedStatus: RideStatus,
+    to nextStatus: RideStatus,
+    metadata: [String: String]
+) async throws {
+    try await req.db.transaction { database in
+        // Non-blocking advisory lock on ride ID.
+        let lockAcquired = try await database.raw(
+            "SELECT pg_try_advisory_xact_lock(\(bind: rideID.uuidString))"
+        ).first(decoding: Bool.self)
 
-    return r.db.BeginTxFunc(ctx, pgx.TxOptions{}, func(tx pgx.Tx) error {
-        // Non-blocking advisory lock on ride ID
-        var lockAcquired bool
-        tx.QueryRow(ctx,
-            "SELECT pg_try_advisory_xact_lock($1)",
-            rideID.ID()).Scan(&lockAcquired)
-        if !lockAcquired {
-            return ErrConcurrentUpdate
+        guard lockAcquired == true else {
+            throw Abort(.conflict, reason: "Ride is already being updated.")
         }
 
-        // CAS-update: only update if current status == from
-        result, _ := tx.Exec(ctx, `
-            UPDATE rides
-            SET status = $1, updated_at = NOW(), metadata = metadata || $3
-            WHERE id = $2 AND status = $4
-        `, to, rideID, metadata, from)
-
-        if result.RowsAffected() == 0 {
-            return ErrStatusMismatch // another process already transitioned
+        // CAS-style update: only transition if the current status is still expected.
+        guard var ride = try await Ride.find(rideID, on: database),
+              ride.status == expectedStatus else {
+            throw Abort(.conflict, reason: "Ride status changed.")
         }
 
-        // Transactional Outbox — event in the SAME transaction
-        tx.Exec(ctx, `
-            INSERT INTO outbox_events (aggregate_id, event_type, payload)
-            VALUES ($1, $2, $3)
-        `, rideID, "ride.status_changed",
-            map[string]any{"from": from, "to": to, "metadata": metadata})
+        ride.status = nextStatus
+        ride.updatedAt = Date()
+        try await ride.save(on: database)
 
-        return nil
-    })
+        // Transactional Outbox event would be inserted in the same transaction.
+    }
 }
 ```
 
@@ -127,7 +122,7 @@ State transition SQL           ┐
 outbox_events INSERT           ┘ single atomic transaction
         │
         ▼
-Go poller reads outbox_events
+Vapor background worker reads outbox_events
         │
         ▼
 PostgreSQL LISTEN/NOTIFY → broadcast to monolith

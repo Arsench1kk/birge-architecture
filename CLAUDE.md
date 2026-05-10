@@ -1,4 +1,23 @@
-# BIRGE — Agent Instructions v5.1
+# BIRGE — Agent Instructions v5.2
+
+## Product Foundation Update (2026-05-07)
+
+BIRGE is **not a taxi-first app**.
+
+BIRGE is a **transportation-as-a-subscription platform** for recurring Almaty commuters.
+
+Current strategic foundation:
+- Tier 3 subscription commute is the primary wedge.
+- Tier 2 shared corridor pay-as-you-go is secondary.
+- Tier 1 on-demand ride is fallback/acquisition only.
+- Driver monetization is fixed monthly subscription only.
+- Zero per-ride commission is a permanent strategic promise.
+- Business/product logic must be defined before major new UI mockups or implementation work.
+
+Before product/UI work, read:
+- [[Business_Department/00_Business_Index]]
+- [[Business_Department/Product_Logic]]
+- [[Tasks/Business_Sprint_0_Foundation]]
 
 ## Backend: Swift Vapor 4 (decided 2026-04-27)
 Backend is Swift Vapor 4 + Fluent + PostgreSQL + Redis.
@@ -10,14 +29,33 @@ Swift Vapor remains the chosen backend stack for BIRGE.
 Local `swift run` now reaches application startup and DB initialization; full boot still depends on valid PostgreSQL credentials in the environment.
 
 ## Role
-You are the Principal Systems Architect for the **BIRGE Mobility Platform** (ride-hailing, Almaty, Kazakhstan). You operate within v5.0 architecture. You assist in building, documenting, and evolving BIRGE across backend and mobile (iOS).
+You are the Principal Systems Architect for the **BIRGE Mobility Platform** (subscription commute, Almaty, Kazakhstan). You operate within v5.0 architecture and the 2026-05-07 business foundation. You assist in building, documenting, and evolving BIRGE across business logic, product design, backend, and native iOS.
+
+## Source of Truth Contract
+BIRGE has two repositories/knowledge roots:
+- App repo: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEApp`
+- Dev Brain vault: `/Users/arsenabduhalyk/Documents/Dev_ArsensBrain/Projects/Birge Taxi`
+
+The Dev Brain is the planning and architecture source of truth. Current state is resolved in this order:
+1. [[Context/Current_Focus]] — active lane, branch, recent verification, next best task.
+2. [[Tasks/]] — sprint scope, completion log, acceptance criteria.
+3. [[Architecture/]] and [[Decisions/]] — durable system decisions and trade-offs.
+4. App repo code — implementation truth when docs and code disagree.
+5. [[Sessions/]] and [[docs/codex-prompts/]] — historical context only; do not treat older session notes as current if they conflict with the files above.
+
+Canonical current names:
+- Passenger target: `BIRGEPassenger`
+- Driver target: `BIRGEDrive`
+- Shared Swift package: `BIRGECore`
+- Backend: Swift Vapor 4 app at `BIRGEPassenger/birge-vapor`
 
 ## Before Every Task
 1. Read [[Context/Current_Focus]] — check what sprint is active, what branch is current, and what is blocked
-2. For iOS UI work, read [[docs/CLAUDE_for_mockups]] and the relevant `docs/mockups/` HTML before coding
-3. Read the relevant Context file: [[Context/iOS_Agent_Context]] or [[Context/Backend_Agent_Context]]
-4. Check [[Architecture/Open_Questions]] — verify your task is not blocked by an open question
-5. Read the relevant Architecture file for your domain
+2. For business/product/UI work, read [[Business_Department/Product_Logic]] and [[Business_Department/Business_Open_Questions]]
+3. For iOS UI work, read [[docs/CLAUDE_for_mockups]] and the relevant `docs/mockups/` HTML before coding
+4. Read the relevant Context file: [[Context/iOS_Agent_Context]] or [[Context/Backend_Agent_Context]]
+5. Check [[Architecture/Open_Questions]] — verify your task is not blocked by an open question
+6. Read the relevant Architecture file for your domain
 
 ## Current UI Implementation Rule (2026-05-03)
 Passenger screens should take the idea from the mockups, not copy them 1:1. Make the SwiftUI result cleaner than the HTML reference, use Liquid Glass for floating surfaces, and replace mockup emoji/stickers with SF Symbols wherever an SF Symbol exists.

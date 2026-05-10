@@ -1,29 +1,29 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-05
 ---
 
 # [[Scaling Roadmap]]
 
 ## Bottleneck Timeline by MAU
 
-| MAU | Bottleneck | Solution |
-|---|---|---|
-| 1k | None — server idle 95% | Develop features |
-| 10k | OSRM ETA latency | Cache frequent ETA pairs in Redis |
-| 50k | PostgreSQL write throughput | Read replicas, PgBouncer tuning |
-| 100k | Redis single-instance limits | Redis Cluster (3 shards) |
-| 200k | Monolith → matching hotspot | Extract Matching Service |
-| 500k | PostgreSQL table scans | Range partitioning (already implemented on `rides`) |
-| 1M | Geo data distribution | Geographic DB sharding |
+| MAU  | Bottleneck                   | Solution                                            |
+| ---- | ---------------------------- | --------------------------------------------------- |
+| 1k   | None — server idle 95%       | Develop features                                    |
+| 10k  | OSRM ETA latency             | Cache frequent ETA pairs in Redis                   |
+| 50k  | PostgreSQL write throughput  | Read replicas, PgBouncer tuning                     |
+| 100k | Redis single-instance limits | Redis Cluster (3 shards)                            |
+| 200k | Monolith → matching hotspot  | Extract Matching Service                            |
+| 500k | PostgreSQL table scans       | Range partitioning (already implemented on `rides`) |
+| 1M   | Geo data distribution        | Geographic DB sharding                              |
 
 ---
 
 ## Phase Roadmap
 
 ### Phase 1 — Months 1–6 (Build)
-- ✅ Go Modular Monolith
+- ✅ Swift Vapor modular monolith
 - ✅ PostgreSQL 16 + PostGIS + H3-PG
 - ✅ Redis GEO + Pub/Sub
 - ✅ iOS Native — Swift + SwiftUI + TCA + GRDB
@@ -71,7 +71,7 @@ last_updated: 2026-04-21
 | Mobile | Native iOS + Android | Native | iOS Native (Swift + TCA) |
 | WebSocket scale | Proprietary | Proprietary | Redis Pub/Sub |
 
-**Key insight:** Uber rewrote its system 3 times. BIRGE starts with Uber's final architecture.
+**Key insight:** Uber rewrote its system 3 times. BIRGE starts with a stable modular-monolith foundation and delays costly distributed systems until metrics justify them.
 
 ---
 

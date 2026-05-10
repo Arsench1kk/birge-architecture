@@ -1,17 +1,38 @@
 ---
-version: v5.1
-last_updated: 2026-05-04
+version: v5.4
+last_updated: 2026-05-08
 ---
 
 # BIRGE Vault — Index
 
-> Architecture version: v5.0 | Vault structure: v5.1
+> Architecture version: v5.0 | Vault structure: v5.3 | Business foundation: v1.0
+
+## Source of Truth
+
+This vault is the planning and architecture source of truth for BIRGE.
+
+Canonical paths:
+- App repo: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEApp`
+- Dev Brain vault: `/Users/arsenabduhalyk/Documents/Dev_ArsensBrain/Projects/Birge Taxi`
+
+Current state is resolved in this order:
+1. [[Context/Current_Focus]]
+2. [[Business_Department/]] for business/product logic
+3. [[Tasks/]]
+4. [[Architecture/]] and [[Decisions/]]
+5. App repo implementation
+6. [[Sessions/]] and [[docs/codex-prompts/]] as historical context only
+
+Canonical current names: `BIRGEPassenger`, `BIRGEDrive`, `BIRGECore`, Swift Vapor backend `birge-vapor`.
+
+Current product identity: BIRGE is a **transportation-as-a-subscription** platform. Tier 3 subscription commute is the wedge. On-demand is fallback/acquisition only.
 
 ## Quick Navigation
 
 | Folder | Purpose |
 |---|---|
 | `Architecture/` | System design, stack decisions, domain specs |
+| `Business_Department/` | Business model, product logic, pricing, economics, validation |
 | `Tasks/` | Active sprints, TODO lists, Done archive |
 | `Decisions/` | ADR — Architecture Decision Records |
 | `Context/` | Agent briefing files — feed to Antigravity before tasks |
@@ -42,13 +63,29 @@ last_updated: 2026-05-04
 
 ---
 
+## Business Department
+
+| File | Use when |
+|---|---|
+| [[Business_Department/00_Business_Index]] | Business department overview and current rules |
+| [[Business_Department/Product_Logic]] | Product model, tiers, passenger/driver flow implications |
+| [[Business_Department/Subscription_Strategy]] | Passenger subscription packages: MVP launches with all three tiers |
+| [[Business_Department/Driver_Economics]] | Driver subscription tiers, breakeven, cold-start risk |
+| [[Business_Department/Business_Open_Questions]] | Business/legal/market unknowns and validation needs |
+| [[Business_Department/Project_Change_Plan]] | How the current app/docs should pivot toward subscription commute |
+
 ## Context Files (feed to Antigravity)
 
 | File | Use when |
 |---|---|
 | [[Context/Current_Focus]] | Every session — что делаем прямо сейчас |
 | [[Context/iOS_Agent_Context]] | Любая iOS задача |
-| [[Context/Backend_Agent_Context]] | Любая Go/Backend задача |
+| [[Context/Backend_Agent_Context]] | Любая Backend / Vapor задача |
+| [[Context/Universal_AI_Handoff_BIRGE]] | Current v3.0 handoff: business foundation + tech context |
+| [[Context/Universal_AI_Handoff_BIRGE.2]] | Same updated handoff snapshot from the 2026-05-07 business foundation pass |
+| [[Context/implementation_plan_]] | Claude Code technical audit and transition plan artifact |
+| [[Context/Business_Partner_Prompt_BIRGE]] | Новый бизнес-чат: стратегия, продуктовая логика, рынок, экономика, фичи |
+| [[Context/Open_Design_Handoff_BIRGE]] | Новый чат для Open Design, mockups, дизайн-системы и улучшения экранов |
 
 ---
 
@@ -56,6 +93,8 @@ last_updated: 2026-05-04
 
 | File | Domain | Sprint |
 |---|---|---|
+| [[Tasks/Business_Sprint_0_Foundation]] | Business/Product | Foundation Sprint 0 |
+| [[Tasks/Technical_Subscription_Pivot]] | iOS/Backend | Technical pivot plan |
 | [[Tasks/iOS_Sprint_1]] | iOS | Sprint 1 |
 | [[Tasks/UI_Navigation_Rescue_Audit]] | iOS/UI | Active rescue audit |
 | [[Tasks/Backend_Sprint_1]] | Backend | Sprint 1 |
@@ -69,6 +108,7 @@ last_updated: 2026-05-04
 | [[Decisions/ADR-001_GRDB_vs_SwiftData]] | GRDB вместо SwiftData | ✅ Closed |
 | [[Decisions/ADR-002_TCA_vs_MVVM]] | TCA вместо MVVM | ✅ Closed |
 | [[Decisions/ADR-003_SwiftUI_vs_UIKit]] | SwiftUI как основной UI фреймворк | ✅ Closed |
+| [[Decisions/ADR-005_Subscription_Pivot]] | Pivot from taxi-first MVP to subscription commute platform | ✅ Accepted |
 
 ---
 

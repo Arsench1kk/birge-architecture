@@ -1,5 +1,5 @@
 ---
-last_updated: 2026-05-02
+last_updated: 2026-05-09
 ---
 
 # iOS Agent Context — BIRGE
@@ -7,7 +7,52 @@ last_updated: 2026-05-02
 > Читай этот файл перед любой iOS задачей. Здесь — всё что тебе нужно знать без поиска по архитектурным файлам.
 
 ## App Overview
-Ride-hailing для Алматы. **Два отдельных таргета** в одном Xcode проекте:
+BIRGE is now defined as **transportation-as-a-subscription** for recurring Almaty commuters, not taxi-first ride-hailing. Tier 3 subscription commute is the product wedge; on-demand is fallback/acquisition only.
+
+Before major UI/iOS product work, read [[Business_Department/Product_Logic]] and [[Tasks/Business_Sprint_0_Foundation]]. Existing ride/corridor screens may remain for demo stability, but new implementation should not deepen taxi-first assumptions.
+
+Technical pivot plan: [[Tasks/Technical_Subscription_Pivot]].
+
+Frontend-only SwiftUI transfer plan: [[Tasks/Swift_Frontend_Mockup_Implementation_Plan]].
+
+Current mockup source of truth:
+
+```text
+Passenger final: /Users/arsenabduhalyk/Projects/DesignLab/open-design/.od/projects/birge-legacy-mockups/improved/passenger-polished
+Driver final:    /Users/arsenabduhalyk/Projects/DesignLab/open-design/.od/projects/birge-legacy-mockups/improved/driver
+```
+
+Implementation lane rule:
+
+```text
+Until backend resumes, build frontend-only native SwiftUI/TCA flows with mock dependencies and centralized fixtures.
+Do not hardcode product data inside SwiftUI views.
+Do not wire real payments, real document upload, or new backend endpoints in this lane.
+```
+
+Root routing rule:
+
+```text
+Do not route only by access-token existence.
+Passenger: new phone -> registration; known complete phone -> main app; known incomplete phone -> resume setup.
+Driver: new phone -> onboarding; pending verification -> status; approved active corridor -> home.
+```
+
+Passenger subscription tier IDs:
+
+```text
+solo_corridor
+multi_corridor
+flex_pack
+```
+
+Current app repo status from Claude Code audit:
+- `TODO(subscription-pivot)` markers exist in the critical subscription/home/backend files.
+- Driver tier pricing was changed to 19,000 / 28,000 / 38,000 KZT.
+- Business direction after that adds Peak Starter at 9,900 KZT/month, so driver tier implementation is not final yet.
+- Review/commit these changes intentionally before new implementation.
+
+**Два отдельных таргета** в одном Xcode проекте:
 - `BIRGEPassenger` — пассажирское приложение
 - `BIRGEDrive` — водительское приложение
 
@@ -70,25 +115,29 @@ Rides:
   PATCH /rides/:id/cancel  { reason: String }
 
 WebSocket:
-  wss://api.birge.kz/ws   (Authorization: Bearer <token> в хедере)
-  Ping: каждые 5 секунд
-  Events: ride_matched, driver_location, ride_status_changed, eta_updated
+  ws://localhost:8080/ws/ride/:rideId?token=<jwt>  (local dev)
+  wss://api.birge.kz/ws/ride/:rideId?token=<jwt>   (production shape)
+  Future hardening: Authorization: Bearer <token> header instead of query token
+  Events: connected/subscribed control frames, driver_accepted, ride.status_changed,
+          ride.location_update, ride.eta_updated, direct lifecycle aliases
 ```
 
 ## JWT Strategy
 ```swift
 // Access token: 60 минут — в памяти (не персистентно)
 // Refresh token: 30 дней — в Keychain
-// Refresh за 60 секунд до expiry — TokenRefreshClient делает это автоматически
+// При REST 401 — TokenRefreshClient refreshes once and retries
+// Before ride WebSocket — SearchingFeature/RideFeature proactively call refreshAccessToken()
 // При 401 — TokenRefreshClient пробует refresh, при ошибке → logout
 ```
 
-Current iOS implementation note (2026-05-02):
+Current iOS implementation note (2026-05-05):
 - `APIClient.liveValue` is URLSession-backed for Phase 1 auth, ride, and location endpoints.
 - `TokenRefreshClient` keeps the access token in memory and stores the refresh token in Keychain.
 - 401 retry is implemented: refresh once, retry original request, clear tokens if still unauthorized.
-- Proactive timer refresh 60 seconds before JWT expiry is not implemented yet because the current backend response does not expose an expiry timestamp to iOS.
-- WebSocket `Authorization: Bearer <token>` header is still pending.
+- Token refresh now also keeps the legacy keychain access-token path in sync because WebSocket currently uses a query token.
+- Timer-based refresh 60 seconds before JWT expiry is still pending because the backend response does not expose an expiry timestamp to iOS.
+- WebSocket `Authorization: Bearer <token>` header is still pending; query token is the current implementation.
 
 ## Testing
 - XCTest target: `BIRGEPassengerTests`
@@ -136,7 +185,7 @@ Bulk insert: 100–200 записей за раз. Background queue всегда
 ## Critical Business Rules
 1. GPS координаты ВСЕГДА пишутся в GRDB даже без сети
 2. WebSocket переподключается автоматически после восстановления сети
-3. JWT refresh происходит за 60 секунд до истечения
+3. JWT refresh happens on REST 401 and before opening ride WebSockets; timer-based pre-expiry refresh is pending
 4. Все платёжные операции идемпотентны (Kaspi callback)
 5. Водитель не видит адрес пассажира до начала поездки (privacy)
 

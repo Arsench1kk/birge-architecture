@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-07
 phase: 1
 ---
 
@@ -28,15 +28,24 @@ More subscribed drivers on a specific route → higher departure frequency → l
 
 The classic marketplace cold-start problem: passengers won't subscribe without reliable drivers; drivers won't commit without reliable passengers.
 
+2026-05-07 business foundation note: this section contains strategy hypotheses. Do not present old survey/research numbers as validated market evidence unless new real interviews confirm them.
+
 BIRGE solves this through three mechanisms operating simultaneously:
 
 ### Corridor Seeding
 New corridors launch only after **30+ days of confirmed demand** via manual pilots (Telegram bot coordination, field research). No corridor goes live on algorithmic prediction alone — demand must be validated with real commuters before any driver subscribes.
 
-### Supply Guarantee — Corridor Performance Guarantee
-For the first **90 days** on any new corridor, BIRGE subsidises driver earnings at **1.5× the solo ride rate** if the corridor run has fewer than 2 confirmed passengers. This completely removes driver financial risk during ramp-up. Drivers can commit to the corridor without bearing the downside of low early occupancy.
+### Candidate Supply Guarantee — Not Finalized
+One candidate strategy is a time-limited Corridor Performance Guarantee for the first 90 days of a new corridor. This is **not approved business truth yet**.
 
-From driver research: 62% of drivers said they would consider switching platforms if the monthly fee was below 35,000 ₸. The primary objection was not the subscription model — it was bearing the risk of an empty corridor on an untrusted platform. The Performance Guarantee directly removes that objection.
+Before using it in UI, pitch decks, or driver onboarding, BIRGE must decide:
+- whether the subsidy is financially affordable
+- exact qualification rules
+- fraud controls
+- payout mechanism
+- legal/employment implications
+
+Do not use the old “62% of drivers” claim as real validation. The previous survey data is not reliable enough for investor or product claims.
 
 ### Hybrid Service Fallback
 If a scheduled corridor run has fewer than **2 confirmed passengers** 60 minutes before departure, the [[Ride State Machine]] automatically converts all bookings to standard on-demand dispatches. Passengers are notified with a revised ETA; no service failure is visible. Drivers receive the on-demand fare, which may be higher than the corridor rate. No party experiences a failure event.

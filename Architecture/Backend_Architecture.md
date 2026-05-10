@@ -65,7 +65,7 @@ birge-vapor/
 └── docker-compose.yml
 ```
 
-The current implementation uses module folders under `Sources/App/Modules/` instead of Go `internal/` packages. Architectural boundaries are maintained through Vapor route/controller/service separation plus Fluent models and middleware composition.
+The current implementation uses module folders under `Sources/App/Modules/`. Architectural boundaries are maintained through Vapor route/controller/service separation plus Fluent models and middleware composition.
 
 ---
 

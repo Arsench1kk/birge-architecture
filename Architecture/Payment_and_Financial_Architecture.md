@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-07
 phase: 1
 ---
 
@@ -10,6 +10,8 @@ phase: 1
 ## 1. Economic Model
 
 The core structural advantage: instead of a per-ride commission (15–25%), BIRGE charges a **fixed monthly driver subscription**. This realigns incentives — a driver on BIRGE maximises earnings by completing more rides, not by gaming surge algorithms.
+
+2026-05-07 business foundation: driver subscription with zero per-ride commission is non-negotiable. However, all income comparison tables below are planning models until validated with real driver interviews and real corridor occupancy data.
 
 ### Driver Income Comparison
 
@@ -32,11 +34,22 @@ The core structural advantage: instead of a per-ride commission (15–25%), BIRG
 
 **Launch discount:** All new drivers receive Professional tier at Starter price (19,000 ₸/month) for the first 6 months.
 
-### Passenger Tiers
+### Passenger Subscription Tiers
 
-- **Corridor Subscription:** Fixed monthly commute pass — guaranteed availability, no surge pricing, additional 10–15% discount
-- **Pay-as-you-go (Tier 2):** Dynamic per-ride corridor pricing
-- **On-demand (Tier 1):** Standard taxi pricing
+Passenger subscription packages are separate from service tiers.
+
+| Tier | Name | Payment Logic | Status |
+|---|---|---|---|
+| Тир 1 | Solo Corridor | Monthly subscription for one route/time slot | MVP |
+| Тир 2 | Multi Corridor | Monthly subscription covering all pre-declared corridors | MVP recommended/default |
+| Тир 3 | Flex Pack | Fixed pack of N rides/month; fixed per-ride amount deducted from balance | MVP |
+
+Confirmed payment decisions:
+- Тир 1 and Тир 2 have zero per-ride friction after payment.
+- Тир 3 is pack-balance based and exists for unpredictable schedules.
+- MVP launches with all three passenger subscription tiers.
+- On-demand taxi is fallback outside subscription, not a subscription tier.
+- Exact KZT prices are TBD in Pricing & Unit Economics.
 
 ---
 
@@ -57,13 +70,14 @@ Kaspi.kz handles >70% of digital retail transactions in Kazakhstan. Deep integra
 
 Every Kaspi webhook is validated before any account is credited:
 
-```go
-// internal/payments/kaspi.go
-func ValidateWebhookSignature(body []byte, receivedSig string, key string) bool {
-    mac := hmac.New(sha256.New, []byte(key))
-    mac.Write(body)
-    expectedSig := hex.EncodeToString(mac.Sum(nil))
-    return hmac.Equal([]byte(expectedSig), []byte(receivedSig))
+```swift
+// Sources/App/Modules/Payments/KaspiWebhookSignature.swift
+func validateWebhookSignature(body: ByteBuffer, receivedSignature: String, secret: String) -> Bool {
+    let expectedSignature = HMAC<SHA256>.authenticationCode(
+        for: body.readableBytesView,
+        using: SymmetricKey(data: Data(secret.utf8))
+    )
+    return constantTimeCompare(hex(expectedSignature), receivedSignature)
 }
 ```
 
@@ -121,9 +135,17 @@ For outer Almaty districts where cash remains common on on-demand fallback rides
 
 ---
 
-## 5. Corridor Performance Guarantee
+## 5. Candidate Corridor Performance Guarantee
 
-For the first 90 days on any new corridor, BIRGE guarantees a minimum payment of **1.5× the solo ride rate** if the corridor run has fewer than 2 confirmed passengers. This removes driver financial risk during corridor ramp-up, directly addressing the core hesitation found in driver interviews.
+Older docs proposed a 90-day guarantee with a minimum payment of **1.5× the solo ride rate** when a corridor run has fewer than 2 confirmed passengers.
+
+Current status:
+
+```text
+Candidate strategy, not finalized.
+```
+
+Before this appears in UI, driver contracts, or financial forecasts, decide affordability, qualification rules, fraud prevention, payout mechanism, and legal risk.
 
 ---
 

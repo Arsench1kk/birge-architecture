@@ -1,10 +1,42 @@
 ---
-last_updated: 2026-05-02
+last_updated: 2026-05-08
 ---
 
 # Backend Agent Context — BIRGE
 
 > Читай этот файл перед любой Backend / Vapor задачей.
+
+## Product Foundation
+
+BIRGE is now defined as **transportation-as-a-subscription** for recurring Almaty commuters.
+
+Backend work should preserve the current Vapor architecture, but new product features should wait until [[Business_Department/Product_Logic]] and [[Tasks/Business_Sprint_0_Foundation]] define:
+- recurring route model
+- monthly commute plan/subscription logic
+- hub-to-hub corridor rules
+- underfilled corridor fallback policy
+
+On-demand rides remain useful for demo/fallback, but they are not the core product wedge.
+
+Technical pivot plan: [[Tasks/Technical_Subscription_Pivot]].
+
+Planned additive backend entities:
+
+```text
+RecurringRoute
+MonthlyCommutePlan
+CommutePlanRoute
+```
+
+Planned subscription plan IDs:
+
+```text
+solo_corridor
+multi_corridor
+flex_pack
+```
+
+Do not remove current ride/corridor/payment infrastructure; extend it.
 
 ## Stack
 | Component | Technology |
@@ -16,7 +48,7 @@ last_updated: 2026-05-02
 | Auth | JWT (HS256) + OTP via Redis |
 | Infra | Docker + docker-compose local, K3s prod |
 | API prefix | /api/v1 (canonical) |
-| Status | `swift build` ✅ on 2026-05-02; `swift run` reaches startup and requires valid PostgreSQL credentials to finish boot |
+| Status | `swift build`/`swift test` ✅; Docker Compose live stack restored for local app testing |
 
 ## Project Structure
 ```
@@ -26,12 +58,18 @@ birge-vapor/
 │   ├── entrypoint.swift
 │   ├── configure.swift
 │   ├── routes.swift
-│   ├── Models/          { User.swift, Driver.swift, Ride.swift }
+│   ├── Models/          { User, Driver, Ride, Corridor, PaymentEvent, PassengerSubscription, ... }
 │   ├── Modules/
 │   │   ├── Auth/        { AuthController, AuthService, AuthDTO }
 │   │   ├── Rides/       { RidesController, RidesService, RidesDTO }
+│   │   ├── Corridors/   { CorridorsController, CorridorsService, CorridorsDTO }
+│   │   ├── Subscriptions/
+│   │   ├── Payments/
+│   │   ├── Locations/
+│   │   ├── Drivers/
+│   │   ├── Demo/        { dev-only defense/demo API }
 │   │   └── WebSocket/   { WSController, WSHub }
-│   ├── Migrations/      { CreateUsers, CreateDriverProfiles, CreateRides }
+│   ├── Migrations/      { users, driver profiles, rides, corridors, bookings, payments, locations }
 │   ├── Middleware/      { JWTMiddleware, RateLimitMiddleware }
 │   └── Support/         { AuthContext }
 └── docker-compose.yml
@@ -46,6 +84,7 @@ birge-vapor/
 - Auth middleware lives in `Sources/App/Middleware/JWTMiddleware.swift`
 - Local E2E-only OTP logging currently exists in `Modules/Auth/AuthService.swift` and writes `/tmp/birge-otp.log`
 - Idempotency is still a business rule for payment operations even where HTTP headers are not implemented yet
+- Dev-only Demo routes are registered only outside production.
 
 ## Auth Flow
 ```
@@ -66,6 +105,7 @@ Redis Pub/Sub channel: ride:<ride_id>
 All Vapor instances subscribe → fan out to connected clients
 Ping from iOS: every 5s → backend responds with pong
 GPS update interval: 10s (driver_arriving), 5s (in_progress)
+Current WebSocket route: `/ws/ride/:rideId?token=<jwt>`
 ```
 Full spec: [[Architecture/WebSocket_Hub_Architecture]]
 

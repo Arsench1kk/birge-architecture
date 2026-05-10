@@ -46,7 +46,7 @@ Examples:
 ```text
 ci: add iOS and Vapor GitHub Actions workflows
 docs: add badges, getting started, and roadmap to README
-fix(ios): rename driver target to BIRGEDriver
+fix(ios): rename driver target to BIRGEDrive
 feat(passenger): wire ride request API
 test(auth): add OTP retry coverage
 refactor(core): move API client dependencies into BIRGECore
@@ -118,7 +118,7 @@ For iOS Driver:
 cd /Users/arsenabduhalyk/Projects/BIRGE/BIRGEApp/BIRGEPassenger
 xcodebuild build \
   -project BIRGEPassenger.xcodeproj \
-  -scheme BIRGEDriver \
+  -scheme BIRGEDrive \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
@@ -170,7 +170,7 @@ git push -u origin feature/ci-cd
 | Branch | Purpose | Status |
 |---|---|---|
 | `docs/readme-update` | README badges, setup, architecture, roadmap | PR opened |
-| `fix/driver-target-name` | Rename `BIRGEDrive` to `BIRGEDriver` | PR opened |
+| `fix/driver-target-name` | Historical target-name cleanup branch | Historical |
 | `feature/ci-cd` | iOS + Vapor GitHub Actions workflows | Local commit exists; push blocked by missing `workflow` token scope |
 
 ## Obsidian Links

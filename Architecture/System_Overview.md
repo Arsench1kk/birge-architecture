@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-05-02
+last_updated: 2026-05-07
 phase: 1
 ---
 
@@ -21,6 +21,8 @@ Three axioms govern every decision in this architecture.
 
 ## The Problem BIRGE Solves
 
+Business foundation update: BIRGE is now defined as **transportation-as-a-subscription**, not a taxi-first ride-hailing app. The core product is monthly recurring commute planning. On-demand is a fallback/acquisition channel.
+
 Almaty has a radial commuting structure — residential districts (Alatau, Bostandyk, Auyezov) on the periphery, business clusters (Esentai–Al-Farabi corridor, Almaly) in the center. This creates predictable, repeating OD (Origin-Destination) patterns ideal for demand pre-aggregation.
 
 | Problem | Symptom | BIRGE Mechanism |
@@ -36,17 +38,17 @@ Almaty has a radial commuting structure — residential districts (Alatau, Bosta
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Tier 3: Corridor Subscription (core product)                   │
-│  Fixed OD, departure window, monthly pass                       │
+│  Monthly commute plan: multiple recurring routes, pre-matching  │
 ├─────────────────────────────────────────────────────────────────┤
 │  Tier 2: Shared Corridor Ride (pay-as-you-go)                   │
 │  OD matches active corridor, per-ride payment                   │
 ├─────────────────────────────────────────────────────────────────┤
 │  Tier 1: On-Demand Ride (acquisition + fallback)                │
-│  Standard taxi dispatch, operates like Yandex Go                │
+│  Standard dispatch only when monthly/corridor flow is unavailable│
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-A passenger completing 5+ on-demand rides on a similar route automatically receives a corridor subscription offer with a personalised savings calculation — the primary conversion funnel.
+Current wedge: the passenger declares recurring monthly routes first. A future on-demand-to-subscription conversion funnel may exist, but it is no longer the product center.
 
 ---
 

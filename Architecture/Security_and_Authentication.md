@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-05
 phase: 1
 ---
 
@@ -17,7 +17,7 @@ Authentication is strictly phone-number based, aligned with Kazakhstan market no
 1. User submits phone number
         │
         ▼
-2. Backend generates 6-digit OTP (crypto/rand)
+2. Backend generates 6-digit OTP with a cryptographically secure random generator
    Stored in Redis with 5-minute TTL
         │
         ▼
@@ -39,29 +39,27 @@ Authentication is strictly phone-number based, aligned with Kazakhstan market no
    (hardware-protected secure enclave)
 ```
 
-### JWT Middleware (Go)
+### JWT Middleware (Swift Vapor)
 
-```go
-func JWTMiddleware(cfg *config.Config) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        // Validate Bearer token
-        token, err := jwt.ParseWithClaims(parts[1], &BIRGEClaims{}, keyFunc)
-        if err != nil || !token.Valid {
-            c.AbortWithStatusJSON(401, gin.H{"error_code": "INVALID_TOKEN"})
-            return
-        }
-        // Check logout blacklist in Redis
-        if blacklisted { ... }
+```swift
+// Sources/App/Middleware/JWTMiddleware.swift
+struct JWTMiddleware: AsyncMiddleware {
+    func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+        let token = try bearerToken(from: request)
+        let payload = try request.jwt.verify(token, as: BIRGEJWTPayload.self)
 
-        // Inject user_id and role — no DB lookup required
-        c.Set("user_id", claims.UserID)
-        c.Set("user_role", claims.Role)
-        c.Next()
+        // Future hardening: check logout blacklist in Redis.
+        request.auth.login(AuthContext(
+            userID: payload.userID,
+            role: payload.role
+        ))
+
+        return try await next.respond(to: request)
     }
 }
 ```
 
-Nginx validates JWT at the gateway before requests reach Go — malformed tokens never consume backend resources.
+Nginx can validate JWT at the gateway later; Phase 1 canonical validation lives in Vapor middleware.
 
 ---
 
@@ -84,17 +82,16 @@ See [[Open_Questions.md]] OQ-005 for the 85% threshold governance decision.
 
 Sliding window prevents burst attacks at window boundaries (fixed window does not).
 
-```go
-// pkg/ratelimit/limiter.go
-key := fmt.Sprintf("rl:%s:%s", c.FullPath(), userID)
-now := time.Now().UnixMilli()
-windowStart := now - window.Milliseconds()
+```swift
+// Sources/App/Middleware/RateLimitMiddleware.swift
+let key = "rl:\(request.url.path):\(userID)"
+let now = Date().timeIntervalSince1970 * 1000
+let windowStart = now - windowMilliseconds
 
-pipe := rdb.Pipeline()
-pipe.ZRemRangeByScore(ctx, key, "-inf", strconv.FormatInt(windowStart, 10))
-pipe.ZAdd(ctx, key, redis.Z{Score: float64(now), Member: now})
-pipe.ZCard(ctx, key)
-pipe.Expire(ctx, key, window)
+try await request.redis.zremrangebyscore(key, min: "-inf", max: "\(windowStart)")
+try await request.redis.zadd(key, items: [(score: now, value: "\(now)")])
+let count = try await request.redis.zcard(key)
+try await request.redis.expire(key, after: .seconds(windowSeconds))
 ```
 
 | Endpoint type | Limit |

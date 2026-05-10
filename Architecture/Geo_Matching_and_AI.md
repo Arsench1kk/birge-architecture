@@ -1,7 +1,7 @@
 ---
 status: active
 version: v5.0
-last_updated: 2026-04-21
+last_updated: 2026-05-05
 phase: 1
 ---
 
@@ -9,7 +9,7 @@ phase: 1
 
 ## 1. Matching Engine — Latency Budget: p95 < 500ms
 
-The [[Geo_Matching_and_AI|Matching Engine]] lives inside the [[Go Modular Monolith]]. It is the most latency-critical component in the system.
+The Phase 1 [[Geo_Matching_and_AI|Matching Engine]] lives inside the [[Swift Vapor Modular Monolith]]. It is the most latency-critical component in the system. When profiling shows the monolith is the bottleneck, the matching engine can be extracted behind the same DTO contract.
 
 | Operation | Target | Tool |
 |---|---|---|
