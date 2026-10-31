@@ -1,6 +1,6 @@
 ---
-version: v5.4
-last_updated: 2026-05-08
+version: v5.5
+last_updated: 2026-05-12
 ---
 
 # BIRGE Vault — Index
@@ -89,15 +89,27 @@ Current product identity: BIRGE is a **transportation-as-a-subscription** platfo
 
 ---
 
+## Technical Department — iOS Frontend
+
+| File | Purpose |
+|---|---|
+| [[Technical_Department/iOS/Swift_Frontend_Master_Plan]] | Canonical execution guide for Swift frontend work |
+| [[Technical_Department/iOS/Swift_Frontend_Next_Tasks]] | Current executable task batch for coding agents |
+| [[Technical_Department/iOS/Swift_Frontend_Agent_Task_Template]] | Reusable prompt template for weaker coding models |
+
+---
+
 ## Active Tasks
 
 | File | Domain | Sprint |
 |---|---|---|
-| [[Tasks/Business_Sprint_0_Foundation]] | Business/Product | Foundation Sprint 0 |
+| [[Technical_Department/iOS/Swift_Frontend_Next_Tasks]] | iOS Frontend | Active — Batch 1 |
+| [[Tasks/Swift_Frontend_Mockup_Implementation_Plan]] | iOS Frontend | Foundation plan |
 | [[Tasks/Technical_Subscription_Pivot]] | iOS/Backend | Technical pivot plan |
-| [[Tasks/iOS_Sprint_1]] | iOS | Sprint 1 |
-| [[Tasks/UI_Navigation_Rescue_Audit]] | iOS/UI | Active rescue audit |
-| [[Tasks/Backend_Sprint_1]] | Backend | Sprint 1 |
+| [[Tasks/Business_Sprint_0_Foundation]] | Business/Product | Foundation Sprint 0 (completed) |
+| [[Tasks/iOS_Sprint_1]] | iOS | Sprint 1 (historical) |
+| [[Tasks/UI_Navigation_Rescue_Audit]] | iOS/UI | Paused — rescue audit |
+| [[Tasks/Backend_Sprint_1]] | Backend | Paused |
 
 ---
 
@@ -128,3 +140,5 @@ Current product identity: BIRGE is a **transportation-as-a-subscription** platfo
 - Monthly revenue: **30–55M tenge**
 - Matching latency: **p95 < 500ms**
 - WebSocket connections: **up to 50,000 simultaneous**
+
+- [[Thesis/00_Thesis_Index]] | Дипломный проект: scope, matching, эксперименты | 📝 Черновик

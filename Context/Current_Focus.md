@@ -1,13 +1,74 @@
 ---
-last_updated: 2026-05-10
-sprint: business_foundation_0
+last_updated: 2026-05-12
+sprint: swift_frontend_implementation
 ---
 
 # Current Focus — BIRGE
 
-## ▶ Цель сейчас: Business Foundation First
+## Аудит и стабилизация — 2026-10-31
 
-Новый железный фундамент зафиксирован в [[Context/Universal_AI_Handoff_BIRGE]] v5.0:
+Эта запись актуальнее майских статусов ниже. Ветка приложения `thesis/matching-lab`; в рабочем дереве были пользовательские изменения onboarding, их не следует перезаписывать.
+
+- Matching-lab: baseline 0.2.0 ищет свободную минуту в окне, если предпочтительное время занято; предыдущие результаты baseline 0.1.0 не смешивать с новой версией. Добавлена отметка `matching_lab_dirty` и проверен smoke-run. Числа сценариев остаются синтетическими placeholders.
+- Backend: добавлены ограничения production для JWT, OTP и незавершённой интеграции Kaspi, отзыв новых сессий, проверка владельца маршрута и транзакция при создании плана, блокировки переходов и уведомление об отмене. Проверку интеграции и сборки необходимо сверять с результатами текущего запуска; наличие кода не означает готовность production.
+- Обновление logout: пассажирский и водительский iOS-клиенты запрашивают отзыв сессии до локального удаления токенов; backend закрывает WebSocket-соединения отозванной сессии на текущем экземпляре. Это подтверждено HTTP/WebSocket smoke-тестом с изолированными PostgreSQL и Redis. Для нескольких экземпляров нужен межсерверный механизм отзыва. Rate limit остаётся локальным для процесса. Нужны интеграционные тесты с PostgreSQL/Redis, проверка конкурентных переходов и согласование полной политики отмен.
+- iOS: ошибка TCA при Xcode 27.2 устранена фиксацией TCA 1.26.1 и Sharing 2.8.2. Оба target собраны для arm64 iOS Simulator с `-skipMacroValidation`; для обычного запуска Xcode может попросить подтвердить обновлённый макрос. Runtime и тесты iOS не проверены.
+- Backend: `swift test --skip-update` — 12 тестов прошли; изолированные PostgreSQL/Redis и HTTP smoke: чужой маршрут отклонён без частичного плана, свой план создан, отмена неназначенной поездки и отзыв refresh после logout работают. При недоступном Redis регистрация может оставить пользователя без токенов — требуется исправление. Не объявлять платёжную интеграцию, SMS delivery или реальную эксплуатацию готовыми.
+
+
+## ▶ Active Lane: Swift Frontend Implementation
+
+### Status as of 2026-05-12
+
+Phase 0 passenger frontend pivot is **committed and verified**.
+
+Recent commits on `feature/passenger-liquid-glass-ui`:
+- `586f56a9` feat(core): add planned ride and support mock models, expand fixtures and design tokens
+- `8beb7230` feat(passenger): implement subscription-corridor frontend pivot
+- `d74c5267` feat(passenger): add planned ride lifecycle and support features
+- `e5400a06` test(passenger): add and update tests for subscription-corridor pivot
+
+Verification:
+- ✅ BIRGEPassenger build passes
+- ✅ BIRGEDrive build passes
+- ✅ All BIRGEPassengerTests pass (zero failures)
+- ✅ `git diff --check` clean
+- ✅ Only `UserInterfaceState.xcuserstate` excluded from commits
+
+Final mockups are accessible at:
+- Passenger: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEMockups/passenger-polished/index.html`
+- Driver: `/Users/arsenabduhalyk/Projects/BIRGE/BIRGEMockups/driver/index.html`
+
+### Next Step
+
+Execute Swift Frontend Master Plan starting with Task 1 (Batch 1).
+
+Source plan: [[Technical_Department/iOS/Swift_Frontend_Master_Plan]]
+Next tasks: [[Technical_Department/iOS/Swift_Frontend_Next_Tasks]]
+Task template: [[Technical_Department/iOS/Swift_Frontend_Agent_Task_Template]]
+
+Current batch:
+1. Add shared `BIRGEStatusBadges.swift` + `BIRGETabBar.swift` (design system)
+2. Extract `ProfileBasicsStepView` (onboarding decomposition)
+3. Extract `TrustConsentStepView`
+4. Extract `ProductIntroStepView`
+5. Polish `SplashView` to match mockup
+
+### What Is NOT Active Now
+
+- Backend / Vapor work — paused until frontend contracts stabilize
+- Driver app rebuild — starts after passenger P-A through P-F
+- Real payments / Kaspi merchant — blocked on legal entity
+- Real document upload — mock status only
+- Broad UI rewrites — incremental polish only
+
+---
+
+## ▶ Previous Lane: Business Foundation (completed 2026-05-10)
+
+### Цель: Business Foundation First
+
+Новый железный фундамент зафиксирован в [[Context/Universal_AI_Handoff_BIRGE]] v6.0:
 
 > BIRGE is not a taxi-first app. BIRGE is a transportation-as-a-subscription platform for recurring Almaty commuters.
 
